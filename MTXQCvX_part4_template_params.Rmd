@@ -273,7 +273,7 @@ if (params$mqt == TRUE) {
     #1 - import Quant1-values for Quant-Mix
     q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
     
-    quant1 = read.csv("config_files/quant1_values.csv", header = T)
+    quant1 = read.csv("config_mtx/quant1_values.csv", header = T)
     quant_table = quant1[,c("Letter_Derivate", q_idx)]
     quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
    
@@ -326,16 +326,23 @@ if (params$mqt == TRUE) {
 		#merge MID with conversion list
 		table_conv = merge(table_mid_long, con_se[,c("Metabolite_manual", "Metabolite_short", "Metabolite", "Lettercode")])
 	
-		#### INC CALCULATION and expoert
-		inc_calc = calculate_isotope_incorporation(table_conv, backups = backup_mids, 
-		  mass_li = mass_li)
-		
-		### MID clean-up and export
-    MID_export(inc_calc, backup_mids)
-		
+		#track empty dataframe after merge due to incorrect "Metabolite_manual"
+		if (nrow(table_conv) == 0) {
+		  message("There seems to be an issue with metabolite names in conversion_metabolite.csv")
+		  message("Please check column Metabolite_manual!")
+		  knitr::knit_exit()
+		} else {
+		  
+  		#### INC CALCULATION and expoert
+  		inc_calc = calculate_isotope_incorporation(table_conv, backups = backup_mids, 
+  		  mass_li = mass_li)
+  		
+  		### MID clean-up and export
+      MID_export(inc_calc, backup_mids)
+		}	
   } else {
-	  message("No application of stable isotopes defined in the ExperimentalSetup.")
-	}
+  	  message("No application of stable isotopes defined in the ExperimentalSetup.")
+  	}
 
 ```
 \pagebreak
