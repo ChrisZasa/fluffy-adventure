@@ -15,8 +15,6 @@ file_spec_manVal = read.csv("config_files/conv_filenames_manVal.csv", TRUE)
 pathway_profile  =  read.csv('config_mtx/letter_pathway_complete.csv', T)
 pathway_profile = pathway_profile[, 1:7]
 
-#correction Table for Quant1:1
-#qt = read.csv('config_files/quant1_values.csv', T)
 
 #reference file summarising mass of interest
 mass_li = read.csv('config_mtx/incorp_calc_masses.csv',  T)
