@@ -1,0 +1,78 @@
+Name	Masses		Retention Index	Position	Anzahl C-Atome	Structure
+reference	isotopic massrange start	isotopic massrange end				
+#Alanine (3TMS)_1366	73	73	1087		2	
+"#Alanine, beta- (3TMS)_1432"	73	73	1093	unclear	2	
+#Aspartic acid (3TMS)_1516	73	73	1512			
+"#Benzoic acid, (1TMS)_1254"	73	73	1512			
+"#Butanoic acid, 3-hydroxy- (2TMS)_1154"	73	73	1431		3	
+"#Butanoic acid, 4-amino- (3TMS)_1525"	73	73	1810		5	
+"#Cinnamic acid, trans- (1TMS)_1552"	73	73	1810			
+#Citric acid (4TMS)_1814	73	73	1748			
+#Creatinine (3TMS)_1549	73	73	1868	"4,5,6"	3	
+#Erythritol (4TMS)_1500	73	73	1872			
+#Fructose (1MEOX) (5TMS) BP_1871	73	73	2700			
+#Fructose (1MEOX) (5TMS) MP_1444	73	73	2705			
+"#Fructose-1,6-diphosphate (1MEOX) (7TMS) MP"	73	73	2200			
+#Fructose-6-phosphate (1MEOX) (6TMS) MP_2302	73	73	2250			
+#Fumaric acid (2TMS)_1363	73	73	1858	"4,5,6"	3	
+#Gluconic acid-6-phosphate (7TMS)_2427	73	73	1905		3	
+#Glucopyranose [-H20] (4TMS)_1763	73	73	2305			
+#Glucose (1MEOX) (5TMS) BP_1903	73	73	2300			
+#Glucose (1MEOX) (5TMS) MP_1885	73	73	1528			
+#Glucose-6-phosphate (1MEOX) (6TMS) BP_2340	73	73	1614	all	4	
+#Glucose-6-phosphate (1MEOX) (6TMS) MP_2316	73	73	1590			
+#Glutaric acid (2TMS)_1416	73	73	1572	"3,4,5,6"	4	
+"#Glutaric acid, 2-hydroxy- (3TMS)_1574"	73	73	1578	"3,4,5,6"	4	
+"#Glutaric acid, 2-oxo- (1MEOX) (2TMS)_1577"	73	73	1578			
+#Glyceric acid (3TMS)_1340	73	73	1415		5	
+#Glyceric acid-3-phosphate (4TMS)_1803	73	73	1569		4	
+#Glycerol (3TMS)_1280	73	73	1578		6	
+#Glycerol-2-phosphate (4TMS)_1717	73	73	1750		2	
+#Glycerol-3-phosphate (4TMS)_1756	73	73	1050	unknown	2	
+#Glycine (2TMS)_1115	73	73	1041	all	3	
+#Glycine (3TMS)_1313	73	73	1041			
+#Hydroxylamine (3TMS)_1103	73	73	1050		3	
+"#Inositol, myo- (6TMS)_2089"	73	73	2112		5	
+#Isoleucine (1TMS)_1174	73	73	2112		5	
+#Isoleucine (2TMS)_1301	73	73	1375		2	
+"#Lactic acid, DL- (2TMS)_1050"	73	73	1253			
+#Leucine (1TMS)_1152	73	73	1567		3	
+#Lumichrome (2MEOX)_1340	73	73	1328		4	
+#Lysine (3TMS)_1851	73	73	1630.583333			
+#Malic acid (3TMS)_1486	73	73	1670.5			
+#Phenylalanine (2TMS)_1624	73	73	1710.416667			
+#Phosphoenolpyruvic acid (3TMS)_1597	73	73	1750.333333			
+#Phosphoric acid (3TMS)_1278	73	73	1790.25			
+#Proline (2TMS)_1305	73	73	1830.166667			
+#Pyroglutamic acid (2TMS)_1522.86	73	73	1870.083333			
+#Pyruvic acid (1MEOX) (1TMS)_1040	73	73	1910			
+#Ribose (1MEOX) (4TMS) BP_1669	73	73	1949.916667			
+#Ribose-5-phosphate (1 MEOX) (5TMS) MP_2106	73	73	1989.833333			
+#Serine (2TMS)_1263	73	73	2029.75			
+#Serine (3TMS)_1370	73	73	2069.666667			
+#Serine (4TMS)_1567	73	73	2109.583333			
+#Sorbitol (6TMS)_1924	73	73	2149.5			
+#Succinic acid (2TMS)_1326	73	73	2189.416667			
+#Sucrose (8TMS)_1630	73	73	2229.333333			
+"#Threonine, allo- (2TMS)_1303"	73	73	2269.25			
+"#Threonine, allo- (3TMS)_1393"	73	73	2309.166667			
+#Uracil (2TMS)_1348	73	73	2349.083333			
+#Uridine (3TMS)_2475	73	73	2389			
+#Valine (1TMS)_1083	73	73	2428.916667			
+#Valine (2TMS)_1212	73	73	2468.833333			
+Unknown 1	73	73	2508.75			
+Unknown 10	73	73	2548.666667			
+Unknown 100	73	73	2588.583333			
+Unknown 101	73	73	2628.5			
+Unknown 102	73	73	2668.416667			
+Unknown 103	73	73	2708.333333			
+Unknown 104	73	73	2748.25			
+Unknown 105	73	73	2788.166667			
+Unknown 106	73	73	2828.083333			
+Unknown 107	73	73	2868			
+Unknown 108	73	73	2907.916667			
+Unknown 109	73	73	2947.833333			
+Unknown 11	73	73	2987.75			
+Unknown 110	73	73	3027.666667			
+Unknown 111	73	73	3067.583333			
+Unknown 112	73	73	3107.5			

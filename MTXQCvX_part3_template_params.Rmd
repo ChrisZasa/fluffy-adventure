@@ -1,0 +1,274 @@
+---
+title: "MTXQCvX - Part3: ManualValidation template"
+thanks: "Template MTXQCvX part3 written by Christin Zasada, Kempa Lab"
+author:
+- affiliation: LABNAME
+  name: NAME
+- affiliation: LABNAME
+  name: NAME
+biblio-style: apsr
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    keep_tex: yes
+    toc: yes
+    latex_engine: pdflatex
+    template: config_files/textemplate.tex
+  html_document: default
+fontsize: 9pt
+geometry: margin=1in
+keywords: MTXQCvX, manual validation
+date: "`r format(Sys.time(), '%V %d, %Y')`"
+fontfamily: mathpazo
+params:
+  spath:
+    input: text
+    label: "Run on MTXQC-subfolder:"
+    value: "test_sabrina"
+  folder:
+    input: text
+    label: "Define folder where to export and import files."
+    value: "ManualValidation"
+  prep:
+    choices:
+    - none
+    - PeakArea
+    - Incorporation
+    input: select
+    label: "Transformation of data:"
+    value: none
+  eval:
+    choices: [none, PeakArea, Incorporation]
+    input: select
+    label: "Integration of manually validated data!"
+    value: PeakArea
+  inputformat:
+    input: select
+    label: "Choose the kind of input format of your data."
+    choices: [maui, metmax, spreadsheet]
+    value: maui
+abstract: This document provides the manual validation of GC-MS derived data (MTXQC part 3). Thats has been processed through MTXQCvX part1 before. It transforms your MAUI exports into easily modifiable tables (PrepData) and re-transform them after manual validation into csv-files usable for another round of MTXQC (EvalQuant; EvalInc). In case of Metmax input files run MTXQC part 4 first.
+---
+
+# Data transformation for convenient manual validation
+
+```{r quitknitting_immediately}
+
+#if (params$inputformat != "maui") {
+ # message("This input format is currently not integrated in this module! Sorry!")
+#  knitr::knit_exit()
+#}
+
+if ((params$prep != "none") & (params$eval != "none")) {
+  message("Please select only one action at a time - eiter data transformation or data integration!")
+  knitr::knit_exit()
+}
+
+
+```
+
+
+```{r init_directory, warning=FALSE}
+#MOD!
+set_input = "input/"
+set_output = "output/"
+
+## subfolder for postprocessing
+set_val = paste0(params$folder, "/")
+
+if (set_val == "") {
+  message("Please define a folder!")
+  knitr::knit_exit()
+}
+
+#directory definition and figure_name definition
+if (params$spath == "") {
+  path_setup = ""
+  set_fig = paste0(path_setup, 'figure/MTXQCp3-')
+} else {
+  path_setup = paste0(params$spath, "/")
+  set_fig = paste0(path_setup, 'figure/MTXQCp3-')
+}
+
+knitr::opts_chunk$set(fig.width = 5, fig.align = 'center', fig.height = 4,
+                      fig.path = set_fig,  
+                      echo = FALSE,  #TRUE - show R code
+                      warning = FALSE, #show warnings
+                      message = TRUE) #show messages
+
+#Create a folder and stop processing if it is already present performing PrepData
+if (params$prep != "none") {
+  if (!dir.exists(file.path(paste0(path_setup, set_output, set_val)))) {
+      dir.create(paste0(path_setup, set_output, set_val))
+  } else {
+     message("Folder already exists! Please define a new folder where to save transformed data.")
+  }
+}
+```
+
+# Choose the mode of the document! 
+
+```{r modeofdoc}
+
+message("Data transformation performed for: ", params$prep)
+message("Data integration perfomed for: ", params$eval)
+
+```
+
+
+# Input files
+```{r init_project}
+#MOD!
+
+library(reshape2)
+library(ggplot2)
+library(plyr)
+
+source('R/MTXQC_config.R')
+source("R/MTXQC_fcn.R")
+source("R/MTXQC_fcn_part3.R")
+
+
+  #import parameter: MTXQCsetup 
+  if (file.exists(paste0(path_setup, "MTXQC_params.csv"))) {
+    setup_params <- read.csv(paste0(path_setup, "MTXQC_params.csv"), TRUE)
+    message("MTXQCparams.csv imported!")
+  } else {
+     message("Please run MTXQCvX_ExperimentalSetup in order to create MTXQC_params.csv")
+    knitr::knit_exit()
+  }
+
+  inp_format = as.character(setup_params[which(setup_params$Parameter == "inputformat"), "Value"])
+
+  #import parameter for input files:
+  if (inp_format == "metmax") {
+    if (file.exists(paste0(path_setup, "Metmax_params.csv"))) {
+      id_settings = read.csv(paste0(path_setup, "Metmax_params.csv"))
+      message("Metmax_params.csv imported.")
+    } else {
+      message("Metmax_params.csv not detected! Check defined input format!")
+      knitr::knit_exit()
+    }
+  } else {
+    if (file.exists(paste0(path_setup, "Maui_params.csv"))) {
+      id_settings = read.csv(paste0(path_setup, "Maui_params.csv"))
+      message("Maui_params.csv imported.")
+    } else {
+      message("Maui_params.csv not detected! Check defined input format!")
+      knitr::knit_exit()
+    }
+  }
+
+```
+
+
+```{r prepdata}
+
+ if (params$prep == "PeakArea") {
+    ## (1) Absolute Quantification ##
+    #PeakArea (derived from: MAUI or Metmax (after processed by MTXQC part 4))
+    nick_peakarea = as.character(id_settings[which(id_settings$Parameter == "matrix"), "Value"])
+    
+    data_quant = read.csv(paste0(path_setup, set_input, "quant/", nick_peakarea), T)
+    message("PeakAreaMatrix imported: ", nick_peakarea)
+    
+    #PeakAreaMatrix
+    transform_quant(data_quant)
+  }
+
+ 
+if (params$prep == "Incorporation") {
+    ## (2) Isotope Incorporation ##
+  # (i) SpectraExport (MAUI or Metmax & MTXQC part 4), (ii) calculated isotope
+  # incorporation rates (MAUI, Metmax), (iii) MTXQCp1 generated output file 
+  # evaluation MID quality
+    
+    #nick_mid = as.character(id_settings[which(id_settings$Parameter == "mid"), "Value"])
+    #data_mid = read.csv(paste0(path_setup, set_input, "inc/", nick_mid), T)
+    
+    data_mid = read.csv(paste0(path_setup, set_input, "inc/pSIRM_SpectraData.csv"), T)
+   # message("MIDs imported: ", nick_mid)
+    
+    nick_inc = as.character(id_settings[which(id_settings$Parameter == "inc_data"), "Value"])
+    data_original = read.csv(paste0(path_setup, set_input, "inc/", nick_inc), T)
+   # message("Incorporation data imported: ", nick_mid)
+    
+    
+    se_val = read.csv(paste0(path_setup, set_output, 
+                                    "inc/SE_classification.csv"), T)
+    message("SE_classification.csv generated by MTXQCp1 imported.")
+    
+    #Incorporation
+    transform_inc(se_val, data_mid)
+  }  		
+```
+
+
+```{r evalQuant, tidy = TRUE, results='asis'} 
+
+if (params$eval == 'PeakArea') {
+  
+    ## quantities
+	  quant_man = read.csv(paste0(path_setup, set_output, set_val, 'ManVal_PeakAreas.csv'),  T)
+    evaluate_peakareas(quant_man)
+}
+```
+
+
+
+```{r evalInc, tidy = TRUE, results='asis', fig.width=5}
+
+	if (params$eval == 'Incorporation') {
+	  
+	    ifelse(!dir.exists(file.path(paste0(path_setup, set_output, set_val, 'inc'))), 
+			 dir.create(paste0(path_setup, set_output, set_val, 'inc')), 
+			 FALSE)
+	    
+	    #data import
+    		table_check <-  read.csv(paste0(path_setup, set_output, set_val, 
+    		            'MID_validation_lowQ_forCheck.csv'),  T, na.strings = "")
+    		
+    		cor_mids = evaluate_modified_mids(table_check)
+    		
+    		
+    		table_mid = read.csv(paste0(path_setup, set_output, set_val, 
+    		            'MID_validation_lowQ_values.csv'),  T)
+	    
+    	#select only updated ones
+    		table_sel = merge(table_mid, cor_mids)
+    		
+    		if (nrow(table_sel) == 0) {
+    		  message("Please correct MIDs before running data integration!")
+    		  knitr::knit_exit()
+    		} else {
+    		  
+    
+    		  pSIRM_manVal <- integrate_manVal_MIDs(table_mid, cor_mids)
+    		    
+    		  inc_calc_updated = calculate_isotope_incorporation(table_sel, backup_mids, mass_li, manval = TRUE)
+	    
+    	    #integration
+    	      nick_inc = as.character(id_settings[which(id_settings$Parameter == "inc_data"), "Value"])
+            data_original = read.csv(paste0(path_setup, set_input, "inc/", nick_inc), T)
+    	      
+    	      data_original_l = melt(data_original, id.vars = c('Metabolite','QuantMasses'), 
+    		                  variable.name = 'File', value.name = 'LI_original')
+    	 
+    	      data_new = melt(inc_calc_updated, id.vars = c("Metabolite"), variable.name = "File", value.name = "LI_updated")
+    		    
+    	      data_comb = merge(data_original_l, data_new, all.x = TRUE)
+    	      data_comb$LI = ifelse(!is.na(data_comb$LI_updated), data_comb$LI_updated, data_comb$LI_original)
+    		
+    	      data_updated = data_comb[,c('File', 'Metabolite','QuantMasses','LI')]
+    		
+    		    data_updated_long = dcast(data_updated, Metabolite + QuantMasses ~ File, value.var = 'LI')	
+    		
+        		#Export
+        		write.csv(data_updated_long, paste0(path_setup, set_input, 
+        		                'inc/DataMatrix_manVal.csv'), row.names = F)
+        		
+        		message("The manual validated data has been updated and saved in: ", paste0(set_input,"inc/DataMatrix_manVal.csv")) 
+    		}
+}
+```

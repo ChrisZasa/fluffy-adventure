@@ -1,0 +1,11 @@
+AssociatedFile,Filename
+cin_acid,InternalStandard.csv
+alkane_int,Alcane_intensities.csv
+mz_73,MassSum-73.csv
+peak_densities,PeakDensities-Chroma.csv
+sample_area,quantMassAreasMatrix.csv
+pSIRM_se,pSIRM_SpectraData.csv
+inc,DataMatrix.csv
+addQ,additional_quant1_values.csv
+mass_li, incorp_calc_masses.csv
+backups_mid, mid_backups.csv

@@ -1,0 +1,41 @@
+Name	Masses		Retention Index	Position	Anzahl C-Atome	Structure
+reference	isotopic massrange start	isotopic massrange end				
+#Alanine (2TMS)	116	120	1087		2	
+#Alanine (3TMS)_1370	188	192	1093	unclear	2	
+#Aspartic acid (3TMS)	232	238	1512			
+#Aspartic acid (3TMS)	218	222	1512			
+#Aspartic acid (4TMS)	232	237	1431		3	
+#Citric acid (4TMS)	273	279	1810		5	
+#Citric acid (4TMS)	375	381	1810			
+#Dihydroxyacetone phosphate (1MEOX) (3TMS) BP	400	405	1748			
+#Fructose (1MEOX) (5TMS) BP	217	221	1868	"4,5,6"	3	
+#Fructose (1MEOX) (5TMS) MP	217	221	1872			
+"#Fructose-1,6-diphosphate (1MEOX) (7TMS) MP"	217	222	2700			
+"#Fructose-1,6-diphosphate (7TMS) BP"	217	222	2705			
+#Fructose-1-phosphate (6TMS)	217	222	2200			
+#Fructose-6-phosphate (1MEOX) (6TMS) MP	217	222	2250			
+#Fumaric acid (2TMS)	245	251	1858	"4,5,6"	3	
+#Glucose (1MEOX) (5TMS) BP	217	221	1905		3	
+#Glucose (1MEOX) (5TMS) BP	160	166	1905			
+#Glucose (1MEOX) (5TMS) BP	205	209	1905			
+#Glucose-6-phosphate (1MEOX) (6TMS) BP	217	220	2305			
+#Glucose-6-phosphate (1MEOX) (6TMS) MP	217	220	2300			
+#Glutamic acid (2TMS)	276	283	1528			
+#Glutamic acid (3TMS)	246	251	1614	all	4	
+"#Glutamine, DL- (3TMS)"	156	163	1590			
+"#Glutaric acid, 2-hydroxy- (3TMS)"	247	252	1572	"3,4,5,6"	4	
+"#Glutaric acid, 2-oxo- (1MEOX) (2TMS)"	198	205	1578	"3,4,5,6"	4	
+"#Glutaric acid, 2-oxo- (1MEOX) (2TMS)"	288	295	1578			
+#Glyceric acid-3-phosphate (4TMS)	357	361	1415		5	
+#Glycerol (3TMS)	218	222	1569		4	
+#Glycerol-3-phosphate (4TMS)	357	361	1578		6	
+#Glycine (3TMS)	276	279	1750		2	
+"#Lactic acid, DL- (2TMS)"	219	224	1050	unknown	2	
+#Malic acid (3TMS)	233	238	1041	all	3	
+#Malic acid (3TMS)	245	251	1041			
+#Pyruvic acid (1MEOX) (1TMS)	174	179	1050		3	
+#Ribose-5-phosphate (1 MEOX) (5TMS) MP	217	221	2112		5	
+#Serine (3TMS)	204	208	1375		2	
+#Serine (3TMS)	218	221	1375			
+#Serine (2TMS)	116	120	1253			
+#Succinic acid (2TMS)	247	252	1328		4	

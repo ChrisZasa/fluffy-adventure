@@ -1,0 +1,351 @@
+---
+title: 'MTXQCvX Part4: PROJECT NAME'
+author:
+- affiliation: Secret 
+  name: Secret  
+- affiliation: Kempa Lab
+  name: Christin
+biblio-style: apsr
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    keep_tex: yes
+    latex_engine: pdflatex
+    template: config_files/textemplate.tex
+    toc: yes
+  html_document: default
+fontsize: 9pt
+geometry: margin=1in
+keywords: MTXQCvX, pSIRM time course, cell extracts, manual validation, quantities,
+  stable isotope incorporation
+fontfamily: mathpazo
+params:
+  spath:
+    input: text
+    label: "Run on MTXQC-subfolder (incl. final /):"
+    value: "test_ser/"
+  matrix:
+    input: text
+    label: "Specify file name for: PeakAreaMatrix."
+    value: "metmax_area.csv"
+  mz:
+    input: text
+    label: "Specify file name for: Metmax-derived m/z 73 intensities."
+    value: "mz73_ser.csv"
+  mid:
+    input: text
+    label: "Specify file name for: Metmax-extracted MIDs."
+    value: "mids_metmax.csv"
+  intstd:
+    input: checkbox
+    label: "Generate input table for an internal standard (definition: InternalStandard)."
+    value: TRUE
+  alkanes:
+    input: checkbox
+    label: "Generate input table for alkane intensities (definition: Alk)."
+    value: TRUE
+  peakchroma:
+    input: checkbox
+    label: "Generate input table for sum of area normalisation (use: peakarea matrix)"
+    value: TRUE
+  mqt:
+    input: checkbox
+    label: "Generate ManualQuantTable and samples peakarea table."
+    value: TRUE
+  inc:
+    input: checkbox
+    label: "Calculate stable isotope incorporation and generate corresponding files."
+    value: TRUE
+thanks: Template MTXQCvX part 4 written by Christin Zasada, Kempa Lab
+abstract: MTXQC part 4 provides the transformation of Metmax-derived files for the usage as input files for MTXQC part 1. This report provides three modes - (1) basic - creates tables required for GC-MS performance, (2) Quant - Generation of ManualQuantTable (3) Inc - Calculation of 13C-isotope incorporation.
+---
+
+# Metmax-parser for MTXQC
+## Project settings
+```{r setup_output}
+#set path for figure export and size
+
+set_input = "input/"
+set_output = "output/"
+## subfolder for postprocessing
+
+#directory definition and figure_name definition
+if (params$spath == "") {
+  path_setup = ""
+  set_fig = paste0(path_setup, 'figure/MTXQCp4-')
+} else {
+  path_setup = paste0(params$spath)
+  set_fig = paste0(path_setup, 'figure/MTXQCp4-')
+}
+
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
+                      fig.path = set_fig,  
+                      echo = FALSE,  #TRUE - show R code
+                      warning = FALSE, #show warnings
+                      message = TRUE,
+                      eval = TRUE
+                      ) #show messages
+```
+
+
+```{r source_rfiles, include = FALSE}
+source("R/MTXQC_pck.R")
+source('R/MTXQC_fcn.R')
+source('R/MTXQC_colors.R')
+source('R/MTXQC_theme.R')
+source('R/MTXQC_config.R')
+```
+
+```{r import_files, tidy=TRUE}
+
+#import parameter 
+  if (file.exists(paste0(path_setup, "MTXQC_params.csv"))) {
+    setup_params <- read.csv(paste0(path_setup, "MTXQC_params.csv"), TRUE)
+  } else {
+     message("Please run MTXQCvX_ExperimentalSetup in order to create MTXQC_params.csv")
+    knitr::knit_exit()
+  }
+
+  #Check for metmax setup
+  input_idx <-  as.character(setup_params[which(setup_params$Parameter == "inputformat"), "Value"])
+  if (input_idx != "metmax") {
+    message("You did not define the metmax input format! ", input_idx)
+    knitr::knit_exit()
+  } else {
+    message("Correct input format of files defined! ", input_idx)
+  }
+
+  #### Annotation files ####
+    ## File annotation
+    temp_file = "file annotation"
+    ann_idx <-  as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
+    ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
+    
+      if (ncol(ann) == 1) {
+        ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
+      }
+    
+    check_emptyfile(ann, TRUE, temp_file)
+    
+    #Cell count / extract
+    temp_file = "sample_extracts"
+    se_idx <-  as.character(setup_params[which(setup_params$Parameter == "sample_ext"), "Value"])
+    data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
+    
+     if (ncol(data_extracts) == 1) {
+        ann = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
+      }
+    check_emptyfile(data_extracts, TRUE, temp_file)
+    
+  #### Different input files for the modes
+  if (params$matrix != "none") {
+    table_area = read.csv(paste0(path_setup, set_input, "metmax/", params$matrix), T)
+
+  #!modified code    
+     if (ncol(table_area) == 1) {
+        table_area = read.csv(paste0(path_setup, set_input, "metmax/", params$matrix), T, sep = ";")
+      }
+    
+    message("PeakArea matrix imported!")
+  } else {
+    message("No peakarea matrix defined!")
+  } 
+  
+  if (params$mz != "none") {
+    table_mz = read.csv(paste0(path_setup, set_input, "metmax/", params$mz), T)
+    message("Matrix with m/z 73-values imported")
+  } else {
+    message("No file for m/z 73 values defined!")
+  }
+    
+  if (params$mid != "none") {
+   table_mid = read.csv(paste0(path_setup, set_input, "metmax/", params$mid), T)
+   message("MIDs-matrix imported!")
+  } else {
+    message("No file with MIDs defined!")
+  } 
+  
+  #Check if InternalStandard defined in conversion_list
+  
+  if (params$intstd == TRUE ) {
+    is_subs = subset(con_se, con_se$Standards == "InternalStandard")
+    
+    if (!nrow(is_subs)) {
+      message("Please define your internal standard in the conversion_metabolite.csv file!")
+      knitr::knit_exit()
+    } else {
+      message("Internal Standard defintion detected in conversion_metabolite.csv.")
+    }
+  }
+    
+  #Check alkane annotation in con_se
+  if (params$alkanes == TRUE) {
+    is_subs = subset(con_se, con_se$Standards == "Alk")
+    
+    if (!nrow(is_subs)) {
+      message("Please define your alkane standards in the conversion_metabolite.csv file!")
+      knitr::knit_exit()
+    } else {
+      message("Alkane standard annotation detected in conversion_metabolite.csv.")
+    }
+  }
+    
+    
+```
+
+## GC-Performance
+### Internal extraction standard
+
+```{r internalstandard}
+
+  if (params$intstd == TRUE) {
+    df_peakareas <- file_shaping(table_area, shape = "wide",
+                                  type = "sample",
+                                  file_annotation = ann,
+                                  complete_ann = FALSE)
+
+   extract_standards_export(df_peakareas, met_names = con_se, ann_file = ann)
+  }
+```
+
+### Alkane intensity distribution
+
+```{r alkane_extraction}
+  
+  if (params$alkanes == TRUE) {
+    df_peakareas <- file_shaping(table_area, shape = "wide",
+                                    type = "sample",
+                                    file_annotation = ann,
+                                    complete_ann = FALSE)
+  
+    extraction_alkanes_export(df_peakareas)
+  }
+```
+
+### PeakDensities
+```{r peakdensities}
+  if (params$peakchroma == TRUE) {
+    
+    df_peakareas <- file_shaping(table_area, shape = "wide",
+                                    type = "sample",
+                                    file_annotation = ann,
+                                    complete_ann = FALSE)
+    
+    df_peakareas = merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
+    df_sel = df_peakareas[,c("Metabolite", "QuantMasses", "File", "PeakArea")]
+    
+    colnames(df_sel)[grep("File", colnames(df_sel))] <- "file" 
+    colnames(df_sel)[grep("PeakArea", colnames(df_sel))] <- "Area" 
+    
+    write.csv(df_sel, paste0(path_setup, set_input, 
+                      "gc/PeakDensities-Chroma.csv"), row.names = FALSE)
+    message("Peak-Densities table has been exported. Check input/gc/PeakDensities-Chroma.csv")
+  }
+
+```
+
+### Derivatisation efficiency
+```{r mz73_extraction}
+
+  if (params$mz != "none") {
+    #workaround 1 - Metmax with mass 73
+    table_mz_new = file_shaping(table_mz, shape = "wide", ann, FALSE)
+  
+    table_mz73_short = table_mz_new[c("File", "PeakArea")]
+    
+    colnames(table_mz73_short)[grep("File", colnames(table_mz73_short))] <- "file"
+    colnames(table_mz73_short)[grep("PeakArea", colnames(table_mz73_short))] <- "targetmass_intensity"
+  
+    write.csv(table_mz73_short, paste0(path_setup, set_input, "gc/MassSum-73.csv"))
+    message("A modified table for the target mass m/z=73 has been generated and exported!\n")
+  } else {
+    message("No input file generated. Check your parameter selection.")
+  }
+```  
+
+## Absolute Quantification
+### Generation of ManualQuantTable and PeakArea-matrix
+```{r Quant, tidy = TRUE}
+
+if (params$mqt == TRUE) {
+  #### Create ManualQuantTable ####
+    #1 - import Quant1-values for Quant-Mix
+    q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
+    
+    quant1 = read.csv("config_files/quant1_values.csv", header = T)
+    quant_table = quant1[,c("Letter_Derivate", q_idx)]
+    quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
+   
+    #3 - Extract peak areas / chromintensities
+    #identifer phrase in annotation file for Quant-samples, add annotation
+    addq_phrase <-  "Q"
+    ann_addq <-  extract_addQ_annotation(annotation_file = ann, phrase = addq_phrase)
+  
+    df_peakareas <-  file_shaping(table_area, shape = 'wide', 
+                                  file_annotation = ann_addq,
+                                  type = "quant",
+                                  complete_ann = TRUE)
+    
+    df_peakareas_ann <-  merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite" ,"Lettercode")])
+    df_peakareas_sel <-  subset(df_peakareas_ann, Lettercode %in% unique(quant_table$Lettercode))
+    
+    #4 - Generate ManualQuantTable
+    mqt_std = create_manualquanttable(df_peakareas_sel, q1_values = quant_table, con_se, FALSE)
+   
+    #### Generate quantAreaMatrix-input file
+    df_peakareas <- file_shaping(table_area, shape = "wide",
+                                  file_annotation = ann,
+                                  type = "sample",
+                                  complete_ann = FALSE)
+    
+    df_peakareas_ann2 <- merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
+    
+    df_save = dcast(df_peakareas_ann2, Metabolite + QuantMasses ~ File, value.var = "PeakArea")
+    write.csv(df_save, paste0(path_setup, set_input, "quant/quantMassAreasMatrix.csv"), row.names = FALSE)
+    
+    message("quantMassAreaMatrix.csv has been generated and saved in input/quant/.")
+} else {
+    message("No ManualQuantTable or PeakAreaMatrix generated due to settings for processing.")
+  }
+```
+  
+## Stable isotope incorporation
+### Calculation of stable isotope incorporation
+```{r Incorporation, tidy=TRUE}
+  if (params$inc == TRUE) {
+    
+		# data import
+		#table_mid = read.csv(paste0(path_setup, set_input, "inc/MID_combined_data.csv"), header = T)
+		table_mid_long = melt(table_mid, id.vars = c("name", "mass"), 
+		                      variable.name = "File", value.name = "MID_Intensity")
+		
+		colnames(table_mid_long)[grepl("name", colnames(table_mid_long))] <- "Metabolite_manual"
+		colnames(table_mid_long)[grepl("mass", colnames(table_mid_long))] <- "Mass_mz"
+		
+		#merge MID with conversion list
+		table_conv = merge(table_mid_long, con_se[,c("Metabolite_manual", "Metabolite_short", "Metabolite", "Lettercode")])
+	
+		#### INC CALCULATION and expoert
+		inc_calc = calculate_isotope_incorporation(table_conv, backups = backup_mids, 
+		  mass_li = mass_li)
+		
+		### MID clean-up and export
+    MID_export(inc_calc, backup_mids)
+		
+  } else {
+	  message("No application of stable isotopes defined in the ExperimentalSetup.")
+	}
+
+```
+\pagebreak
+
+## General report parameter
+```{r par_table}
+
+par_table <-  export_MTXQCsetup(params, path_setup, file_spec, "Metmax")
+
+table_print <-  as.data.frame(par_table)
+knitr::kable(table_print, format = "markdown", caption = "Parameter for Metmax parser.")
+
+```

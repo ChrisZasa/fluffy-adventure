@@ -1,0 +1,91 @@
+Metabolite,Mass_mz,LI_MID
+Alanine_(2TMS)_BP_RI:1097_IDENT:B+C,116,m0
+Alanine_(2TMS)_BP_RI:1097_IDENT:B+C,118,minc
+Alanine_(3TMS)_MP_RI:1367_IDENT:B+C,188,m0
+Alanine_(3TMS)_MP_RI:1367_IDENT:B+C,190,minc
+Aspartic acid_(2TMS)_BP_RI:1433_IDENT:A+C,245,m0
+Aspartic acid_(2TMS)_BP_RI:1433_IDENT:A+C,249,minc
+Citric acid 275_(4TMS)_MP_RI:1814_IDENT:B+D,273,m0
+Citric acid 275_(4TMS)_MP_RI:1814_IDENT:B+D,275,minc
+Citric acid 276_(4TMS)_MP_RI:1814_IDENT:B+D,273,m0
+Citric acid 276_(4TMS)_MP_RI:1814_IDENT:B+D,276,minc
+Citric acid 277_(4TMS)_MP_RI:1814_IDENT:B+D,273,m0
+Citric acid 277_(4TMS)_MP_RI:1814_IDENT:B+D,277,minc
+Citric acid 278_(4TMS)_MP_RI:1814_IDENT:B+D,273,m0
+Citric acid 278_(4TMS)_MP_RI:1814_IDENT:B+D,278,minc
+Citric acid 377_(4TMS)_MP_RI:1814_IDENT:B+D,375,m0
+Citric acid 377_(4TMS)_MP_RI:1814_IDENT:B+D,377,minc
+Citric acid 378_(4TMS)_MP_RI:1814_IDENT:B+D,375,m0
+Citric acid 378_(4TMS)_MP_RI:1814_IDENT:B+D,378,minc
+Citric acid 379_(4TMS)_MP_RI:1814_IDENT:B+D,375,m0
+Citric acid 379_(4TMS)_MP_RI:1814_IDENT:B+D,379,minc
+Citric acid 380_(4TMS)_MP_RI:1814_IDENT:B+D,375,m0
+Citric acid 380_(4TMS)_MP_RI:1814_IDENT:B+D,380,minc
+Citric acid 381_(4TMS)_MP_RI:1814_IDENT:B+D,375,m0
+Citric acid 381_(4TMS)_MP_RI:1814_IDENT:B+D,381,minc
+Dihydroxyacetone phosphate_(1MEOX)(3TMS)_BP_RI:1751_IDENT:A+B,400,m0
+Dihydroxyacetone phosphate_(1MEOX)(3TMS)_BP_RI:1751_IDENT:A+B,403,minc
+Dihydroxyacetone phosphate_(1MEOX)(3TMS)_MP_RI:1739_IDENT:A+B,400,m0
+Dihydroxyacetone phosphate_(1MEOX)(3TMS)_MP_RI:1739_IDENT:A+B,403,minc
+Fructose_(1MEOX)(5TMS)_MP_RI:1862_IDENT:B+C,217,m0
+Fructose_(1MEOX)(5TMS)_MP_RI:1862_IDENT:B+C,220,minc
+Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP_RI:2705_IDENT:B+C,217,m0
+Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP_RI:2705_IDENT:B+C,220,minc
+Fructose-6-phosphate_(1MEOX)(6TMS)_MP_RI:2302_IDENT:A+C,217,m0
+Fructose-6-phosphate_(1MEOX)(6TMS)_MP_RI:2302_IDENT:A+C,220,minc
+Fumaric acid 247_(2TMS)_MP_RI:1366_IDENT:A+C,245,m0
+Fumaric acid 247_(2TMS)_MP_RI:1366_IDENT:A+C,247,minc
+Fumaric acid 249_(2TMS)_MP_RI:1366_IDENT:A+C,245,m0
+Fumaric acid 249_(2TMS)_MP_RI:1366_IDENT:A+C,249,minc
+Gluconic acid-6-phosphate_(7TMS)_MP_RI:2426_IDENT:A+D,217,m0
+Gluconic acid-6-phosphate_(7TMS)_MP_RI:2426_IDENT:A+D,220,minc
+Glucose-1/6-phosphate_(1MEOX)(6TMS)_MP_RI:2316_IDENT:C+D/A+B,217,m0
+Glucose-1/6-phosphate_(1MEOX)(6TMS)_MP_RI:2316_IDENT:C+D/A+B,220,minc
+Glutamic acid_(2TMS)_BP_RI:1533_IDENT:A+B,276,m0
+Glutamic acid_(2TMS)_BP_RI:1533_IDENT:A+B,281,minc
+Glutamic acid_(3TMS)_MP_RI:1620_IDENT:A+B,348,m0
+Glutamic acid_(3TMS)_MP_RI:1620_IDENT:A+B,353,minc
+Glutamine_(3TMS)_MP_RI:1770_IDENT:C+D,347,m0
+Glutamine_(3TMS)_MP_RI:1770_IDENT:C+D,352,minc
+Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,198,m0
+Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,200,minc
+Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,198,m0
+Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,203,minc
+Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,288,m0
+Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,290,minc
+Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,288,m0
+Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,293,minc
+Glyceric acid-3-phosphate_(4TMS)_MP_RI:1802_IDENT:B+D,357,m0
+Glyceric acid-3-phosphate_(4TMS)_MP_RI:1802_IDENT:B+D,359,minc
+Glycerol_(3TMS)_MP_RI:1280_IDENT:C+D,218,m0
+Glycerol_(3TMS)_MP_RI:1280_IDENT:C+D,221,minc
+Glycerol-3-phosphate_(4TMS)_MP_RI:1756_IDENT:B+C,357,m0
+Glycerol-3-phosphate_(4TMS)_MP_RI:1756_IDENT:B+C,359,minc
+Glycine_(3TMS)_MP_RI:1314_IDENT:A+C,276,m0
+Glycine_(3TMS)_MP_RI:1314_IDENT:A+C,278,minc
+Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C,219,m0
+Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C,222,minc
+Malic acid 247_(3TMS)_MP_RI:1487_IDENT:B+D,245,m0
+Malic acid 247_(3TMS)_MP_RI:1487_IDENT:B+D,247,minc
+Malic acid 248_(3TMS)_MP_RI:1487_IDENT:B+D,245,m0
+Malic acid 248_(3TMS)_MP_RI:1487_IDENT:B+D,248,minc
+Malic acid 249_(3TMS)_MP_RI:1487_IDENT:B+D,245,m0
+Malic acid 249_(3TMS)_MP_RI:1487_IDENT:B+D,249,minc
+Pyroglutamic acid_(2TMS)_MP_RI:1518_IDENT:A+D,258,m0
+Pyroglutamic acid_(2TMS)_MP_RI:1518_IDENT:A+D,263,minc
+Pyruvic acid_(1MEOX)(1TMS)_MP_RI:1045_IDENT:A+D,174,m0
+Pyruvic acid_(1MEOX)(1TMS)_MP_RI:1045_IDENT:A+D,177,minc
+Serine_(2TMS)_BP_RI:1260_IDENT:C+D,116,m0
+Serine_(2TMS)_BP_RI:1260_IDENT:C+D,118,minc
+Serine_(3TMS)_MP_RI:1373_IDENT:C+D,204,m0
+Serine_(3TMS)_MP_RI:1373_IDENT:C+D,206,minc
+Serine_(4TMS)_BP_RI:1571_IDENT:C+D,290,m0
+Serine_(4TMS)_BP_RI:1571_IDENT:C+D,293,minc
+Sorbitol (6TMS)_MP_RI:2352_IDENT:no,217,m0
+Sorbitol (6TMS)_MP_RI:2352_IDENT:no,220,minc
+Succinic acid 249_(2TMS)_MP_RI:1327_IDENT:A+D,247,m0
+Succinic acid 249_(2TMS)_MP_RI:1327_IDENT:A+D,249,minc
+Succinic acid 251_(2TMS)_MP_RI:1327_IDENT:A+D,247,m0
+Succinic acid 251_(2TMS)_MP_RI:1327_IDENT:A+D,251,minc
+Sucrose (8TMS)_MP_RI:2623_IDENT:no,217,m0
+Sucrose (8TMS)_MP_RI:2623_IDENT:no,220,minc

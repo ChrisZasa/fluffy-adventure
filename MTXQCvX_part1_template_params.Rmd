@@ -1,0 +1,1376 @@
+---
+title: 'MTXQCvX - Part1: pSIRM'
+author:
+- affiliation: test
+  name: test
+params:
+  spath:
+    input: text
+    label: "Run on MTXQC-subfolder:"
+    value: "test_sabrina"
+  data:
+    input: select
+    choices: [maui, metmax]
+    label: 'Input file format:'
+    value: maui
+  updated:
+    input: select
+    choices: [none, PeakArea, Incorporation, both]
+    label: "Incorporation manualy validated data:"
+    value: none
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    keep_tex: yes
+    latex_engine: pdflatex
+    template: config_files/textemplate.tex
+    toc: yes
+  html_document: default
+fontfamily: mathpazo
+fontsize: 9pt
+geometry: margin = 1in
+keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
+biblio-style: apsr
+thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
+abstract: This document provides an evaluation of GC-MS derived metabolomics data.
+  It asseses GC-MS performance, the absolute quantification and the
+  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+---
+
+# MTXQCvX part1
+## Summary
+
+** Summarise your major findings and important details. DO NOT skip this part.**
+
+## General project settings
+
+```{r setup_output, echo=FALSE}
+#set path for figure export and size
+
+set_input = "input/"
+set_output = "output/"
+## subfolder for postprocessing
+
+#directory definition and figure_name definition
+if (params$spath == "") {
+  path_setup = ""
+  set_fig = paste0(path_setup, 'figure/MTXQCp1-')
+} else {
+  path_setup = paste0(params$spath, "/")
+  set_fig = paste0(path_setup, 'figure/MTXQCp1-')
+}
+
+knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
+                      fig.path = set_fig,  
+                      echo = FALSE,  #TRUE - show R code
+                      warning = FALSE, #show warnings
+                      message = TRUE,
+                      eval = TRUE) #show messages
+```
+
+
+```{r source_rfiles}
+source("R/MTXQC_pck.R")
+source('R/MTXQC_fcn.R')
+source('R/MTXQC_colors.R')
+source('R/MTXQC_theme.R')
+source('R/MTXQC_config.R')
+
+```
+
+  
+## Data import
+
+```{r import_datafiles, tidy  =  TRUE, echo=FALSE} 
+#tracking import errors
+imp_error = 0
+
+  #import parameter: MTXQCsetup 
+  if (file.exists(paste0(path_setup, "MTXQC_params.csv"))) {
+    setup_params <- read.csv(paste0(path_setup, "MTXQC_params.csv"), TRUE)
+    message("MTXQCparams.csv imported!")
+  } else {
+     message("Please run MTXQCvX_ExperimentalSetup in order to create MTXQC_params.csv")
+    knitr::knit_exit()
+  }
+  
+  #import parameter for input files:
+  if (params$data == "metmax") {
+    if (file.exists(paste0(path_setup, "Metmax_params.csv"))) {
+      id_settings = read.csv(paste0(path_setup, "Metmax_params.csv"))
+      message("Metmax_params.csv imported.")
+    } else {
+      message("Metmax_params.csv not detected! Check defined input format!")
+      knitr::knit_exit()
+    }
+  } else {
+    if (file.exists(paste0(path_setup, "Maui_params.csv"))) {
+      id_settings = read.csv(paste0(path_setup, "Maui_params.csv"))
+      message("Maui_params.csv imported.")
+    } else {
+      message("Maui_params.csv not detected! Check defined input format!")
+      knitr::knit_exit()
+    }
+  }
+
+
+  #check if addq-values exits if required
+  #Check if this whole addQ-file thing is needed!!!
+  nick_addq_file <- as.character(file_spec[which(file_spec$AssociatedFile == "addQ_file"), "Filename"])
+  idx_addq <- as.character(setup_params[which(setup_params$Parameter == "addQ"), "Value"])
+
+  if (idx_addq == "yes") {
+    if (!file.exists(file.path(paste0(path_setup, set_input, "add_quant/", nick_addq_file)))) {
+      message("Please specify the correct file containing additional Quant1-values in the ExperimentalSetup!")
+      knitr::knit_exit()
+    } else {
+      message("Required table containing additional Quant1-values detected!", nick_addq_file)
+    }
+  } else {
+    message("Experimental setup does not include additional quantification standards!")
+  }
+
+  #### Annotation files ####
+    ## File annotation
+    ann_idx <-  as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
+    ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
+    
+    if (ncol(ann) == 1) {
+        ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
+        message("colon separator detected: ", ann_idx)
+    }
+    
+    check_emptyfile(ann, TRUE, ann_idx)
+    
+    #Cell count / extract
+    se_idx <-  as.character(setup_params[which(setup_params$Parameter == "sample_ext"), "Value"])
+    data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
+    
+    if (ncol(data_extracts) == 1) {
+       data_ = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
+       message("colon separator detected: ", se_idx)
+    }
+    
+    check_emptyfile(data_extracts, TRUE, se_idx)
+
+  ##### (1) GC-MS performance files ####
+  ## import (i) cinnamic acid peak areas, (ii) alkane intensities,
+  ## (iii) mz 73 intensities and (iv) total peak densities from Chromatof
+
+    ca_idx <-  setup_params[which(setup_params$Parameter == "instd"), "Value"]
+    mm_ca_idx <- id_settings[which(id_settings$Parameter == "intstd"), "Value"]
+   
+    if (ca_idx == TRUE) {
+     if (mm_ca_idx == TRUE) {
+        nick_ca <-  as.character(file_spec[which(file_spec$AssociatedFile == "cin_acid"), "Filename"])
+        cinacid  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_ca), T, sep = ',')
+        check_emptyfile(cinacid, FALSE, "InternalStandard.csv")
+      } else {
+        imp_error = imp_error + 1
+        message("No internal standard for data input format defined!")
+      }
+    } else {
+      message("No internal standard in Experimental Setup defined!")
+    }
+
+    
+    alkane_idx <- as.character(id_settings[which(id_settings$Parameter == "alkanes"), "Value"])
+    nick_alk <-  as.character(file_spec[which(file_spec$AssociatedFile == "alkane_int"), "Filename"])
+    
+    if (alkane_idx == TRUE) {
+      data_alk  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_alk), T, sep = ',')
+      colnames(data_alk)[grepl("file", colnames(data_alk))] = "File"
+      check_emptyfile(data_alk, FALSE, nick_alk)
+    } else {
+      imp_error = imp_error + 1
+      message("No alkane file defined for this input format!")
+    }
+    
+    
+    nick_73 <-  as.character(file_spec[which(file_spec$AssociatedFile == "mz_73"), "Filename"])             
+    mm_73_idx <-  id_settings[which(id_settings$Parameter == "mz"), "Value"]
+    
+    if (nick_73 != "none") {
+      data_73  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_73), T, sep  =  ",")
+      check_emptyfile(data_73, FALSE, nick_73)
+    } else {
+      imp_error = imp_error + 1
+      message("No file with m/z 73 values defined for this input format!")
+    }
+    
+    
+    nick_peaks <-  as.character(file_spec[which(file_spec$AssociatedFile == "peak_densities"), "Filename"])
+    mm_peaks_idx <- id_settings[which(id_settings$Parameter == "peakchroma"), "Value"]
+    
+    if (mm_peaks_idx == TRUE) {
+       total_peaks  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_peaks), T)
+       check_emptyfile(total_peaks, FALSE, nick_peaks)
+    } else {
+      imp_error = imp_error + 1
+      message("No file defined for this input format!")
+    }
+   
+  #### (2) Absolute quantification ####
+
+  ## (2.1) Exported peak areas according to top5 or pTop5 approach
+    if ((params$updated == "PeakArea") | (params$updated == "both")) {
+      #incorporation of manualy validated data
+      nick_samples <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "sample_area"), "Filename"]) 
+      data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+      check_emptyfile(data_area, TRUE, nick_samples)   
+    } else {
+      #only original data
+      nick_samples <-  as.character(file_spec[which(file_spec$AssociatedFile == "sample_area"), "Filename"]) 
+      data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+      check_emptyfile(data_area, TRUE, nick_samples)    
+    }
+    
+
+  #### (3) Incorporation data ####
+  ## only needed for pSIRM experiment
+  ## (i) MID exports and (ii) calculated isotope incorporation
+  inc_idx <-  setup_params[which(setup_params$Parameter == "data"), "Value"]
+  evalinc_idx <-  setup_params[which(setup_params$Parameter == "substr"), "Value"]
+
+  mm_inc_idx <- id_settings[which(id_settings$Parameter == "inc"), "Value"]
+  
+  if ((params$updated == "none") | (params$updated == "PeakArea")) { #run if not Inc manually validated
+    if (inc_idx != "qMTX") {
+      if (mm_inc_idx != FALSE) {
+        if (evalinc_idx != FALSE | evalinc_idx == "none") {
+          #Mass isotopomer distributions
+          nick_psirm <-  as.character(file_spec[which(file_spec$AssociatedFile == "pSIRM_se"), "Filename"])
+          data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+          check_emptyfile(data_mid, TRUE, nick_psirm)
+          
+          #13C-Incorporation
+          nick_inc <-  as.character(file_spec[which(file_spec$AssociatedFile == "inc"), "Filename"]) 
+          data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+          check_emptyfile(data_inc, TRUE, nick_inc)
+        } else {
+        message("No stable isotope incorporation evaluated.")
+        }
+      } else (
+        message("No MID and 13Inc-calculation defined for this input format.")
+      )
+    } else {
+      message("It's not a pSIRM experiment!")
+    }
+  } else {
+    #run if Inc manually validated
+    if (inc_idx != "qMTX") {
+      if (mm_inc_idx != FALSE) {
+        if (evalinc_idx != FALSE | evalinc_idx == "none") {
+          #Mass isotopomer distributions
+          nick_psirm <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "pSIRM_se"), "Filename"])
+          data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+          check_emptyfile(data_mid, TRUE, nick_psirm)
+          
+          #13C-Incorporation
+          nick_inc <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "inc"), "Filename"]) 
+          data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+          check_emptyfile(data_inc, TRUE, nick_inc)
+        } else {
+        message("No stable isotope incorporation evaluated.")
+        }
+      } else (
+        message("No MID and 13Inc-calculation defined for this input format.")
+      )
+    } else {
+      message("It's not a pSIRM experiment!")
+    }
+  }
+```
+ 
+
+```{r check_input_files}
+
+
+
+imp_error <- MTXQCp1_checkinput(data_extracts, ann)
+
+if (imp_error != 0) {
+  message("Check the imported files messages! Number of files without import: ", imp_error)
+} else {
+  message("Annotation and Sample_extract.csv correctly imported!")
+}
+
+```
+
+
+# MTXQC - GC-MS perfomance
+## Alkane standards
+
+```{r alkanes_QCmetric}
+
+if (alkane_idx == TRUE) {
+  data_alk = file_shaping(data_alk, shape = "long", ann, type = "sample")
+  alk_qc = gc_metric_calc(data_alk, title = "alkanes")
+}
+```
+
+
+```{r alkanes, fig.height = 5, fig.width = 5, fig.cap =  "Alkane intensities summarised per each file. Drop of intensities shows questionable files."}
+  
+  if (alkane_idx == TRUE) {
+   if (!nrow(data_alk) == 0) {
+     ggplot(data_alk, aes(File, intensity)) +
+  		geom_boxplot() +
+  		coord_flip() +
+      facet_wrap(~Batch_Id, scales = "free") +
+      ggtitle('Distribution of Alkanes (#c10 - #c36)') +
+      geom_point(aes(color = metabolite)) +
+      scale_color_manual(values = brewer.pal(9, 'Paired'), guide = guide_legend(title = 'Alkane')) +
+  		xlab('File') +
+  		ylab('Peak area in (-)') +
+      theme(text = element_text(size = 8))
+   } else {
+     message("This data frame is empty!")
+   }
+  } else {
+    message("Evaluation of alkanes not activated and data present.")
+}
+```
+
+## Data normalization
+### Internal standard cinnamic acid
+
+```{r cinacid_qc, tidy = TRUE}
+
+if (mm_ca_idx == TRUE) {
+  if (ca_idx == TRUE) { 
+    
+    cin_data = file_shaping(cinacid, shape = "wide", ann, type = "sample", mode = "area")[,c("File", "PeakArea", "Batch_Id")]
+    cinacid_qc = gc_metric_calc(cin_data, title = "cinacid")
+    
+  } else {
+   Batch_Id = unique(alk_qc$Batch_Id)
+   cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
+   write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_cinacid.csv'), row.names = F)
+  }
+}
+
+```
+
+```{r cinacid_plot, echo = F, fig.cap = "Quantification of internal extraction standard", fig.width = 5, fig.height = 5}
+  
+  if (ca_idx == TRUE && mm_ca_idx == TRUE) {
+
+    cinacid_statistics = read.csv(paste0(path_setup, 'output/gc/Cinacid_stats.csv'), TRUE)
+    
+    if (nrow(cinacid_statistics) != 0) {
+      cin_f = c('below','within','above')
+      cinacid_statistics$CA_eval = factor(cinacid_statistics$CA_eval, levels = cin_f) 
+    
+     ggplot(cinacid_statistics, aes(File, PeakArea, color = CA_eval)) +
+        geom_point() +
+        #geom_bar(stat = "identity", size = .3, color = "black") +
+        coord_flip() +
+        geom_hline(aes(yintercept = mean_batch), color = 'red', linetype = 'dotdash') +
+        geom_hline(aes(yintercept = mean_batch - sd_batch), color = c('black'), linetype = 'dotdash') +
+        geom_hline(aes(yintercept = mean_batch + sd_batch), color = c('black'), linetype = 'dotdash') +
+        theme_bw() +
+        theme(text = element_text(size = 8)) + 
+        facet_wrap(~ Batch_Id, scales = "free") +
+        scale_color_manual(values = color_ca,
+                          guide = guide_legend(title = 'Evaluation CinAacid')) +
+    		ylab('PeakArea in (-)') +
+        theme(legend.position = "bottom")
+    } else {
+      message("Empty data frame!")
+    }   
+  }
+```
+
+### Sum of Area of annotated metabolites per file
+
+```{r sumArea_qc, tidy = TRUE}
+ 
+if (mm_peaks_idx == TRUE) {
+  suma_data <-  file_shaping(data_area, shape = 'wide', ann, type = "sample", mode = "area")
+  
+  suma_qc <-  gc_metric_calc(suma_data, title = 'sumofarea')
+  
+  #50% of annotated values level
+  nmin = read.csv(paste0(path_setup, 'output/gc/Min_Annotation.csv'), TRUE)
+  knitr::kable(nmin, format = 'markdown', caption = '50& quartile of annotated metabolites per batch.')
+} else {
+  message("No SumOfArea file generated in Metmax parser!")
+}
+ 
+       
+```
+
+```{r nb_annotation, echo = F, fig.cap = "Count N: Annotated intermediates per file. Evaluate careful for SumOfArea normalisation.", fig.width = 5, fig.height = 5}
+
+  if (mm_peaks_idx == TRUE) {
+    area_plot = read.csv(paste0(path_setup, 'output/gc/SumArea_stats.csv'), TRUE)
+    
+    if (nrow(area_plot != 0)) {
+        ggplot(area_plot, aes(File, n_area)) +
+          geom_point(size = 2) +
+          ggtitle("Count: Annotated metabolites per file") +
+          coord_flip() +
+          facet_wrap(~ Batch_Id, scales = "free_y") +
+          geom_hline(aes(yintercept = n_50), color = "red",linetype = "dashed") +
+        	ylab("Count N (-)") +
+        	xlab('File') +
+          theme(legend.position = "bottom") +
+          theme(text = element_text(size = 8))
+      
+    } else {
+      message("No SunArea_stats.csv file detected!")
+    }
+  }
+  
+```
+
+
+```{r SumofArea, echo = F, fig.cap = "Total peak area of all annotated metabolite per file.", fig.width = 5, fig.height = 5}
+ 
+if (mm_peaks_idx == TRUE) {
+    area_plot = read.csv(paste0(path_setup, 'output/gc/SumArea_stats.csv'), TRUE)
+    
+    if (nrow(area_plot != 0)) {
+      
+        ggplot(area_plot, aes(File, sum_area)) +
+          geom_bar(stat = "identity") +
+          ggtitle('Normalization: SumOfArea') +
+          coord_flip() +
+          geom_hline(aes(yintercept = mean_batch), color = 'red', linetype = 'dotdash') +
+          geom_hline(aes(yintercept = mean_batch - sd_batch), color = c('black'), linetype = 'dotdash') +
+          geom_hline(aes(yintercept = mean_batch + sd_batch), color = c('black'), linetype = 'dotdash') +
+        	ylab('Total peak area in (-)') +
+          facet_wrap(~ Batch_Id, scales = "free_y") +
+          theme(legend.position = "bottom") +
+          theme(text = element_text(size = 8))
+      
+    } else {
+      message("No SunArea_stats.csv file detected!")
+    }
+  }
+  
+```
+
+## Derivatization check
+
+```{r mass73_stats, tidy = TRUE}
+  #m/z 73 and total peaks data
+if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
+  data_deriv = file_shaping(data_73, shape = 'long', ann, type = "sample", mode = "area")
+  total_peaks = file_shaping(total_peaks, 'long', ann, type = "sample", mode = "area")
+
+  deriv_comb = gc_metric_calc(dataframe = data_deriv, dataframe2 = total_peaks, title = 'mz73')
+} else {
+  message("No input files detected. Either MassSum-73.csv or PeakDensities-Chroma.csv")
+}
+  
+```
+  
+## HeatMap - GC-MS performance
+```{r HM_GC, fig.height = 2, fig.width = 4, fig.cap = "Heatmap summarising parameters of GC-MS performance"}
+
+  #import qcm_metrics
+  qcm_values = do.call(rbind, lapply(list.files(path = paste0(path_setup, 'output/gc'),
+                                            pattern = "qcmetric_", 
+                                            recursive = TRUE,
+                                            full.names = TRUE), read.csv, header = TRUE))
+
+  write.csv(qcm_values, paste0(path_setup,'output/gc/HM_GC_values.csv'), row.names = F)
+  knitr::kable(qcm_values, caption  = "Summary of parameter evaluating GC-Performance", format = "pandoc")
+  message('Export of GC-Performance values done!')
+  
+  #plot: range [0,1]  =  [white, dodgerblue4], NA =  grey30
+  p <-  ggplot(qcm_values, aes(Batch_Id, title)) +
+    geom_tile(aes(fill = qc_metric), color = 'white') +
+  	coord_flip() +
+    scale_fill_gradient2(mid = 'ghostwhite', high = '#d94801', limits = c(0,1), 
+                         na.value = 'ghostwhite',
+    										 guide = guide_legend(title = 'Score'))
+
+  base_size = 7
+  p_gc <-  p + theme_bw(base_size = base_size) +
+    labs(x = '', y = '') +
+    scale_y_discrete(expand = c(0,0)) +
+  	scale_x_discrete(expand = c(0,0)) +
+    theme(axis.text.x = element_text(size = base_size, angle = 330, hjust = 0, colour = 'grey50')) +
+    #theme(axis.text.y = element_blank()) +
+    #theme(legend.position = 'none') +
+    ggtitle('GC-Performance') +
+    theme(text = element_text(size = 8))
+ 
+```
+
+
+# MTXQC - Quantitative metabolomics
+## Generation of ManualQuantTable: Quant-Standards
+
+```{r import_quant1_std}
+
+  #import Quant1-values for Quant-Mix
+  quant1 = read.csv("config_files/quant1_values.csv", header = T)
+  check_emptyfile(quant1, TRUE, "quant1_values.csv")
+
+  #which quant-version has been used
+  q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
+  quant_table = quant1[,c("Letter_Derivate", q_idx)]
+  
+  quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
+  
+```
+
+
+```{r check_mqt}
+
+	if (params$data == "maui") {
+	
+	  #Create batch_id vector
+	  batch_id_def = create_batchid(ann)
+
+	  #count and check number of required MQT raw tables
+	  nb_id = length(batch_id_def)
+	  file_names <- dir(paste0(path_setup, set_input,"quant/"), pattern = ".tsv") 
+	  
+	  if (length(batch_id_def) < length(file_names)) {
+	    message("Please check your annotation file. Your annotation files contains less files derived
+	      from different Batches, than you copied in the MTXQC project! Continue processing though!")
+	  }
+	  
+	  if (length(batch_id_def) > length(file_names)) {
+			message("Please check the number of ManualQuantTables.tsv in your MTXQC project. \n
+                There are more batches defined in your annotation file, than tsv-files present. \n
+			          Continue processing though!")
+	  } else {
+			message("Correct matching of ManualQuantTable files and annotation file content!")
+	  }
+			cual <- do.call(rbind, lapply(file_names, 
+								 function(x) cbind(read.csv(paste0(path_setup, set_input, 
+										  "quant/", x), sep = "\t"), 
+										  Batch_Id = strsplit(x,'\\.')[[1]][1])))
+	   
+			write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
+			
+			#generate ManualQuantTable
+      mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
+      message("ManualQuantTable generated and exported!")
+	}
+
+	if (params$data == "metmax") {
+		cual = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_calc_", q_idx,".csv"))
+		message("ManualQuantTable imported!")
+	}
+```
+
+## Generation of ManualQuantTable: Additional calibration curves
+```{r add_calcurves, fig.height = 5, fig.width = 5, fig.cap = "Additional Calibration curves"}
+
+#identify param settings
+addq_idx = as.character(setup_params[which(setup_params$Parameter == "addQ"), "Value"])
+nick_addq = as.character(file_spec[which(file_spec$AssociatedFile == "addQ"), "Filename"])
+  
+if (addq_idx == 'yes') { 
+  
+  #additional quant1_1 values > check for column names
+  quant_1add <-  read.csv(paste0(path_setup, set_input, "add_quant/", nick_addq), T)
+  
+  message(paste("Additional quant1-values imported for metabolites: ", length(unique(quant_1add$Lettercode)) ))
+  
+  if (ncol(quant_1add) == 1) {
+    quant_1add <- read.csv(paste0(path_setup, set_input, "add_quant/", nick_addq), T, sep = ";")
+    message(paste0("Colon separator detected in: ", nick_addq))
+  }
+  
+   # quant_1add = data.frame(Lettercode = c("Cit", "Ita", "PGA6"),
+   #                         Letter_Derivate = c("Cit", "Ita", "PGA6"),
+   #                        Quant_ext = c(83260, 83260, 14620))
+   # 
+   # write.csv(quant_1add, paste0(path_setup, set_input, "add_quant/", nick_addq), row.names = FALSE)
+  
+  #adding annotations
+  con_se_quant = subset(con_se, con_se$Q_sel == "x")
+  
+  quant_1add <-  merge(quant_1add, con_se_quant[,c("Lettercode", "Metabolite")])
+  quant_1add <-  merge(quant_1add, pathway_profile[,c("Lettercode", "Letter_Derivate")])
+    
+  knitr::kable(quant_1add, format = 'pandoc', 
+      caption = 'Quant1:1-values for additional calibration curves.')
+
+  #identifer phrase in annotation file for additional Quant-samples
+  addq_phrase <-  "addQ"
+  ann_addq <-  extract_addQ_annotation(annotation_file = ann, phrase = "addQ")
+
+  #peak areas from quantmassareamatrix
+  df_peakareas <-  file_shaping(data_area, shape = 'wide', 
+                                file_annotation = ann_addq, 
+                                complete_ann = TRUE, type = "addQ", mode = "area")
+  
+  #add annotation lists for metabolite names
+  df_peakareas <-  merge(df_peakareas, con_se[,c("Metabolite","Lettercode")])
+  
+  #select intermediates based on additional quant1_1 values
+  addq_sel <-  subset(df_peakareas, Lettercode %in% unique(quant_1add$Lettercode))
+
+  ###### Create ManualQuantTable with additional measurements
+  mqt_addq <-  create_manualquanttable(addq_sel, quant_1add, met_translation = con_se,
+                plot = TRUE)
+
+}
+
+```
+
+```{r merge_mqts}
+  
+
+  if (addq_idx == 'yes') {
+    #prepare Quant-Standards
+    colnames(mqt_std)[grep("Quant", colnames(mqt_std))] <- "Quant1"
+    #mqt_std$Origin = rep("Qstd", length(mqt_std$Lettercode))
+  
+    #prepare add-Quants
+    colnames(mqt_addq)[grepl("Quant", colnames(mqt_addq))] <- "Quant1"
+    #mqt_addq$Origin = rep("Qadd", length(mqt_addq$Lettercode))
+    mqt_addq = subset(mqt_addq, mqt_addq$Batch_Id %in% batch_id_def)
+    
+    mqt_combined = rbind(mqt_std, mqt_addq)
+    
+    write.csv(mqt_combined, paste0(path_setup, set_input, 
+              "quant/ManualQuantTable_integrated.csv"), row.names = FALSE)  
+    
+    message("Additional Quant-Standards have been added to MQT_integrated.csv")
+  }  
+
+```
+
+
+## Determination of calibration curves 
+
+```{r cal_curves, tidy = TRUE, warning=FALSE}
+    #calibration curve data
+    #cual = read.delim(paste0(path_setup,'input/quant/ManualQuantTable.tsv'), sep  =  '\t', header = T)
+
+    if (addq_idx == 'yes') {
+      cal_data = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_integrated.csv"))
+    } else {
+      cal_data = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_calc_", q_idx,".csv"))
+    }
+
+    #add annotation: Metabolite_short
+    cal_data <-  merge(cal_data, con_se[,c("Lettercode", "Metabolite_short")])
+
+    #clean-up
+    cal_clean <-  subset(cal_data, !is.na(cal_data$Concentration))
+    cal_clean <-  subset(cal_clean, cal_clean$ChromIntensities != -99) 
+  
+    #calculate adj. Rsquare, intercept and slope
+    qcurve_top5_rsquare(cal_clean, path_setup, "yes") 
+
+    #read updated file (containing adj. r-square, slope and intercept)
+    qt <-  read.table(file = paste0(path_setup, 'output/quant/top5_QMQcurveInfo.csv'), T) 
+    
+    #Determine QC-params for Quantification
+    qc_calcurve <- quant_metric_calc_new(qt)
+```
+
+
+```{r calcurve_par, echo = TRUE, fig.height = 5, fig.width = 5, fig.cap = "Calibration curves: Nb. of data points."}
+
+if (nrow(qc_calcurve != 0)) {
+  ggplot(qc_calcurve, aes(Lettercode, Par_value, color = Parameter)) +
+		geom_point(aes(shape = Parameter), size = 3) +
+  	coord_flip() +
+    ggtitle('Calibration curve: adj. R square and nb of data points') +
+    ylim(0,1) +
+    geom_hline(aes(yintercept = 0.75), linetype = 'dashed', color = 'grey30') +
+    scale_color_manual(values = c('tomato3','black')) +
+    scale_shape_manual(values = c(17,20)) +
+    facet_grid(Origin ~ Batch_Id, scales = "free_y") +
+		xlab('Derivate') +
+		ylab('Parameter value in (-)') +
+    theme(legend.position = "bottom")
+}
+	
+```
+
+
+```{r limits}
+
+  qt_limits = melt(qt, id = c('Lettercode', 'Batch_Id', 'Origin'), measure.vars = c('max','min'),
+    variable.name = "Param", value.name = "Limits")
+  qt_limits = unique(qt_limits)
+
+```
+
+```{r calcurve_linrange, echo = FALSE, fig.width = 5, fig.height = 5, fig.cap = "Limits of quantifiable range per metabolite"}  
+  
+  ggplot(qt_limits, aes(Lettercode, Limits)) +
+		geom_point(aes(shape = Param)) +
+		ggtitle('Limits of quantification (pmol)') +
+		scale_shape_manual(values = c(17,21), guide = guide_legend(title = 'Quant. Range')) +
+		coord_flip() +
+		scale_y_log10() +
+		facet_grid(Origin ~ Batch_Id, scales = "free_y") +
+		xlab('Derivate') +
+		ylab('Quantity in (pmol)') +
+    theme(legend.position = "bottom") +
+    theme(text = element_text(size = 8))
+```  
+
+
+## Evaluation of experimental data
+
+### Determination extraction factor 
+```{r extr_fac, tidy = TRUE}
+   extr_fac = eval_extractionfactor(setup_params)
+```
+
+
+### Quantification range and limits
+```{r pools_linrange, tidy = TRUE}
+  #area import  
+  #data = read.csv(paste0(path_setup, 'input/quant/quantMassAreasMatrix.csv'), header = T, sep = ',')
+  data_exp = file_shaping(data_area, shape = 'wide', ann, FALSE, type = "sample", mode = "area")
+  data_ann = merge(data_exp, con_se)
+  
+  #clean-up: Q_sel == "x" or nopsirm == "x" (its required to remove technical replicates due to pSIRM)
+  data_clean = subset(data_ann, data_ann$Q_sel == "x" | data_ann$nopsirm == "x")
+```
+
+
+```{r samples_lincheck, tidy = TRUE, warning=FALSE}
+  #add a column to state if there is an calibration curve available  
+  uni_qt  =  unique(qt[,c("Metabolite", "Batch_Id", "Origin")])
+  qt_check  =  unique(qt[,c('Metabolite', 'Batch_Id', 'Origin','adj_r_squared', 
+                            'slope', 'intercept')])
+    
+  data_qt_check  =  merge(data_clean, qt_check, all.x  =  T)
+ 
+  data_qt_check$calc_curve  =  factor(ifelse(is.na(data_qt_check$adj_r_squared), 
+                                             'no_cal', 'yes_cal'),
+                                      levels = c('yes_cal', 'no_cal'))
+  
+  #Check linearity range
+  lin_cal = evaluate_qt_lin(data_qt_check)
+
+```
+
+
+```{r samples_range, echo = FALSE, fig.width = 5, fig.height = 5, fig.cap = "Distribution of data points regarding linear range of the calibration curve"}
+ if (nrow(lin_cal != 0)) {
+   if (addq_idx == "yes") {
+    
+    print(
+      ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | lin_cal$Origin == NA), 
+        aes(x = Lettercode, y = prop, fill = islinear)) +
+      geom_bar(stat = 'identity', size = .25, color = 'black') +
+      scale_fill_manual(values = color_linearity, 
+                        guide = guide_legend(title = 'Evaluation')) +
+    	ggtitle('Fraction of measurements regarding quantification curve: Qstd') +
+    	coord_flip() +
+    	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
+    	xlab('Derivate') +
+    	ylab('Fraction of data points (%)') +
+    	theme(legend.position = "bottom") +
+    	theme(text = element_text(size = 8))
+    )
+     
+    print(
+      ggplot(subset(lin_cal, lin_cal$Origin == "Qadd"), 
+        aes(x = Lettercode, y = prop, fill = islinear)) +
+      geom_bar(stat = 'identity', size = .25, color = 'black') +
+      scale_fill_manual(values = color_linearity, 
+                        guide = guide_legend(title = 'Evaluation')) +
+    	ggtitle('Fraction of measurements regarding quantification curve: Qadd') +
+    	coord_flip() +
+    	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
+    	xlab('Derivate') +
+    	ylab('Fraction of data points (%)') +
+    	theme(legend.position = "bottom") +
+    	theme(text = element_text(size = 8))
+    )
+     
+   } else {
+     
+   ggplot(lin_cal, aes(x = Lettercode, y = prop, fill = islinear)) +
+    geom_bar(stat = 'identity', size = .25, color = 'black') +
+    scale_fill_manual(values = color_linearity, 
+                      guide = guide_legend(title = 'Evaluation')) +
+  	ggtitle('Fraction of measurements regarding quantification curve') +
+  	coord_flip() +
+  	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
+  	xlab('Derivate') +
+  	ylab('Fraction of data points (%)') +
+  	theme(legend.position = "bottom") +
+  	theme(text = element_text(size = 8))
+  }
+ } else {
+  message("Empty data frame: Linear range")
+}
+```
+
+
+### Absolute quantification samples
+```{r calc_quantity, tidy = TRUE}
+  #Check linearity range
+  data_calcheck = read.csv(paste0(path_setup, set_output, 'quant/calcheck_linearity.csv'), TRUE)
+
+  data_quantified = data_calcheck
+  data_quantified$absconc = data_quantified$slope * data_quantified$PeakArea + data_quantified$intercept
+
+  #consider extraction and preparation factors
+  data_quantified$extr_fac = rep(extr_fac, length(data_quantified$Lettercode))
+  data_quantified$corr_absconc = data_quantified$absconc * data_quantified$extr_fac
+  
+  data_q_plot  =  data_quantified
+  data_q_plot[is.na(data_q_plot)]  =  0
+```
+
+```{r calcurve_sample, fig.width = 6, fig.height = 6}
+  
+  for (var in unique(qt$Batch_Id)) {
+  
+	  print(ggplot( subset(qt, qt$Batch_Id == var), aes(x = Concentration, y = ChromIntensities)) + 
+			geom_point(size = 3, shape = 8) + 
+			geom_smooth(method = lm, se = FALSE) +
+			facet_wrap(Origin ~ Lettercode, scales = 'free') + 
+			 ggtitle(paste0('Calibration curve and samples: ', var, ' (samples in red)')) +
+			 geom_point(data = subset(data_q_plot, data_q_plot$Batch_Id == var), 
+			   aes(x = absconc, y = PeakArea), color = "red3", size = 2, shape = 1) +
+			 scale_y_continuous(labels  =  scientific) +
+			 xlab("Concentration (pmol)") +
+			 ylab("ChromIntensities / PeakAreas (-)") +
+			 theme(axis.text.x  =  element_blank(),
+			   axis.text.y  =  element_blank(),
+			   axis.ticks.x  =  element_blank(),
+			   axis.ticks.y  =  element_blank())
+		)
+	}
+```
+
+
+### Normalisation of absolute quantities
+
+```{r quant_calc_start, tidy = TRUE}
+  #1- normalization SumOfArea
+  area_stat = read.csv(paste0(path_setup, 'output/gc/SumArea_stats.csv'), TRUE)
+  data_quant_calc = merge(data_quantified, area_stat[,c("File", "sum_area", "area_fac")])
+  
+  #2 - normalization cinnamic acid
+  if (ca_idx == TRUE) {
+    data_quant_calc = merge(data_quant_calc, cinacid_statistics[,c("File", "CA_fac", "CA_eval")])
+  } else {
+    message("No internal standard defined!")
+  }
+  
+  #3 - merge with ann and subsequently with cellcount
+  ann_clean = subset(ann, ann$Type == "sample")
+  data_quant_ann = merge(data_quant_calc, ann_clean)
+  data_quant_calc = merge(data_quant_ann, data_extracts)
+  
+  #different calculation strategies depending on the presence (ca = 1) or absence (ca = 0) 
+  #of cinnamic acid
+  
+  if (ca_idx == TRUE) {
+    data_quant_norm = normalisation_calc(data_quant_calc, 1)
+  } else {
+    data_quant_norm = normalisation_calc(data_quant_calc, 0)
+  }
+
+  #export file
+  if ((params$updated == "PeakArea") & (params$updated == "both")) {
+     
+    write.csv(data_quant_norm, paste0(path_setup, 
+    'output/quant/CalculationFileData_manVal.csv'), row.names = F)
+  
+    message("Absolute quantification and normalisation have been performed: output/quant/CalculationFileData_manVal.csv")
+  } else {
+    
+    write.csv(data_quant_norm, paste0(path_setup, 
+    'output/quant/CalculationFileData.csv'), row.names = F)
+  
+    message("Absolute quantification and normalisation have been performed: CalculationFileData.csv")
+  }
+  
+```
+
+## HeatMap - Quantification
+```{r HM_adj_r, echo = FALSE, results = "asis"}
+  #Rsquared pSIRM
+  imp_R = read.csv(paste0(path_setup,'output/quant/top5_CalibrationInfo_unique.csv'), T)
+  adj_R = imp_R[,c('Metabolite','Lettercode', 'Batch_Id' ,'adj_r_squared')]    
+  
+  #get number of data points for calibration curve
+  qt_stats = ddply(qt, c("Lettercode", "Batch_Id"), summarize, N_calcurve = length(Dilution) / 8)
+  adj_R = merge(adj_R, qt_stats)
+
+  #Linearity
+  start = read.delim(paste0(path_setup,'output/quant/ptop5_Calibration_Samples_lincheck.csv'), 
+                     sep = ',', T)
+  
+  start_frac = ddply(start, c("Lettercode", "Batch_Id"), transform,
+                   frac = count / sum(count))
+  
+  #reduce data frame to islinear == linear
+  frac_subs = subset(start_frac, start_frac$islinear == 'linear')
+  frac_lin = frac_subs[,c('Lettercode', 'Batch_Id' ,'frac')]
+
+  #Iniiation data frame collecting parameter for heat map
+  HM_data = merge(adj_R, frac_lin, all = T)
+```
+  
+  
+```{r corr_ca_sof, warning=FALSE}
+  #Correlation between normalisation strategies
+  if (ca_idx == TRUE) {
+  
+    Corr_CA_SA_m = unique(data_quant_norm[,c("Lettercode", "Batch_Id")])
+    Corr_CA_SA_m$adj_r_squared_corr = rep(NA, length(Corr_CA_SA_m$Lettercode))
+    
+    
+    ### rcorr.cinacid.sumA
+    #calculate Rsquare for this only for data points within calibration curve
+    data_within = subset(data_quant_norm, data_quant_norm$CA_eval == 'within')
+    
+    data_within_sel = data_within[,c('Lettercode', 'Batch_Id','sumA_Conc_pmio','ca_Conc_pmio')]      
+    data_wo_na = subset(data_within_sel, !is.na(data_within_sel$sumA_Conc_pmio))
+    
+    data_wo_na_r  =  ddply(data_wo_na, c("Lettercode", "Batch_Id"), transform, 
+                   adj_r_squared_corr = (summary(lm(sumA_Conc_pmio ~ ca_Conc_pmio)))$adj.r.squared)
+    
+    Corr_CA_SA_m = unique(data_wo_na_r[,c('Lettercode', 'Batch_Id' ,'adj_r_squared_corr')])
+  
+  } else {
+    
+    Corr_CA_SA_m = unique(data_quant_norm[,c("Lettercode", "Batch_Id")])
+    Corr_CA_SA_m$adj_r_squared_corr = rep(NA, length(Corr_CA_SA_m$Lettercode))
+    
+  }
+  
+  HM_data = merge(HM_data, Corr_CA_SA_m)
+
+ 
+  #rename factors
+  colnames(HM_data) = c('Lettercode', 'Batch_Id' ,'Metabolite','R2_cal', 'N_cal','Data_lin','R2_norm')
+  
+  #replace negative values with NA
+  HM_data[HM_data < 0] = NA
+  
+  HM_data_m = melt(HM_data, id = c('Lettercode', 'Batch_Id' ,'Metabolite'))
+  colnames(HM_data_m) = c('Lettercode', 'Batch_Id','Metabolite','Par','Val')
+  
+  #Export
+  write.csv(HM_data_m, paste0(path_setup,'output/quant/HeatMap_Quant_pTop5.csv'), row.names = F)
+```
+
+
+```{r HM_Quant, fig.width = 5, fig.height = 5, fig.cap = "Heatmap summarising parameter regarding the quantification of metabolites."}
+  HM_data_m_con  =  merge(HM_data_m, pathway_profile)  
+    
+    p = ggplot(HM_data_m_con, aes(Met_pathway, Par)) +
+    	geom_tile(aes(fill = Val), color = 'white') +
+    	coord_flip() +
+    	theme_bw() +
+      scale_fill_gradient2(low = 'ghostwhite', high = muted('dodgerblue4'), 
+                        limits = c(0,1), na.value = 'white',
+                        guide = guide_legend(title = "Score"))
+
+    base_size = 7
+    p_1 = p + theme_bw(base_size = base_size) +
+    	labs(x = '',y = '') +
+    	scale_y_discrete(expand = c(0,0)) +
+    	scale_x_discrete(expand = c(0,0)) +
+    	theme(axis.text.x = element_text(size = base_size, angle = 330, hjust = 0, colour = 'grey50')) +
+    	theme(axis.text.y = element_text(size = base_size, colour = 'grey50')) +
+    	#theme(legend.position = 'none') +
+		facet_grid(~ Batch_Id) +
+    	ggtitle('HeatMap - Metabolite - Pathway') +
+    	theme(panel.grid.major  =   element_line(colour  =  "ghostwhite", size  =  0.2),
+    	panel.grid.minor  =   element_line(colour  =  "ghostwhite", size  =  0.5)) +
+      theme(legend.position = "bottom") +
+      theme(text = element_text(size = 8))
+    
+```
+
+
+```{r hm_overview_GCQ, echo = FALSE ,fig.height = 6, fig.width = 5, fig.cap = "MTXQCvX - Heatmap overview" }
+
+  if (inc_idx == "qMTX") {
+    a <- p_gc
+    b <- p_1
+    
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(10, 6)))
+    vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+    
+    print(a, vp = vplayout(1:2, 4:6))  # key is to define vplayout
+    print(b, vp = vplayout(3:10, 1:6))
+  }
+    
+```
+
+```{r exit_noInc}
+
+
+  if (inc_idx == "qMTX") {
+     message("No evaluation of isotope data included.")
+     knitr::knit_exit()
+  }
+  
+
+```
+
+
+\clearpage
+
+# MTXQC - Stable isotope incorporation
+
+```{r se_imp, tidy = TRUE}
+
+  data_mid_all = file_shaping(data_mid, shape = 'long', ann, type = "sample", mode = "area")
+  data_mid_all = merge(data_mid_all, con_se)
+ 
+  #remove duplicates due to LI calculation 
+  #(TCA intermediates where we analyse more than one position)
+  #SE_sel  ==  x is TRUE
+  data_SE = subset(data_mid_all, data_mid_all$SE_sel  ==  'x')
+```
+
+## NA count
+```{r se_nacount, tidy = TRUE}
+  #replace all Zero-val with NA in SamplePeakArea
+  data_SE_na  =  data_SE
+  data_SE_na[data_SE_na  ==  0]  =  NA
+  
+ # SE_nascore = mid_metric_calc(data_SE_na)
+  
+  ### old version
+  
+  #count NA in Sample and Backup; calculate ratio
+  SE_nascore  =  ddply(data_SE_na, c("File", "Lettercode", "Batch_Id"), summarise,
+                   na_SPA  =  sum(is.na(SamplePeakArea)),
+                   na_BPA  =  sum(is.na(BackupPeakArea)),
+                   #nb.mid = length(BackupPeakArea),
+                   na_frac  =  (na_SPA - na_BPA) / length(BackupPeakArea))       
+
+  #negative values in na.frac replaced with Zeros
+  SE_nascore[SE_nascore <=  0]  =  0
+
+  #round na.frac
+  SE_nascore$na_frac  =  as.numeric(SE_nascore$na_frac)
+  SE_nascore$na_frac_r  =  round(SE_nascore$na_frac,1)
+  
+  #Proportional stacked plot
+  n  =  length(unique(factor(SE_nascore$na_frac)))
+```
+  
+```{r SE_score, echo = FALSE, fig.height = 5, fig.width = 5, fig.cap = "Missing values in mass isotopomer distributions (MID)."} 
+
+ if (nrow(SE_nascore != 0)) {
+   ggplot(SE_nascore, aes(x  =  Lettercode, fill  =  factor(na_frac_r))) +
+		geom_bar(position = 'fill', size = .25, color = 'black') +
+		scale_fill_manual(name  =  c('Proportion'), 
+						  values  =  rev(brewer.pal(length(unique(SE_nascore$na_frac_r)),
+													'RdBu'))) +
+		ggtitle('Proportion of NA counts \n (in comparison to Backup MID)') +
+		coord_flip() +
+		facet_grid(~ Batch_Id) +
+		theme(axis.text.y  =  element_text(size  =  8),
+			  axis.text.x  =  element_text(size  =  8)) +
+		theme(legend.position = "bottom") +
+		theme(text = element_text(size = 8))
+ }
+	
+```
+
+## 3-Lowest of MID
+```{r SE_low3A_noneval, tidy = TRUE}  
+  #SamplePeakArea
+ # SE_eval_samples = data_SE_na[,c("Lettercode","File", "Batch_Id" ,"SamplePeakArea")]
+  #SE_eval_backups = data_SE_na[,c("Lettercode","File", "Batch_Id" ,"BackupPeakArea")]
+  #SE_eval_low_stats = mid_metric_calc2(SE_eval_samples, SE_eval_backups)
+  
+```
+
+```{r calc_na_score, tidy = TRUE}  
+  SE_nascore$na_frac_r  =  as.factor(SE_nascore$na_frac_r)
+  
+  na_fraction_calc  =  ddply(SE_nascore, c("Lettercode", "Batch_Id" ,"na_frac_r"), summarise,
+                         N  =  length(File),
+                         fracr_prop  =  N/length(unique(SE_nascore$File)))
+  
+  write.csv(na_fraction_calc, paste0(path_setup,
+                                     'output/inc/SE_calculation_NAscore.csv'), row.names  =  F)
+  
+  na_frac_zero  =  subset(na_fraction_calc, na_fraction_calc$na_frac_r  ==  0)
+  na_frac  =  na_frac_zero[,c('Lettercode', 'Batch_Id','fracr_prop')]
+
+```  
+
+## 3-Lowest of MID
+
+```{r SE_low3A, tidy = TRUE}  
+  #SamplePeakArea
+  SPA_subs = data_SE_na[,c("Lettercode","File", "Batch_Id" ,"SamplePeakArea")]
+  SPA_low3A = ddply(SPA_subs, .(Lettercode, File), subset, 
+                    SamplePeakArea %in% sort(SamplePeakArea, FALSE, na.last  =  FALSE)[1:3])
+  
+  spa_low3A_stat  =  ddply(SPA_low3A, c("Lettercode", "Batch_Id" ,"File"), summarise,
+                       sum_spa  =  sum(SamplePeakArea, na.rm = T))
+  #BackupPeakArea
+  BPA_sub  =  data_SE_na[,c("Lettercode","File", "Batch_Id" ,"BackupPeakArea")]
+  BPA_low3A  =  ddply(BPA_sub, c("Lettercode","File", "Batch_Id"), subset, 
+                      BackupPeakArea %in% sort(BackupPeakArea, FALSE, na.last = FALSE)[1:3])
+  
+  bpa_low3A_stat  =  ddply(BPA_low3A, c("Lettercode", "Batch_Id" ,"File"), summarise,
+                       sum_bpa  =  sum(BackupPeakArea, na.rm = T))
+  
+  #combine both
+  low3A = merge(spa_low3A_stat, bpa_low3A_stat)
+  #calculate ratio
+  low3A$low3a_ratio = low3A$sum_spa / low3A$sum_bpa
+  
+  #sum of samplelw3 > backup3low
+  low3A$rel_sb = ifelse(low3A$sum_spa > low3A$sum_bpa, 'higher','below')
+
+  #low3A_ratio CLASSIFICATION
+  low3A$val_score = ifelse(low3A$low3a_ratio < 2, ifelse(low3A$low3a_ratio == 0, 'bad', 'ok'), 'confident')
+  
+  #REQUIRED: if rel_sb  ==  Higher AND val_score ok / confident -> count as GOOD MID
+  low3A$count_score = ifelse((low3A$rel_sb == 'below' & low3A$val_score == 'bad'),'lowQ','goodQ')
+
+  #export
+  write.csv(low3A, paste0(path_setup,'output/inc/SE_classification.csv'), row.names = F)
+```
+  
+```{r calc_SE_prop, tidy = TRUE}
+   #stats:
+  low3A_stats  =  ddply(low3A, c("Lettercode", "Batch_Id" ,"count_score"), summarise,
+                    N_count = length(File))
+  
+  #calculate proportion
+  low3A_stats  =  ddply(low3A_stats, c("Lettercode", "Batch_Id"), transform, 
+    sum_files  =  sum(N_count))
+  
+  low3A_stats$prop  =  low3A_stats$N_count/low3A_stats$sum_files
+  
+  #export
+  write.csv(low3A_stats, paste0(path_setup,'output/inc/SE_validation.csv'), row.names = F)
+```
+
+```{r MID_quality, echo = FALSE, fig.height = 5, fig.width = 5, fig.cap = "MID quality"}
+  #plot
+  #ggplot(SE_eval_low_stats, aes(Lettercode, prop, fill = count_score)) +
+  ggplot(low3A_stats, aes(Lettercode, prop, fill = count_score)) +
+    geom_bar(stat = 'identity', color = 'black',size = .2) +
+    ggtitle('Proportion MID evaluation') +
+    coord_flip() +
+    facet_grid(~ Batch_Id) +
+    scale_fill_manual(name = "Score",
+          values = c('white','tomato3'),
+          labels = c('good','low')) +
+    theme(axis.text.y  =  element_text(size  =  8),
+          axis.text.x  =  element_text(size  =  8)) +
+    theme(legend.position = "bottom") +
+   theme(text = element_text(size = 8))
+```
+
+## $^{13}C$-Isotope incorporation
+```{r inc_imp, tidy = TRUE}
+
+  data_incorporation = file_shaping(data_inc, shape = "wide", ann, type = "sample", mode = "inc")
+  colnames(data_incorporation)[grepl('PeakArea', colnames(data_incorporation))] <- "Inc"
+
+  data_inc_m  =  merge(data_incorporation, con_se)
+  
+  #cleaning: negative values
+  data_inc_m$Inc_origval = data_inc_m$Inc
+  data_inc_m$Inc = ifelse(data_inc_m$Inc_origval < 0, 0, data_inc_m$Inc_origval)
+```
+
+  
+```{r li_t0_m, tidy = TRUE}
+
+	#ask for presence of column 'Time' and check for 'Time == 0' present
+
+	#convert Time to time in column names
+	colnames(data_inc_m)[grepl("Time", colnames(data_inc_m))] <- "time" 
+	
+	#find time == 0 entries
+	zero_present = 0 %in% unique(data_inc_m$time)
+
+	if ( zero_present == T) {
+	   #select for T = 0
+	   data_zero  =  subset(data_inc_m, data_inc_m$time  ==  0)
+	   data_zero[data_zero < 0] = 0
+
+	   #add column with m+0 information for each metabolite
+	   data_zero  =  ddply(data_zero, c("Lettercode"), transform,
+					 m0  =  min(Mass_Pos))
+
+	   data_zero$sel_m0  =  ifelse(data_zero$m0  ==  data_zero$Mass_Pos, 'x','')
+	   data_zero_sel  =  subset(data_zero, data_zero$sel_m0 == 'x')
+
+	   #statistics biological repl; calculation QC factor med.fac  =  1 - med.t0
+	   li_zero_stat_br  =  ddply(data_zero_sel, c("Batch_Id","Lettercode", "Mass_Pos"), summarise,
+						N  =  length(Inc),
+						med_t0  =  mean(Inc, na.rm = T),
+						sd_t0  =  sd(Inc, na.rm = T),
+						med_fac  =  1 - med_t0)
+
+	   #export
+	   write.csv(li_zero_stat_br, paste0(path_setup,'output/inc/13C_stats_zeros.csv'), 
+				  row.names = F)
+	}
+
+	if ( zero_present == F) {
+		message('No data for t=0 in the experimental setup defined!')
+	}
+```
+
+```{r inc_zero, echo = FALSE, fig.height = 5, fig.width = 5, fig.cap = ""}
+	if (zero_present == T) {
+	  
+		print(ggplot(li_zero_stat_br, aes(Lettercode, med_fac)) +
+		geom_point() +
+		coord_flip() +
+		geom_hline(aes(yintercept = 0.95), color = 'grey50', linetype = 'dashed') +
+		ylim(0,1) +
+		facet_wrap(~Batch_Id) + 
+		ggtitle('QC-Factor LI(t = 0) \n per metabolite; marked = 0.95') +
+		theme(axis.text.y  =  element_text(size  =  8),
+			  axis.text.x  =  element_text(size  =  8)))
+	}
+
+```
+
+
+\clearpage
+## Heatmap Isotope incorporation
+
+```{r hm_li, tidy = TRUE}
+ hm_li  =  na_frac
+  se_hm  =  subset(low3A_stats, low3A_stats$count_score  ==  'goodQ')
+  se_hm  =  se_hm[,c('Lettercode', 'Batch_Id','prop')]
+  colnames(se_hm)[3]  =  'SE_prop_goodQ'
+  
+  hm_li  =  merge(na_frac, se_hm, all = T)
+  
+  #Deactive if no inc at t = O in the experimental setup
+  
+  if (zero_present == T) {
+  	sel  =  li_zero_stat_br[,c('Lettercode', 'Batch_Id' ,'med_fac')]  
+  	hm_li  =  merge(hm_li, sel, all = T)
+  	#rename columns
+  	colnames(hm_li)  =  c('Lettercode','Batch_Id','NA_count','SE_quality','Inc_t0')
+  }
+  
+  if (zero_present == F) {
+  	colnames(hm_li)  =  c('Lettercode', 'Batch_Id' ,'NA_count','SE_quality')
+  }
+
+  #modify dataset
+  HM_data_inc  =  melt(hm_li, id = c('Lettercode', 'Batch_Id'))
+  colnames(HM_data_inc)  =  c('Lettercode', 'Batch_Id' ,'Par','Val')
+
+  #Export
+  write.csv(HM_data_inc, paste0(path_setup,'output/inc/HeatMap_Incorporation.csv'), row.names  =  F)
+```
+
+```{r HM_Inc, fig.width = 5, fig.height = 5, fig.cap = "Heatmap summarising parameter regarding stable isotope incorporation."}
+
+ HM_data_m_con  =  merge(HM_data_inc, pathway_profile)  
+    
+    p_2 = ggplot(HM_data_m_con, aes(Met_pathway, Par)) +
+    	geom_tile(aes(fill = Val), color = 'white') +
+    	coord_flip() +
+    	theme_bw() +
+      scale_fill_gradient2(low = 'ghostwhite', high = muted('dodgerblue4'), 
+                        limits = c(0,1), na.value = 'white',
+                        guide = guide_legend(title = "Score"))
+
+
+   base_size = 9
+    p_inc = p_2 + theme_bw(base_size = base_size) +
+    	labs(x = '',y = '') +
+    	scale_y_discrete(expand = c(0,0)) +
+    	scale_x_discrete(expand = c(0,0)) +
+    	theme(axis.text.x = element_text(size = base_size, angle = 330, hjust = 0, colour = 'grey50')) +
+    	theme(axis.text.y = element_text(size = base_size, colour = 'grey50')) +
+    	#theme(legend.position = 'none') +
+      facet_grid(~ Batch_Id) +
+    	ggtitle('HeatMap - Isotope incorporation') +
+    	theme(panel.grid.major  =   element_line(colour  =  "ghostwhite", size  =  0.2),
+    	panel.grid.minor  =   element_line(colour  =  "ghostwhite", size  =  0.5)) +
+       theme(text = element_text(size = 8))
+
+
+```
+
+
+# MTXQC Heatmap compilation: Quantifitation and stable isotope incorporation
+
+```{r HM_quant_inc_start, tidy = TRUE}
+  data_inc = read.csv(paste0(path_setup,'output/inc/HeatMap_Incorporation.csv'), T)   
+  data_quant = read.csv(paste0(path_setup,'output/quant/HeatMap_Quant_pTop5.csv'), T)  
+  data_quant = data_quant[,c('Lettercode', 'Batch_Id' ,'Par','Val')]
+  
+  data_hm = rbind(data_quant, data_inc)
+  
+  #paramter direction
+  if (zero_present == T) {
+  	par_sort = c('R2_cal', 'N_cal','R2_norm','Data_lin','Values_ss','Var_ss',
+  	             'NA_count','SE_quality','Inc_t0')
+  } else {
+  	par_sort = c('R2_cal', 'N_cal','R2_norm','Data_lin','Values_ss','Var_ss',
+  	             'NA_count','SE_quality')
+  }
+  
+  #add pathway annotation  
+ 	data_plot = merge(data_hm, pathway_profile)
+  data_plot$Par = factor(data_plot$Par, levels = par_sort)
+```
+
+
+```{r HM_quant_inc, echo = FALSE ,fig.height = 6, fig.width = 5, fig.cap = "Combined heatmap - Quality factors Quantification and Isotope Incorporation"}
+  
+#plot: range [0,1]  =  [white, dodgerblue4], NA =  white
+  p_3 = ggplot(data_plot, aes(Met_pathway, Par)) +
+    geom_tile(aes(fill = Val), color = 'white') +
+    coord_flip() +
+    scale_fill_gradient2(low = 'ghostwhite', high = muted('dodgerblue4'), 
+                        limits = c(0,1), na.value = 'white',
+                        guide = guide_legend(title = "Score"))
+
+  base_size = 7
+  p_3 = p_3 + theme_bw(base_size = base_size) + labs(x = '',y = '') +
+    scale_y_discrete(expand = c(0,0)) +
+    scale_x_discrete(expand = c(0,0)) +
+    theme(axis.text.x = element_text(size = base_size, angle = 330, 
+                                     hjust = 0, colour = 'grey50')) +
+    theme(axis.text.y = element_text(size = base_size, colour = 'grey50')) +
+    ggtitle('Absolute quantification and \nstable isotope incorporation') +
+    theme(panel.grid.major  =   element_line(colour  =  "ghostwhite", size  =  0.2),
+    panel.grid.minor  =   element_line(colour  =  "ghostwhite", size  =  0.5)) +
+    facet_grid(~ Batch_Id) +
+    #theme(legend.position = "bottom") +
+    theme(text = element_text(size = 8))
+  
+```
+
+
+```{r heatmaps, echo = FALSE ,fig.height = 8, fig.width = 6, fig.cap = "MTXQCvX - Heatmap overview" }
+
+  a <- p_gc
+  b <- p_3
+  
+  grid.newpage()
+  pushViewport(viewport(layout = grid.layout(10, 6)))
+  vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+  
+  print(a, vp = vplayout(1:2, 4:6))  # key is to define vplayout
+  print(b, vp = vplayout(3:10, 1:6))
+
+```
+
+*End of the document*
+

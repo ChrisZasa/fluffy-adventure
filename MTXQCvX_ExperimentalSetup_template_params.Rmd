@@ -1,0 +1,175 @@
+---
+title: 'MTXQCvX - Experimental Setup - Macrophage differentiation - Glc labeling'
+author:
+- affiliation: Mueller lab, MDC Berlin 
+  name: Sabrina Geisenberger 
+- affiliation: Kempa Lab, MDC
+  name: Christin Zasada
+params:
+  subf:
+    input: text
+    label: "Run MTXQC based on data in subfolder:"
+    value: ""
+  inputformat:
+    input: select
+    label: "Select the input format of your data"
+    choices: [maui, metmax]
+    value: metmax
+  ann:
+    input: text
+    label: "File name of your project annoation (.csv)"
+    value: annotation.csv
+  sample_ext:
+    input: text
+    label: "File name of your project sample extracts (.csv)"
+    value: Sample_extracts.csv
+  data:
+    input: select
+    choices: [qMTX, pSIRM, pSIRM time series]
+    label: 'Type of performed experiment:'
+    value: qMTX
+  substr: 
+    input: select
+    multiple: FALSE
+    choices: [glc, gln, pyr, other, multiple, none]
+    label: 'Specify applied stable isotopes:'
+    value: no
+  instd:
+    input: checkbox
+    label: "Internal extraction standard applied:"
+    value: TRUE
+  samples:
+    input: select
+    multiple: FALSE
+    choices: [cell extracts, blood/serum, tissue, supernatant, mixed]
+    label: 'Specify the origin of samples:'
+    value: mixed
+  addQ:
+    input: select
+    label: "Include additional calibration curves for the absolute quantification."
+    choices: ["yes", "no"]
+    value: no
+  quant:
+    input: select
+    choices: [Quant1_v3, Quant1_v4, Quant1_ind]
+    label: "Quantification standards: "
+    value: Quant1_v3
+  quant_vol:
+    input: text
+    label: "Quant: Volume (ul) of dried polar phase after extraction"
+    value: 500
+  backups:
+    input: text
+    label: "Technical replicates per sample:"
+    value: 1
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    keep_tex: yes
+    latex_engine: pdflatex
+    template: config_files/textemplate.tex
+    toc: yes
+fontfamily: mathpazo
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+fontsize: 10pt
+geometry: margin = 1in
+keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
+biblio-style: apsr
+thanks: Kempa Lab - MTXQCvX ExperimentalSetup, provided by Ch. Zasada, processed '`r format(Sys.Date(), "%B %d, %Y")`'
+abstract: This document provides an evaluation of GC-MS derived metabolomics data.
+  It asseses GC-MS performance, the absolute quantification and the
+  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+---
+
+```{r setup_output, echo=FALSE}
+#set path for figure export and size
+#MOD!
+
+set_input <-  "input/"
+set_output <-  "output/"
+
+#directory definition and figure_name definition
+if (params$subf == "") {
+  path_setup = ""
+} else {
+  path_setup <-  paste0(params$subf, "/")
+}
+
+knitr::opts_chunk$set(echo = FALSE,  #TRUE - show R code
+                      warning = FALSE, #show warnings
+                      message = TRUE,
+                      eval = TRUE) #show messages
+```
+ 
+
+# Project-related experimental setup
+<!-- 
+Add here the the extraction protocol of your samples. Use this provided space 
+to have a complete report starting from sample extraction, derivatisation and 
+quantification or isotope incorporation 
+                                                                          -->
+                                                                          
+                                                                          
+Sample extraction and derivatisation have been performed by Jenny. 
+According to her notes documented in OneNote section:
+Collaborations/Landthaler/ODC1 experiment
+
+# Sample extraction
+
+Extraction protocol:
+      
+      1. 5 ml MeOH (50%)
+      2. 1 ml Chlorform
+      3. dried 3.5 ml of polar phase
+      4. 2nd extraction: yes (in two replicates)
+
+Polar phases have been split into two equal fractions of *280* ul (added 600 ul 20% MeOH).
+
+# Quant-Mix extraction protocol
+
+Quant-Mixes batch: *Quant_v4*
+
+       1. 1 ml MCW for extraction
+       2. 0.5 ml H2O for phase separation
+       3. dried 0.5 ml of polar phase (twice)
+  
+
+# Derivatisation protocol
+
+Applied the following protocol for derivatisation protocol
+
+      1. MEOX/Pyridine (final conc: 40 mg MEOX/ 1 ml Pyridine)
+        - Volume: 20 ul
+        - Incubation time: 90 min
+        - Temp: 30 C
+      2. Alkan-mix/MSTFA (10 ul mix/1 ml MSTFA)
+        - Volume: 80 ul
+        - Incubation time: 60 min
+        - Temp: 37 C
+        
+Prepared aliquots: three-times 28 ul, big glas vials, crimped.
+
+# GC-MS measurement
+
+Samples have been measured using the following methods
+
+      1. Injector-method: hamilton_1ul
+      2. GC-method: 5/7/12 1.2ml/min
+      3. Split: 1:5
+      4. MS-method: Lizzy-like
+      
+
+
+# General MTXQC parameter
+```{r par_table}
+
+source("R/MTXQC_fcn.R")
+source("R/MTXQC_config.R")
+
+par_table <-  export_MTXQCsetup(params, path_setup, file_spec, "ExpSetup")
+
+table_print <-  as.data.frame(par_table)
+knitr::kable(table_print, format = "pandoc", caption = "Experimental parameters of the project.")
+
+```

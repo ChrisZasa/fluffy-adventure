@@ -1,0 +1,67 @@
+---
+title: "Guide MTXQC project in R-studio"
+author: "Christin"
+date: "27 October 2017"
+output: html_document
+params:
+  spath:
+    input: text
+    label: "Create MTXQCproject subfolder:"
+    value: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# How to use this guide
+
+Welcome to the MTXQC universe.
+
+This document provides you a quick guidance through the first steps of the MTXQC universe and how to setup your R-studio project. 
+
+Detailed information to distinct steps are provided in addition in the MTXQC-OneNotebook [^1]. You need to setup a microsoft office account or need to remember your credentials. Keywords that could be used to find the correct information in the OneNotebook are marked in bold throughout this document.
+
+Read this document step by step and follow the instructions. In case of confusion just ask one of your colleagues for hands-on help or send me an e-mail.
+
+If you read the html-version of this document linked in the OneNotebook or extracted from the the MTXQCvX archive you are going to be asked to open the corresponding README.RMD file in R-Studio after you have setup your R project and to process it once. But step by step - further information are following. 
+
+[^1]: Shared link: https://1drv.ms/u/s!Aq56mkSqDxZjgTu-LvPV2xFTWWGu
+
+# Getting started
+## Setup a R-project
+
+Open R-studio and go to File -> New Project -> New directory.
+Define a new project folder, e.g., 2017_CancerProfiles.
+
+Open this folder in your windows explorer or in mac finder. You should find a little blue icon representing your R-project inside this folder.
+
+## Copy files and folders
+
+If you haven't openend the explorer or finder navigate to your R-project folder now and
+copy the following folder from the MTXQC_template archive:
+  
+  1. R
+  2. config_files
+  
+Copy also all Rmd-files you find in the MTXQC archive, e.g., MTXQC part 1-4 and README.RMD (that you are currently reading).
+
+
+## Knit this document
+
+Knit this document, recommendation htmp, in order to create all other required folder and subfolder in your R-project directory.
+
+To do so click on the small ball of yarn few icons left from the icon disk that saves your files.
+
+If you read the html version of this readme.rmd document please open R-studio, ipen your R-project and the README.RMD file. Knit the file and open the created hmtl output in a browser and keep reading at that place (much more comfy).
+
+```{r create_directory, message=FALSE}
+
+source("R/MTXQC_init.R")
+initiate_MTXQC(subfolder = params$spath)
+
+```
+
+
+
+

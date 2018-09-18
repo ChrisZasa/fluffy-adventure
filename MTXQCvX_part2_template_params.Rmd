@@ -1,0 +1,678 @@
+---
+#title: "MTXQCvX Part2: Post-Processing -
+#thanks: "Template MTXQCvX part 2 written by Christin Zasada, Kempa Lab"
+author:
+- affiliation: AG Kempa / Deubzer
+  name: Birte Arlt
+biblio-style: apsr
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    keep_tex: yes
+    toc: yes
+    latex_engine: pdflatex
+    template: config_files/textemplate.tex
+  html_document: default
+fontsize: 9pt
+geometry: margin=1in
+keywords: MTXQCvX, post-processing, data visualisation
+date: "`r format(Sys.time(), '%V %d, %Y')`"
+fontfamily: mathpazo
+params:
+  subs:
+    input: text
+    label: "Run on MTXQC-subfolder:"
+    value: ""
+  analysis:
+    input: select
+    choices:
+      - stringent
+      - less_stringent
+    value: stringent
+  ca_fac:
+    label: "Internal Standard"
+    input: select
+    choices: 
+      - QC
+      - all
+      - none
+    value: QC
+  quant:
+    input: select
+    label: 'Perform post-processing based on:'
+    choices:
+    - Area
+    - absconc
+    - corr_absconc
+    - sumA_Conc
+    - ca_Conc
+    - ca_sumA_Conc
+    - sumA_Conc_pmio
+    - ca_Conc_pmio
+    - ca_sumA_Conc_pmio
+    - Conc_pmio
+    - Conc_microM
+    value: ca_Conc_pmio
+  par1:
+    input: text
+    label: "Statistics: Define parameter 1 based on your annotation (plot: x-axis)."
+    value: "Time"
+  par2:
+    input: text
+    label: "Statistics: Define parameter 2 based on your annotation (plot: subgrouping)."
+    value: "CL"
+  par3:
+    input: text
+    label: "Statistics: Define parameter 3 based on your annotation (plot: sub-figure panel)."
+    value: ""
+  par4:
+    input: text
+    label: "Statistics: Define parameter 4 based on your annotation."
+    value: ""
+  updated:
+    input: select
+    choices: [none, PeakArea, Incorporation, both]
+    label: "Incorporation manualy validated data:"
+    value: none
+abstract: This document provides the post-processing of the output files derived from MTXQC part1; including the determination of statistics and visualisation.
+  Here you have to work the most to adapt this file to your own needs and the
+  experimental setup. Take care of decent plots. Most probably you're going to
+  reuse this script for other projects. Feel free to extend this script as much
+  as you want and to modify or define colors. Check carefully if you defined the 
+  grouping for the statistics parts correctly!
+---
+
+---
+title: `r paste("MTXQCvX part2 Postprocessing - PROJECTNAME ", params$analysis)`
+---
+# Summary
+
+*Summarise the most important findings or questions.*
+
+
+
+#Project initiation
+
+```{r init_doc, echo=FALSE, warning=FALSE}
+
+#Source R-Files
+source('R/MTXQC_fcn.R')
+source('R/MTXQC_config.R')
+source('R/MTXQC_colors.R')
+source("R/MTXQC_pck.R")
+
+set_input = "input/"
+set_output = "output/"
+## subfolder for postprocessing
+
+#Defining pp-folder
+  if (params$analysis == "less_stringent") {
+      set_pp = paste0(Sys.Date(), "_PostProcessing_lessStringent_", params$quant, "/")
+    } else {
+      set_pp = paste0(Sys.Date(), "_PostProcessing_stringent_", params$quant, "/")
+    }
+
+
+#directory definition and figure_name definition
+if (params$subs == "") {
+  path_setup = ""
+  set_fig = paste0(path_setup, set_output, set_pp,'figure/MTXQCp2_', params$quant, '-')
+} else {
+  path_setup = paste0(params$subs, "/")
+  set_fig = paste0(path_setup, set_output, set_pp,'figure/MTXQCp2_', params$tissue, '_', params$quant, '-')
+}
+
+#create folder: PostProcessing if not present
+ifelse(!dir.exists(file.path(paste0(path_setup, set_output, set_pp))), 
+			 dir.create(paste0(path_setup, set_output, set_pp)), 
+			 sprintf('The folder exists already! Be careful overwriting files and figures!'))
+
+dir.create(paste0(path_setup, set_output, set_pp, "figure/"))
+
+#set path for figure export and size
+knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 6, 
+                      fig.path = set_fig, 
+                      echo = FALSE,  #show R code
+                      warning = FALSE, #show warnings
+                      message = TRUE) #show messages
+                      
+```                    
+
+## Report parameter
+```{r status_messages, tidy=TRUE, echo=FALSE}
+
+  message("R markdwon report processed the last time: ", Sys.time())  
+  message("The following analysis is performed based on that kind of data: ", params$quant)
+  message("Analysis has been performed in the following manner: ", params$analysis)
+  
+  message("Internal standard values have been limited to: ", params$ca_fac)
+  
+  message("Generated output-files saved in: ", paste0(path_setup, set_output, set_pp))
+  
+  par = as.data.frame(do.call(rbind, params))
+  colnames(par) = c("Value")
+  knitr::kable(par, caption = "Parametrized report values", format = "markdown")
+  
+```
+
+# Post-processing of the data
+## Project settings
+
+```{r init_project, tidy=TRUE}
+
+
+  setup_params = read.csv(paste0(path_setup,"MTXQC_params.csv"), TRUE)
+
+  # kind of experiment
+  idx_exp = as.character(setup_params[which(setup_params$Parameter == "data"), "Value"])
+  
+  #### Annotation file
+    ann_idx = as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
+    ann  =  read.csv(paste0(path_setup, set_input, ann_idx), T)
+   
+  #### Parameter for stats
+  parvec = check_parvector(params)
+  
+
+  ### (1) Calculated absolute quantities derived from MTXQCp1
+    if ((params$updated == "PeakArea") & (params$updated == "both")) {
+      data_q = read.csv(paste0(path_setup, set_output,'quant/CalculationFileData_manVal.csv'), T) 
+    } else {
+      data_q = read.csv(paste0(path_setup, set_output,'quant/CalculationFileData.csv'), T) 
+    }
+
+  
+  ### (2) Isotope incorporation (export derived from MAUI or Metmax)
+  
+    if (idx_exp != "qMTX") {  
+      if (params$updated == "Incorporation") {
+        data_inc = read.csv(paste0(path_setup, set_input, "inc/Incorporation_manVal.csv"), T)
+      } else {
+        data_inc = read.csv(paste0(path_setup, set_input, "inc/DataMatrix.csv"), T)
+      }
+    } else {
+      message("Current experiment does not include application of stable isotopes.")
+    }
+
+  ### Defined experimental conditions according to annotation file
+  knitr::kable(summary(ann),caption = "Statistical summary of annotation file.", format = "markdown")
+
+```
+
+
+
+```{r color_definitions}
+#MOD!
+
+
+
+#CBF02ts
+color_cl = c("#b2182b","#f7f7f7", "#bababa", "#ffffff")
+names(color_cl) = c("SHEP_MetOH", "SHEP_Tet", "SHEPtet21N_MetOH", "SHEPtet21N_Tet")
+
+
+
+# 
+# color_subs = c("#3690c0","#02818a","#016c59")
+# names(color_subs) =  c("13C15N-Q", "1,5-Cit", "Acetate")
+# 
+# data_q$Substrate = factor(data_q$Substrate, levels = c("13C15N-Q", "1,5-Cit", "Acetate"))
+# ann$Substrate = factor(ann$Substrate, levels = c("13C15N-Q", "1,5-Cit", "Acetate"))
+
+
+```
+
+
+# Absolute quantification of metabolites
+  
+Calculate the mean and standard deviation for each metabolite over the sampled time range. 
+Following factors should be considered, depending the actual experiment:
+
+  1. Only data points of files matching cinnamic acid quality control
+  2. Include only files with a minumum number of 75% of the maximum number of annotated metabolites in the complete batch
+  3. Only data points within the linear range of the calibration curve
+  
+**Please, consider to modify the filtering criteria regarding your own needs**
+
+
+```{r Quant_parameter, tidy = TRUE, include = TRUE, echo = TRUE}
+
+  #1 - QC cinnamic acid == within
+  if (params$ca_fac == "QC") {
+    data_q_sel = subset(data_q, data_q$CA_eval == 'within')
+  } else {
+    data_q_sel = data_q
+  }
+     
+  
+  #3 - Linear range calibration curve
+  if (params$analysis == "stringent") {
+    data_q_sel = subset(data_q_sel, data_q_sel$islinear == 'linear')
+  } else {
+    data_q_sel = subset(data_q_sel, data_q_sel$calc_curve == "yes_cal")
+  }
+  
+  write.csv(data_q_sel, paste0(path_setup, set_output, set_pp, 
+                               "Input_values_quantification.csv"), row.names = FALSE)
+  
+```  
+
+
+
+# Statistics and data visualization
+## Perform the required statistics
+
+```{r statistics, tidy=TRUE, echo=TRUE}
+#MOD!
+    comb_par = c("Lettercode", parvec[-1])
+    print(comb_par)
+    message("Statistics have been performed based on this grouping variables!")
+
+    quant_ss_plain = ddply(data_q_sel, comb_par, summarise, 
+                 n_Q = length(get(params$quant)),
+                 mean_Q = mean(get(params$quant), na.rm = T),
+                 sd_Q = sd(get(params$quant), na.rm = T)) 
+
+  #Export 1
+  #plain statistics
+   write.csv(quant_ss_plain, paste0(path_setup, set_output, set_pp, "Statistics_absQ_", 
+                             params$quant, "_plain.csv"), row.names = F)
+   
+```
+
+
+## Advanced plotting of quantities for a complex set of conditions
+
+```{r quantities_plot, echo=FALSE, fig.width=7, fig.height=6, fig.cap="Absolute quantities."}
+#MOD!  
+
+ggplot(quant_ss_plain, aes(CL, mean_Q, fill = CL)) +
+         geom_bar(stat = "identity", size = 0.3, color = "black", 
+                  position = position_dodge2(0.9)) +
+         geom_errorbar(aes(ymin = mean_Q - sd_Q, ymax = mean_Q + sd_Q), 
+                    width = 0.25, position = position_dodge2(0.9)) +
+         theme_bw() +
+         facet_wrap(~ Lettercode, scales = "free_y") +
+         ggtitle(paste0("Quantitative comparison:")) +
+        xlab("Labeling time in (min)") +
+        ylab("Norm. Quantity in (pmol/1e+6 cells)") +
+         scale_fill_manual(values = color_cl) +
+         theme(axis.text.y = element_text(size = 6),
+          axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+          #axis.text.x = element_blank(),
+          strip.background = element_rect(fill = "white"),
+          strip.text.x = element_text(size = 6),
+          strip.text.y = element_text(size = 6)) +
+          theme(legend.position = "bottom")
+``` 
+
+
+
+# Metabolic profile
+
+**Please adjust the grouping of your conditions and choose the correct statistics!**
+
+```{r qq_profile, results="asis", echo=FALSE, tidy=TRUE}
+#MOD! CHOOSE THE CORRECT STATISTICS
+
+  #add annotation
+  quant_profile = merge(quant_ss_plain, pathway_profile)
+
+  #rename mean and sd value for stationary pool
+  colnames(quant_profile)[grepl("mean_Q", colnames(quant_profile))] <- "Q_ss"
+  colnames(quant_profile)[grepl("sd_Q", colnames(quant_profile))] <- "sd_Q_ss"
+
+  #Function call - Metabolic profile
+  metabolic_profile = metabolic_profile(quant_profile, parvec[2], "Q_ss")
+  
+```  
+  
+
+```{r metabolic_profile, echo=FALSE, fig.cap="Metabolic profiles according to defined groupings.", fig.width= 8, fig.height=6}
+#MOD!
+  
+  # for (var in unique(metabolic_profile[parvec[1]])) {
+  #  print(
+  #    metabolic_profile %>% 
+  #     group_by(Condition == var) %>% 
+  #     ggplot(aes(frac_pw, frac_global, ymax = 1.3 * frac_global, size = m_Deriv, 
+  #                  label = Letter_Derivate)) +
+  #       geom_point(aes(fill = Pathway), shape = 21) +
+  #       scale_size_area(max_size = 20) +
+  #       theme_bw() +
+  #   		geom_text_repel(aes(frac_pw, frac_global, label = Letter_Derivate),
+  #   			size = 3,  
+  #   			box.padding = unit(0.8, 'lines'), 
+  #   			point.padding = unit(1.6, 'lines'), 
+  #   			segment.color = '#cccccc',
+  #       	segment.size = 0.5,  
+  #   			force = 2,
+  #   			max.iter = 3e3) +
+  #       scale_x_log10() +
+  #       #facet_grid(Condition ~ Days) +
+  #       #facet_grid(as.formula(paste(parvec[1], "~", parvec[2]))) +
+  #       facet_grid(as.formula(paste("~", parvec[2]))) +
+  #       scale_fill_manual(values = color_pathway) +
+  #       ggtitle(paste0('Metabolic profile of: ', var, " (", params$quant, ", ", params$analysis, ")")) +
+  #       #ggtitle(paste('Metabolic profile based on (ls): ', params$quant)) +
+  #       xlab('Fraction of metabolite within its pathway in (%)') +
+  #       ylab('Fraction of metabolite per total metabolite content in (%)') +
+  #       theme(strip.background = element_rect(fill = "white"))
+  #  )
+  # }
+```  
+
+# Relative quantification (no calibration curve)
+
+```{r rel_quantities}
+data_nocalc = subset(data_q, data_q$calc_curve == "no_cal")
+un_nocalc = length(unique(data_nocalc$Lettercode))
+
+message("Number of metabolites with peak area for relative analysis only: ", 
+          un_nocalc)
+```
+
+
+```{r stats_relareas, tidy = TRUE}
+data_nocalc_stat = ddply(data_nocalc, comb_par, summarise,
+                         n_area = length(PeakArea),
+                         mean_area = mean(PeakArea),
+                         sd_area = sd(PeakArea))
+
+#Export
+write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp, 
+                                   "Statistics_peakArea_NoCal.csv"), row.names = F)
+```
+
+```{r relative_areas, echo=FALSE, fig.height=5, fig.width=7, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
+#MOD!
+
+#for (var in unique(data_nocalc_stat$InhConc)) {
+ # print( 
+   # ggplot(subset(data_nocalc_stat, data_nocalc_stat$InhConc == var), 
+    #            aes(Cellline, mean_area, fill = InhConc)) +
+   ggplot(data_nocalc_stat, aes(CL, mean_area, fill = CL)) +
+    geom_bar(stat = "identity", size = 0.3, color = "black", 
+                  position = position_dodge2(0.9)) +
+    geom_errorbar(aes(ymin = mean_area - sd_area, ymax = mean_area + sd_area), 
+                  width = 0.25, position = position_dodge(0.9)) +
+    facet_wrap( ~ Lettercode, scales = "free_y") +
+    #ggtitle(paste0("Relative analysis of metabolites, peak area only, InhConc: ", var, " mM")) +
+    ggtitle("Relative analysis of metabolites, peak area only") +
+    theme(axis.text.y = element_text(size = 6)) +
+    ylab("Peak Area in (-)") +
+    xlab("Days") +
+    theme_bw() +
+    scale_fill_manual(values = color_cl) +
+    theme(axis.text.y = element_text(size = 6),
+          axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+          strip.background = element_rect(fill = "white"),
+          strip.text.x = element_text(size = 6),
+          strip.text.y = element_text(size = 6))
+ # )
+#}
+```
+
+
+```{r check_qtx}
+  inc_idx = as.character(setup_params[which(setup_params$Parameter == "data"), "Value"])
+
+  if (inc_idx == "qMTX") {
+    message("The herein project does not include stable isotope labeling data!")
+    knitr::knit_exit()
+  } 
+
+```
+
+
+# Stable isotope incorporation
+## Statistics and bar plots
+
+```{r inc_statistics}
+
+  if ("QuantMasses" %in% colnames(data_inc)) {
+        data_inc_m = melt_call(data_inc, c('Metabolite', 'QuantMasses'), c('File','Inc'))
+  } else {
+        data_inc_m = melt_call(data_inc, c('Metabolite'), c('File', 'Inc'))
+  }
+
+  #merge with conversion and annotation file
+  data_inc_se = merge(data_inc_m, con_se)
+  data_inc_se = merge(data_inc_se, ann)
+  
+  #add Batch-Id
+  data_inc_se$Batch_Id = sapply(strsplit(as.character(data_inc_se$File), "\\_"), "[[", 1)
+  
+  #replace negative values with NA
+  data_inc_se = within(data_inc_se, Inc[Inc < 0.000] <- 0)
+
+```
+
+```{r stats_tr_inc, tidy=TRUE}
+#MOD!
+
+  comb_li = c("Lettercode", "Mass_Pos", parvec)
+  message("Parameter used for statistics: 13C-Incorporation")  
+  print(comb_li)
+
+  #statistics technical repl
+  li_stat  =  ddply(data_inc_se, comb_li, summarise,
+                    		N_inc  =  length(Inc),
+                    		mean_li  =  mean(Inc, na.rm = T),
+                    		sd_li  =  sd(Inc, na.rm = T))
+
+  #Export
+  write.csv(li_stat, paste0(path_setup, set_output, set_pp ,'13C_statistics.csv'), 
+            row.names = F)
+```
+
+
+```{r inc_plot, fig.width=7, fig.height=6, fig.cap="13C-Incorporation."}
+#MOD!
+
+#exclude high masses for citric acid
+li_stat = subset(li_stat, li_stat$Mass_Pos <= 300)
+
+
+for (var in unique(li_stat$Substrate)) {
+  print(
+    ggplot(subset(li_stat, li_stat$Substrate == var), 
+                  aes(factor(Time), mean_li, fill = Substrate)) +
+       # ggplot(li_stat, aes(factor(Time), mean_li, fill = Substrate)) +
+        #geom_point(shape = 21)+
+      	#geom_line()+
+        geom_bar(stat = "identity", size = 0.3, color = "black", 
+                  position = position_dodge(0.9)) +
+        geom_errorbar(aes(ymin = mean_li - sd_li, ymax = mean_li + sd_li),
+                  width = 0.25, position = position_dodge(0.9)) +
+        facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y") +
+        theme_bw() +
+        ggtitle(paste0("13C-Incorporation: ", var )) +
+        scale_fill_manual(values = color_subs) +
+        ylab("13C-Incorporation in (-)") +
+        theme(axis.text.y = element_text(size = 6),
+              axis.text.x = element_text(size = 5),
+              strip.background = element_rect(fill = "white"),
+              strip.text.x = element_text(size = 6),
+              strip.text.y = element_text(size = 6),
+              legend.position = 'bottom')
+      )
+}
+
+```
+
+
+```{r li_lettercode, fig.width=6, fig.height=4, fig.cap="Lettercode-wise plotting of isotope incorporation."}
+
+li_stat = subset(li_stat, li_stat$CL != "")
+
+
+for (var in unique(li_stat$Lettercode)) {
+  print(
+
+      ggplot(subset(li_stat, li_stat$Lettercode == var), 
+                  aes(factor(Time), mean_li, fill = CL)) +
+        #geom_point(shape = 21)+
+      	#geom_line()+
+        geom_bar(stat = "identity", size = 0.3, color = "black", 
+                  position = position_dodge(0.9)) +
+        geom_errorbar(aes(ymin = mean_li - sd_li, ymax = mean_li + sd_li),
+                  width = 0.25, position = position_dodge(0.9)) +
+        facet_wrap(CL ~ Mass_Pos, scales = "free_y") +
+        theme_bw() +
+        scale_color_manual(values = color_cl) +
+        ggtitle(paste0("13C-Incorporation: ", var )) +
+        scale_fill_manual(values = color_cl) +
+        ylab("13C-Incorporation in (-)") +
+        theme(axis.text.y = element_text(size = 6),
+              axis.text.x = element_text(size = 5),
+              strip.background = element_rect(fill = "white"),
+              strip.text.x = element_text(size = 6),
+              strip.text.y = element_text(size = 6),
+              legend.position = 'bottom')
+      )
+}
+
+```
+
+
+<!-- # 13C-Quantities
+
+*Previously:* This part mulitplies the levels derived from the metabolic profile with the incorporation rate of a defined time point and visualizes the 13C-labeled quantities of each intermediate.
+
+*Corrected:* Absolute quantities are applied in substrate-specific manner due to the variation of pool sizes.
+
+```{r LabQ_calc}
+  
+  # #Absolute quantities / Substrate
+  # stats_q = read.csv(paste0(path_setup, set_output, set_pp, 
+  #                     "Statistics_absQ_ca_Conc_pmio_plain.csv"), TRUE)
+  # 
+  # #13C-Inc statistics
+  # stats_inc = read.csv(paste0(path_setup, set_output, set_pp, 
+  #                     "13C_statistics.csv"), T)
+  # 
+  # #annotations
+  # data_combined = merge(stats_q, stats_inc)
+  # 
+  # #calculate 13C-quantities
+  # data_combined$mean_labQ = data_combined$mean_li * data_combined$mean_Q
+  # data_combined$sd_labQ = data_combined$sd_li * data_combined$mean_Q
+  # 
+  # #Export
+  # write.csv(data_combined, paste0(path_setup, set_output, set_pp, 
+  #           "Statistics_13ClabQuantities_", params$quant, ".csv"), row.names = F)
+```
+
+```{r LabQ, echo=FALSE, fig.cap="Labeled quantities", fig.width=5}
+#MOD!
+# 
+# data_combined$Substrate = factor(data_combined$Substrate, levels = c("Acetate", "13C15N-Q", "1,5-Cit"))
+# 
+# for (var in unique(data_combined$Substrate)) {
+#   print(
+#     ggplot(subset(data_combined, data_combined$Substrate == var), 
+#                     aes(Cellline, mean_labQ, fill = Substrate)) +
+#      geom_bar(stat = "identity", size = 0.3, color = "black", 
+#                   position = position_dodge(0.9)) +
+#      geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
+#                   width = 0.25, position = position_dodge(0.9)) +
+#         facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y", ncol = 2) +
+#         theme_bw() +
+#       	scale_fill_manual(values = color_cl) +
+#         ggtitle(paste0("13C-labeled quantities: ", var)) + 
+#         ylab("13C-Quantities in (pmol/mg tissue)") + 
+#        	theme(axis.text.y = element_text(size = 6),
+#               axis.text.x = element_text(size = 5),
+#               #axis.text.x = element_blank(),
+#               strip.background = element_rect(fill = "white"),
+#               strip.text.x = element_text(size = 6),
+#               strip.text.y = element_text(size = 6),
+#               legend.position = "bottom")
+#   )
+# }
+
+```
+
+<!-- ## Labeling rates -->
+```{r LabQ_min}
+
+# #calculate incorporation / min
+# data_new = data_inc_se
+# data_new$Inc_rate = data_new$Inc / data_new$Time
+# 
+# #add the metabolic profile
+# metprofile = stats_q
+# 
+# #merge
+# data_met_incrate = merge(data_new, metprofile)
+# 
+# #calculate 13ClabQ/time
+# data_met_incrate$labQ_rate = data_met_incrate$Inc_rate * data_met_incrate$mean_Q
+# 
+# #statistics
+# labq_par = c("Lettercode" ,"Mass_Pos", parvec)
+# 
+# data_labQrate = ddply(data_met_incrate, labq_par, summarise,
+#                       n_labQrate = length(labQ_rate), 
+#                       mean_labQrate = mean(labQ_rate), 
+#                       sd_labQrate = sd(labQ_rate))
+# 
+# write.csv(data_labQrate, paste0(path_setup, set_output, set_pp, "Statistics_LabQrates", params$quant, ".csv"), row.names = F)
+
+```
+
+```{r LabQrates_sbstr, fig.width= 7, fig.height= 6, fig.cap="13C-labeled quantities in pmol/min."}
+# 
+# data_labQrate$Substrate = factor(data_labQrate$Substrate, levels = c("Acetate", "13C15N-Q", "1,5-Cit"))
+# 
+# for (var in unique(data_labQrate$Substrate)) {
+#   print(
+#     ggplot(subset(data_labQrate, data_labQrate$Substrate == var), 
+#                     aes(Cellline, mean_labQrate, fill = Substrate)) +
+#      geom_bar(stat = "identity", size = 0.3, color = "black", 
+#                   position = position_dodge(0.9)) +
+#      geom_errorbar(aes(ymin = mean_labQrate - sd_labQrate, ymax = mean_labQrate + sd_labQrate),
+#                   width = 0.25, position = position_dodge(0.9)) +
+#         facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y") +
+#         theme_bw() +
+#       	scale_fill_manual(values = color_cl) +
+#         ggtitle(paste0("13C-labelling rates: ", var)) + 
+#         ylab("13C-Quantities in (pmol/(min x mg tissue))") + 
+#        	theme(axis.text.y = element_text(size = 6),
+#               axis.text.x = element_text(size = 5),
+#               #axis.text.x = element_blank(),
+#               strip.background = element_rect(fill = "white"),
+#               strip.text.x = element_text(size = 6),
+#               strip.text.y = element_text(size = 6),
+#               legend.position = "bottom")
+#   )
+# }
+```
+
+```{r LabQrates_met, fig.width= 5, fig.height= 4, fig.cap="13C-labeled quantities in pmol/min."}
+# 
+# for (var in unique(data_labQrate$Lettercode)) {
+#   print(
+#     ggplot(subset(data_labQrate, data_labQrate$Lettercode == var), 
+#                     aes(Cellline, mean_labQrate, fill = Substrate)) +
+#      geom_bar(stat = "identity", size = 0.3, color = "black", 
+#                   position = position_dodge(0.9)) +
+#      geom_errorbar(aes(ymin = mean_labQrate - sd_labQrate, ymax = mean_labQrate + sd_labQrate),
+#                   width = 0.25, position = position_dodge(0.9)) +
+#         facet_grid(Mass_Pos ~ Substrate, scales = "free_y") +
+#         theme_bw() +
+#       	scale_fill_manual(values = color_cl) +
+#         ggtitle(paste0("13C-labelling rates: ", var)) + 
+#         ylab("13C-Quantities in (pmol/(min x mg tissue))") + 
+#        	theme(#axis.text.y = element_text(size = 6),
+#               #axis.text.x = element_text(size = 5),
+#               #axis.text.x = element_blank(),
+#               strip.background = element_rect(fill = "white"),
+#               #strip.text.x = element_text(size = 6),
+#               #strip.text.y = element_text(size = 6),
+#               legend.position = "bottom")
+#   )
+# }
+```

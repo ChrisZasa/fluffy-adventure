@@ -1,0 +1,14 @@
+Name	Masses		Retention Index	Position	Anzahl C-Atome	Structure
+reference	isotopic massrange start	isotopic massrange end				
+#c10	73	73	1087		2	
+#c12	73	73	1093	unclear	2	
+#c15	73	73	1512			
+#c17	73	73	1512			
+#c19	73	73	1431		3	
+#c22	73	73	1810		5	
+#c28	73	73	1810			
+#c32	73	73	1748			
+#c36	73	73	1868	"4,5,6"	3	
+"#Cinnamic acid, trans- (1TMS)"	73	73	1872			
+#Serine (2TMS)	73	73	2700			
+#Serine (3TMS)	73	73	2705			
