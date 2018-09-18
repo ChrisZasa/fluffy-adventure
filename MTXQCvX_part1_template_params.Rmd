@@ -509,7 +509,7 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```{r import_quant1_std}
 
   #import Quant1-values for Quant-Mix
-  quant1 = read.csv("config_files/quant1_values.csv", header = T)
+  quant1 = read.csv("config_mtx/quant1_values.csv", header = T)
   check_emptyfile(quant1, TRUE, "quant1_values.csv")
 
   #which quant-version has been used

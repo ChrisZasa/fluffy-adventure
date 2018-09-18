@@ -273,7 +273,7 @@ if (params$mqt == TRUE) {
     #1 - import Quant1-values for Quant-Mix
     q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
     
-    quant1 = read.csv("config_files/quant1_values.csv", header = T)
+    quant1 = read.csv("config_mtx/quant1_values.csv", header = T)
     quant_table = quant1[,c("Letter_Derivate", q_idx)]
     quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
    
