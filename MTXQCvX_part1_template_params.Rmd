@@ -563,11 +563,12 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```
 
 ## Generation of ManualQuantTable: Additional calibration curves (Qadd)
-```{r add_calcurves, fig.height = 5, fig.width = 5, fig.cap = "Additional Calibration curves"}
+```{r add_calcurves, fig.height = 3, fig.width =5, fig.cap = "Additional Calibration curves"}
 
 #identify param settings
 addq_idx = as.character(setup_params[which(setup_params$Parameter == "addQ"), "Value"])
 nick_addq = as.character(file_spec[which(file_spec$AssociatedFile == "addQ"), "Filename"])
+addq_integration = as.character(setup_params[which(setup_params$Parameter == "addQ_Int"), "Value"])
   
 if (addq_idx == 'yes') { 
   
@@ -603,6 +604,8 @@ if (addq_idx == 'yes') {
     message("Additional calibration curves have been defined for all included batches!")
   } else {
     message("Additional calibration curves have been not defined for all batches included in the annotation file!")
+    missing_ids = c(addq_batchid[!(addq_batchid %in% batch_id_def)], batch_id_def[!(batch_id_def %in%   addq_batchid)])
+    message("Batch Id containing additional calibration curves: ", addq_batchid) 
   }
 
   #peak areas from quantmassareamatrix
@@ -616,37 +619,27 @@ if (addq_idx == 'yes') {
   #select intermediates based on additional quant1_1 values
   addq_sel <-  subset(df_peakareas, Lettercode %in% unique(quant_1add$Lettercode))
 
+  #duplicate values for each batch -> addq_integration == "yes"
+  if (addq_integration == "yes") {
+    
+    #remove column Bacth Id
+    idx_batchid = which(grepl("Batch_Id", colnames(addq_sel)))
+    trial = addq_sel[,-idx_batchid]
+    
+    #create new dataframe containing Batch Ids and Origin Qadd
+    merge_sets = data.frame(Batch_Id = batch_id_def, Origin = rep("Qadd", length(batch_id_def)))
+    trial_c = merge(trial, merge_sets)
+    
+    addq_sel = trial_c
+    message("Additional calibration curves have been duplicated and added for all batches!")
+  
+  }
+  
   ###### Create ManualQuantTable with additional measurements
   mqt_addq <-  create_manualquanttable(addq_sel, quant_1add, met_translation = con_se,
                 plot = TRUE)
   
-  if (addq_integration == TRUE) {
-    #Duplication of mqt_addq for all batch ids
-      req_sets = nb_id - length(addq_batchid)
-      
-      missing_ids = c(addq_batchid[!(addq_batchid %in% batch_id_def)], batch_id_def[!(batch_id_def %in%   addq_batchid)])
-      
  
-    trial = mqt_addq[rep(seq_len(nrow(mqt_addq)), req_sets),] 
-    
-    idx_batchid = which(grepl("Batch_Id", colnames(mqt_addq)))
-    trial = trial[,-idx_batchid]
-    
-    #create Batch_Id vector that contains all Ids with n length of mqt_addq
-    
-    net = character()
-    
-    for (i in length(batch_id_def)) {
-      new_batchid = rep(batch_id_def[1], nrow(mqt_addq))
-      net = c(net, new_batchid)
-    }
-
-    unique(setready$Batch_Id)
-  }
-  
-
-  
-  
 }
 
 ```
@@ -792,7 +785,8 @@ if (nrow(qc_calcurve != 0)) {
    if (addq_idx == "yes") {
     
     print(
-      ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | lin_cal$Origin == NA), 
+      #ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | lin_cal$Origin == NA), 
+      ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | is.na(lin_cal$Origin)), 
         aes(x = Lettercode, y = prop, fill = islinear)) +
       geom_bar(stat = 'identity', size = .25, color = 'black') +
       scale_fill_manual(values = color_linearity, 

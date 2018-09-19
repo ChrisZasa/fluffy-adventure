@@ -49,6 +49,11 @@ params:
     label: "Include additional calibration curves for the absolute quantification."
     choices: ["yes", "no"]
     value: no
+  addQ_Int:
+    input: select
+    label: "Integrate additional calibration curves into all batches of the project"
+    choices: ["yes", "no"]
+    value: yes
   quant:
     input: select
     choices: [Quant1_v3, Quant1_v4, Quant1_ind]
