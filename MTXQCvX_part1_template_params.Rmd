@@ -7,7 +7,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test_sabrina"
+    value: "test"
   data:
     input: select
     choices: [maui, metmax]
@@ -504,7 +504,7 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 
 
 # MTXQC - Quantitative metabolomics
-## Generation of ManualQuantTable: Quant-Standards
+## Generation of ManualQuantTable: Quant-Standards (Qstd)
 
 ```{r import_quant1_std}
 
@@ -562,12 +562,13 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 	}
 ```
 
-## Generation of ManualQuantTable: Additional calibration curves
-```{r add_calcurves, fig.height = 5, fig.width = 5, fig.cap = "Additional Calibration curves"}
+## Generation of ManualQuantTable: Additional calibration curves (Qadd)
+```{r add_calcurves, fig.height = 3, fig.width =5, fig.cap = "Additional Calibration curves"}
 
 #identify param settings
 addq_idx = as.character(setup_params[which(setup_params$Parameter == "addQ"), "Value"])
 nick_addq = as.character(file_spec[which(file_spec$AssociatedFile == "addQ"), "Filename"])
+addq_integration = as.character(setup_params[which(setup_params$Parameter == "addQ_Int"), "Value"])
   
 if (addq_idx == 'yes') { 
   
@@ -581,24 +582,31 @@ if (addq_idx == 'yes') {
     message(paste0("Colon separator detected in: ", nick_addq))
   }
   
-   # quant_1add = data.frame(Lettercode = c("Cit", "Ita", "PGA6"),
-   #                         Letter_Derivate = c("Cit", "Ita", "PGA6"),
-   #                        Quant_ext = c(83260, 83260, 14620))
-   # 
-   # write.csv(quant_1add, paste0(path_setup, set_input, "add_quant/", nick_addq), row.names = FALSE)
-  
   #adding annotations
   con_se_quant = subset(con_se, con_se$Q_sel == "x")
   
+  #Extract quant1-values for additional substances defined input/add_quant/ nick_addq
   quant_1add <-  merge(quant_1add, con_se_quant[,c("Lettercode", "Metabolite")])
   quant_1add <-  merge(quant_1add, pathway_profile[,c("Lettercode", "Letter_Derivate")])
     
   knitr::kable(quant_1add, format = 'pandoc', 
       caption = 'Quant1:1-values for additional calibration curves.')
 
+  #Check annotation file for "addQ"
   #identifer phrase in annotation file for additional Quant-samples
   addq_phrase <-  "addQ"
   ann_addq <-  extract_addQ_annotation(annotation_file = ann, phrase = "addQ")
+  
+  addq_batchid = create_batchid(ann_addq)
+  
+  #check if addq contains all batch ids from the complete setup
+  if (length(addq_batchid) == nb_id) {
+    message("Additional calibration curves have been defined for all included batches!")
+  } else {
+    message("Additional calibration curves have been not defined for all batches included in the annotation file!")
+    missing_ids = c(addq_batchid[!(addq_batchid %in% batch_id_def)], batch_id_def[!(batch_id_def %in%   addq_batchid)])
+    message("Batch Id containing additional calibration curves: ", addq_batchid) 
+  }
 
   #peak areas from quantmassareamatrix
   df_peakareas <-  file_shaping(data_area, shape = 'wide', 
@@ -611,10 +619,27 @@ if (addq_idx == 'yes') {
   #select intermediates based on additional quant1_1 values
   addq_sel <-  subset(df_peakareas, Lettercode %in% unique(quant_1add$Lettercode))
 
+  #duplicate values for each batch -> addq_integration == "yes"
+  if (addq_integration == "yes") {
+    
+    #remove column Bacth Id
+    idx_batchid = which(grepl("Batch_Id", colnames(addq_sel)))
+    trial = addq_sel[,-idx_batchid]
+    
+    #create new dataframe containing Batch Ids and Origin Qadd
+    merge_sets = data.frame(Batch_Id = batch_id_def, Origin = rep("Qadd", length(batch_id_def)))
+    trial_c = merge(trial, merge_sets)
+    
+    addq_sel = trial_c
+    message("Additional calibration curves have been duplicated and added for all batches!")
+  
+  }
+  
   ###### Create ManualQuantTable with additional measurements
   mqt_addq <-  create_manualquanttable(addq_sel, quant_1add, met_translation = con_se,
                 plot = TRUE)
-
+  
+ 
 }
 
 ```
@@ -760,7 +785,8 @@ if (nrow(qc_calcurve != 0)) {
    if (addq_idx == "yes") {
     
     print(
-      ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | lin_cal$Origin == NA), 
+      #ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | lin_cal$Origin == NA), 
+      ggplot(subset(lin_cal, lin_cal$Origin == "Qstd" | is.na(lin_cal$Origin)), 
         aes(x = Lettercode, y = prop, fill = islinear)) +
       geom_bar(stat = 'identity', size = .25, color = 'black') +
       scale_fill_manual(values = color_linearity, 

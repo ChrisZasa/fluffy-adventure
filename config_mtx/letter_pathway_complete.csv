@@ -1,5 +1,4 @@
 Letter_Derivate,Lettercode,Pathway,Pathway.1,Met_pathway,Subs_class,Met_class
-Ita,Ita,other,,6-other_Itaconic,organic acid,organic acid_Itaconic
 2HG,2HG,glut,3-glut,3-glut_Glut_2hydroxy,organic acid,organic acid_Glut_2hydroxy
 2OG,2OG,tca,2-tca,2-tca_Glut_2oxo,organic acid,organic acid_Glut_2oxo
 3PGA,3PGA,glyc,1-glyc,1-glyc_PGA,phosphate,phosphate_PGA
@@ -57,7 +56,7 @@ Hypotaurine,Hypotaurine,other,6-other,6-other_Hypotaurine,other,other_Hypotaurin
 Inosine,Inosine,nucleoside,9-nucleoside,9-nucleoside_Inosine,nucleoside,nucleoside_Inosine
 Iso,Iso_1TMS,aa,5-aa,5-aa_Iso_1TMS,aa,aa_Iso_1TMS
 Iso,Iso_2TMS,aa,5-aa,5-aa_Iso_2TMS,aa,aa_Iso_2TMS
-Ita,Ita,other,6-other,6-other_Ita,organic acid,organic acid_Glyc
+Ita,Ita,other,,6-other_Itaconic,organic acid,organic acid_Itaconic
 Lac,Lac,glyc,1-glyc,1-glyc_Lac,organic acid,organic acid_Lac
 Leu,Leu_2TMS,aa,5-aa,5-aa_Leu_2TMS,aa,aa_Leu_2TMS
 Leu,Leu_1TMS,aa,5-aa,5-aa_Leu_1TMS,aa,aa_Leu_1TMS

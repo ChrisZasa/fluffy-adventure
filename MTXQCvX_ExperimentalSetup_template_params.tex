@@ -46,12 +46,12 @@
 \usepackage{graphicx}
 
 
-\title{MTXQCvX - Experimental Setup - Macrophage differentiation - Glc labeling \thanks{Kempa Lab - MTXQCvX ExperimentalSetup, provided by Ch. Zasada, processed
-`September 18, 2018'}  }
+\title{MTXQCvX - Experimental Setup - PROJECT TITLE \thanks{Kempa Lab - MTXQCvX ExperimentalSetup, provided by Ch. Zasada, processed
+`September 19, 2018'}  }
 
 
 
-\author{\Large Sabrina Geisenberger\vspace{0.05in} \newline\normalsize\emph{Mueller lab, MDC Berlin}   \and \Large Christin Zasada\vspace{0.05in} \newline\normalsize\emph{Kempa Lab, MDC}  }
+\author{\Large NAME ONE\vspace{0.05in} \newline\normalsize\emph{LAB, LAB LOCATION}   \and \Large NAME TWO\vspace{0.05in} \newline\normalsize\emph{LAB, LAB LOCATION}  }
 
 
 \date{}
@@ -91,9 +91,9 @@
 \makeatother
 \hypersetup{breaklinks=true,
             bookmarks=true,
-            pdfauthor={Sabrina Geisenberger (Mueller lab, MDC Berlin) and Christin Zasada (Kempa Lab, MDC)},
+            pdfauthor={NAME ONE (LAB, LAB LOCATION) and NAME TWO (LAB, LAB LOCATION)},
              pdfkeywords = {MTXQCvX, GC-MS, metabolomics, data analysis and processing},  
-            pdftitle={MTXQCvX - Experimental Setup - Macrophage differentiation - Glc labeling},
+            pdftitle={MTXQCvX - Experimental Setup - PROJECT TITLE},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
@@ -119,7 +119,7 @@
 
 {
    \vskip 13.5pt\relax \normalsize\fontsize{11}{12} 
-\textbf{\authorfont Sabrina Geisenberger} \hskip 15pt \emph{\small Mueller lab, MDC Berlin}   \par \textbf{\authorfont Christin Zasada} \hskip 15pt \emph{\small Kempa Lab, MDC}   
+\textbf{\authorfont NAME ONE} \hskip 15pt \emph{\small LAB, LAB LOCATION}   \par \textbf{\authorfont NAME TWO} \hskip 15pt \emph{\small LAB, LAB LOCATION}   
 
 }
 
@@ -227,7 +227,7 @@ Samples have been measured using the following methods
 \end{verbatim}
 
 \begin{verbatim}
-## Proceed with MTXQC_metmax in order to generate required input files.
+## Maui_params.csv generated.
 \end{verbatim}
 
 \begin{longtable}[]{@{}ll@{}}
@@ -240,16 +240,17 @@ Value & Parameter\tabularnewline
 Value & Parameter\tabularnewline
 \midrule
 \endhead
-metmax & inputformat\tabularnewline
-annotation.csv & ann\tabularnewline
-Sample\_extracts.csv & sample\_ext\tabularnewline
+test & subf\tabularnewline
+maui & inputformat\tabularnewline
 TRUE & instd\tabularnewline
 Quant1\_v3 & quant\tabularnewline
+Annotation\_allbatches.csv & ann\tabularnewline
 glc & substr\tabularnewline
 pSIRM & data\tabularnewline
 500 & quant\_vol\tabularnewline
-no & addQ\tabularnewline
-test\_ser & subf\tabularnewline
+sample\_extract\_allbatches.csv & sample\_ext\tabularnewline
+yes & addQ\_Int\tabularnewline
+yes & addQ\tabularnewline
 1 & backups\tabularnewline
 cell extracts & samples\tabularnewline
 \bottomrule

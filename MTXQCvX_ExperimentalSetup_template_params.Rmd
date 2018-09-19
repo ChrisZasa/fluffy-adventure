@@ -1,20 +1,20 @@
 ---
-title: 'MTXQCvX - Experimental Setup - Macrophage differentiation - Glc labeling'
+title: 'MTXQCvX - Experimental Setup - PROJECT TITLE'
 author:
-- affiliation: Mueller lab, MDC Berlin 
-  name: Sabrina Geisenberger 
-- affiliation: Kempa Lab, MDC
-  name: Christin Zasada
+- affiliation: LAB, LAB LOCATION 
+  name: NAME ONE 
+- affiliation: LAB, LAB LOCATION
+  name: NAME TWO
 params:
   subf:
     input: text
     label: "Run MTXQC based on data in subfolder:"
-    value: ""
+    value: "test"
   inputformat:
     input: select
     label: "Select the input format of your data"
     choices: [maui, metmax]
-    value: metmax
+    value: maui
   ann:
     input: text
     label: "File name of your project annoation (.csv)"
@@ -49,6 +49,11 @@ params:
     label: "Include additional calibration curves for the absolute quantification."
     choices: ["yes", "no"]
     value: no
+  addQ_Int:
+    input: select
+    label: "Integrate additional calibration curves into all batches of the project"
+    choices: ["yes", "no"]
+    value: yes
   quant:
     input: select
     choices: [Quant1_v3, Quant1_v4, Quant1_ind]
