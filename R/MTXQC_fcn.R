@@ -227,7 +227,7 @@ normalisation_calc = function(d_quant, ca = 1){
   #                                 (2) pmol/ug  OR pmol/ul, 
   #                                 (3) pmol/mg OR pmol/mg
   
-  d_quant$sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$sumA_Conc * 1000 / d_quant$vol, 
+  d_quant$sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$sumA_Conc * 1000 / d_quant$Extract_vol, 
                                   ifelse(d_quant$Unit == "mg",
                                          d_quant$sumA_Conc * 1 / d_quant$Extract_vol, 
                                          d_quant$sumA_Conc * 1e+6 / d_quant$Extract_vol))
