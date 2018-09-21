@@ -56,8 +56,12 @@ Parameter of the report:
     
 ### MTXQC part3 - Manual Validation
 
-Parameter of the report: 
-
+Parameter of the report:
+* subfolder:
+* output folder:
+* transform: [none, PeakArea, Incorporation]
+* integration: [none, PeakArea, Incorporation]
+* input formatL: [metmax, maui]
 
 
 ### MTXQC part4 - Metmax integration

@@ -46,7 +46,7 @@ params:
   inputformat:
     input: select
     label: "Choose the kind of input format of your data."
-    choices: [maui, metmax, spreadsheet]
+    choices: [maui, metmax]
     value: maui
 abstract: This document provides the manual validation of GC-MS derived data (MTXQC part 3). Thats has been processed through MTXQCvX part1 before. It transforms your MAUI exports into easily modifiable tables (PrepData) and re-transform them after manual validation into csv-files usable for another round of MTXQC (EvalQuant; EvalInc). In case of Metmax input files run MTXQC part 4 first.
 ---
