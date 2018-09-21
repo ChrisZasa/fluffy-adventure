@@ -75,7 +75,7 @@ if (params$spath == "") {
   path_setup = ""
   set_fig = paste0(path_setup, 'figure/MTXQCp4-')
 } else {
-  path_setup = paste0(params$spath)
+  path_setup = paste0(params$spath, "/")
   set_fig = paste0(path_setup, 'figure/MTXQCp4-')
 }
 
@@ -328,8 +328,10 @@ if (params$mqt == TRUE) {
 	
 		#track empty dataframe after merge due to incorrect "Metabolite_manual"
 		if (nrow(table_conv) == 0) {
-		  message("There seems to be an issue with metabolite names in conversion_metabolite.csv")
+		  message("There seems to be an issue with metabolite names in conversion_metabolite.csv.")
 		  message("Please check column Metabolite_manual!")
+		  message("Processing has been terminated! The input/inc-files have not been created!")
+		  message("Re-run module after correction of metabolite manual!")
 		  knitr::knit_exit()
 		} else {
 		  
