@@ -56,7 +56,7 @@ Hypotaurine,Hypotaurine,other,6-other,6-other_Hypotaurine,other,other_Hypotaurin
 Inosine,Inosine,nucleoside,9-nucleoside,9-nucleoside_Inosine,nucleoside,nucleoside_Inosine
 Iso,Iso_1TMS,aa,5-aa,5-aa_Iso_1TMS,aa,aa_Iso_1TMS
 Iso,Iso_2TMS,aa,5-aa,5-aa_Iso_2TMS,aa,aa_Iso_2TMS
-Ita,Ita,other,,6-other_Itaconic,organic acid,organic acid_Itaconic
+Ita,Ita,other,6-other,6-other_Itaconic,organic acid,organic acid_Itaconic
 Lac,Lac,glyc,1-glyc,1-glyc_Lac,organic acid,organic acid_Lac
 Leu,Leu_2TMS,aa,5-aa,5-aa_Leu_2TMS,aa,aa_Leu_2TMS
 Leu,Leu_1TMS,aa,5-aa,5-aa_Leu_1TMS,aa,aa_Leu_1TMS
