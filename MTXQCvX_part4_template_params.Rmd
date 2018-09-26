@@ -24,7 +24,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test_ser/"
+    value: "test"
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
@@ -32,11 +32,11 @@ params:
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: "mz73_ser.csv"
+    value: ""
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: "mids_metmax.csv"
+    value: ""
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
@@ -48,7 +48,7 @@ params:
   peakchroma:
     input: checkbox
     label: "Generate input table for sum of area normalisation (use: peakarea matrix)"
-    value: TRUE
+    value: FALSE
   mqt:
     input: checkbox
     label: "Generate ManualQuantTable and samples peakarea table."
@@ -56,7 +56,7 @@ params:
   inc:
     input: checkbox
     label: "Calculate stable isotope incorporation and generate corresponding files."
-    value: TRUE
+    value: FALSE
 thanks: Template MTXQCvX part 4 written by Christin Zasada, Kempa Lab
 abstract: MTXQC part 4 provides the transformation of Metmax-derived files for the usage as input files for MTXQC part 1. This report provides three modes - (1) basic - creates tables required for GC-MS performance, (2) Quant - Generation of ManualQuantTable (3) Inc - Calculation of 13C-isotope incorporation.
 ---
@@ -248,7 +248,7 @@ source('R/MTXQC_config.R')
 ### Derivatisation efficiency
 ```{r mz73_extraction}
 
-  if (params$mz != "none") {
+  if (params$mz != "") {
     #workaround 1 - Metmax with mass 73
     table_mz_new = file_shaping(table_mz, shape = "wide", ann, FALSE)
   
