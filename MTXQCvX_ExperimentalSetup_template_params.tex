@@ -1,0 +1,260 @@
+\documentclass[10pt,]{article}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in]{geometry}
+\newcommand*{\authorfont}{\fontfamily{phv}\selectfont}
+\usepackage[]{mathpazo}
+
+
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+
+\renewenvironment{abstract}
+ {{%
+    \setlength{\leftmargin}{0mm}
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \relax}
+ {\endlist}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+%  \null
+%  \vskip 2em%
+%  \begin{center}%
+  \let \footnote \thanks
+    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
+}
+%\fi
+\makeatother
+
+
+
+
+\setcounter{secnumdepth}{0}
+
+\usepackage{longtable,booktabs}
+
+
+\usepackage{graphicx}
+
+
+\title{MTXQCvX - Experimental Setup - PROJECT TITLE \thanks{Kempa Lab - MTXQCvX ExperimentalSetup, provided by Ch. Zasada, processed
+`September 26, 2018'}  }
+
+
+
+\author{\Large NAME ONE\vspace{0.05in} \newline\normalsize\emph{LAB, LAB LOCATION}   \and \Large NAME TWO\vspace{0.05in} \newline\normalsize\emph{LAB, LAB LOCATION}  }
+
+
+\date{}
+
+\usepackage{titlesec}
+
+\titleformat*{\section}{\normalsize\bfseries}
+\titleformat*{\subsection}{\normalsize\itshape}
+\titleformat*{\subsubsection}{\normalsize\itshape}
+\titleformat*{\paragraph}{\normalsize\itshape}
+\titleformat*{\subparagraph}{\normalsize\itshape}
+
+
+\usepackage{natbib}
+\bibliographystyle{apsr}
+
+
+
+\newtheorem{hypothesis}{Hypothesis}
+\usepackage{setspace}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+}
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={NAME ONE (LAB, LAB LOCATION) and NAME TWO (LAB, LAB LOCATION)},
+             pdfkeywords = {MTXQCvX, GC-MS, metabolomics, data analysis and processing},  
+            pdftitle={MTXQCvX - Experimental Setup - PROJECT TITLE},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+
+
+\begin{document}
+	
+% \pagenumbering{arabic}% resets `page` counter to 1 
+%
+% \maketitle
+
+{% \usefont{T1}{pnc}{m}{n}
+\setlength{\parindent}{0pt}
+\thispagestyle{plain}
+{\fontsize{18}{20}\selectfont\raggedright 
+\maketitle  % title \par  
+
+}
+
+{
+   \vskip 13.5pt\relax \normalsize\fontsize{11}{12} 
+\textbf{\authorfont NAME ONE} \hskip 15pt \emph{\small LAB, LAB LOCATION}   \par \textbf{\authorfont NAME TWO} \hskip 15pt \emph{\small LAB, LAB LOCATION}   
+
+}
+
+}
+
+
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+
+
+
+
+\begin{abstract}
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+    \vskip 8.5pt % \small 
+
+\noindent This document provides an evaluation of GC-MS derived metabolomics data.
+It asseses GC-MS performance, the absolute quantification and the stable
+isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+
+
+\vskip 8.5pt \noindent \emph{Keywords}: MTXQCvX, GC-MS, metabolomics, data analysis and processing \par
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+
+
+\end{abstract}
+
+
+\vskip 6.5pt
+
+\noindent  \section{Project-related experimental
+setup}\label{project-related-experimental-setup}
+
+Sample extraction and derivatisation have been performed by Jenny.
+According to her notes documented in OneNote section:
+Collaborations/Landthaler/ODC1 experiment
+
+\section{Sample extraction}\label{sample-extraction}
+
+Extraction protocol:
+
+\begin{verbatim}
+  1. 5 ml MeOH (50%)
+  2. 1 ml Chlorform
+  3. dried 3.5 ml of polar phase
+  4. 2nd extraction: yes (in two replicates)
+\end{verbatim}
+
+Polar phases have been split into two equal fractions of \emph{280} ul
+(added 600 ul 20\% MeOH).
+
+\section{Quant-Mix extraction
+protocol}\label{quant-mix-extraction-protocol}
+
+Quant-Mixes batch: \emph{Quant\_v4}
+
+\begin{verbatim}
+   1. 1 ml MCW for extraction
+   2. 0.5 ml H2O for phase separation
+   3. dried 0.5 ml of polar phase (twice)
+\end{verbatim}
+
+\section{Derivatisation protocol}\label{derivatisation-protocol}
+
+Applied the following protocol for derivatisation protocol
+
+\begin{verbatim}
+  1. MEOX/Pyridine (final conc: 40 mg MEOX/ 1 ml Pyridine)
+    - Volume: 20 ul
+    - Incubation time: 90 min
+    - Temp: 30 C
+  2. Alkan-mix/MSTFA (10 ul mix/1 ml MSTFA)
+    - Volume: 80 ul
+    - Incubation time: 60 min
+    - Temp: 37 C
+    
+\end{verbatim}
+
+Prepared aliquots: three-times 28 ul, big glas vials, crimped.
+
+\section{GC-MS measurement}\label{gc-ms-measurement}
+
+Samples have been measured using the following methods
+
+\begin{verbatim}
+  1. Injector-method: hamilton_1ul
+  2. GC-method: 5/7/12 1.2ml/min
+  3. Split: 1:5
+  4. MS-method: Lizzy-like
+  
+\end{verbatim}
+
+\section{General MTXQC parameter}\label{general-mtxqc-parameter}
+
+\begin{verbatim}
+## MTXQC_params.csv written.
+\end{verbatim}
+
+\begin{verbatim}
+## Proceed with MTXQC_metmax in order to generate required input files.
+\end{verbatim}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Experimental parameters of the project.}\tabularnewline
+\toprule
+Value & Parameter\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Value & Parameter\tabularnewline
+\midrule
+\endhead
+test & subf\tabularnewline
+annotation.csv & ann\tabularnewline
+Sample\_extracts.csv & sample\_ext\tabularnewline
+qMTX & data\tabularnewline
+TRUE & instd\tabularnewline
+Quant1\_v3 & quant\tabularnewline
+none & substr\tabularnewline
+500 & quant\_vol\tabularnewline
+no & addQ\_Int\tabularnewline
+no & addQ\tabularnewline
+1 & backups\tabularnewline
+metmax & inputformat\tabularnewline
+cell extracts & samples\tabularnewline
+\bottomrule
+\end{longtable}
+\newpage
+\singlespacing 
+\end{document}

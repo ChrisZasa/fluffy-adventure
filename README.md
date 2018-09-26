@@ -1,5 +1,10 @@
 # fluffy-adventure
-Automated version of MTXQCvX2
+
+Automated version of MTXQCvX2 - fluffy adventure
+
+## Version and updates
+
+2018-09-25 - publication of repository
 
 ## Description
 This current state includes fully automated Rmd-reports for Metabolomics projects.

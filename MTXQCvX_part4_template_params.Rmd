@@ -23,7 +23,7 @@ fontfamily: mathpazo
 params:
   spath:
     input: text
-    label: "Run on MTXQC-subfolder (incl. final /):"
+    label: "Run on MTXQC-subfolder:"
     value: "test_ser/"
   matrix:
     input: text
@@ -139,7 +139,7 @@ source('R/MTXQC_config.R')
     check_emptyfile(data_extracts, TRUE, temp_file)
     
   #### Different input files for the modes
-  if (params$matrix != "none") {
+  if (params$matrix != "") {
     table_area = read.csv(paste0(path_setup, set_input, "metmax/", params$matrix), T)
 
   #!modified code    
@@ -152,18 +152,18 @@ source('R/MTXQC_config.R')
     message("No peakarea matrix defined!")
   } 
   
-  if (params$mz != "none") {
+  if (params$mz != "") {
     table_mz = read.csv(paste0(path_setup, set_input, "metmax/", params$mz), T)
     message("Matrix with m/z 73-values imported")
   } else {
     message("No file for m/z 73 values defined!")
   }
     
-  if (params$mid != "none") {
+  if (params$mid != "") {
    table_mid = read.csv(paste0(path_setup, set_input, "metmax/", params$mid), T)
    message("MIDs-matrix imported!")
   } else {
-    message("No file with MIDs defined!")
+    message("No file for mass isotopomer distributions (MIDs) defined!")
   } 
   
   #Check if InternalStandard defined in conversion_list
