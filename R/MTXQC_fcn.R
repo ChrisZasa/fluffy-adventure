@@ -643,7 +643,7 @@ extract_addQ_annotation = function(annotation_file, phrase) {
   if (test_row == TRUE) {
     sel_q_ann = sel_q_ann[,c('File','Type','Setup')]
   } else {
-    selq_ann = sel_q_ann[,c('File','Type')]
+    sel_q_ann = sel_q_ann[,c('File','Type')]
   }
   
   #Extract Dilution information
@@ -914,17 +914,30 @@ extract_standards_export <- function(dataframe, met_names = con_se, ann_file = a
   
   #Extract measures peak areas
   df_peak = merge(dataframe, met_names[,c("Metabolite_manual", "Metabolite","Lettercode")])
-  df_standard = dplyr::filter(df_peak, Lettercode == internalstd)
+  df_standard = subset(df_peak, Lettercode %in% internalstd)
   
-  #Selected columns for wide format
-  df_sel = df_standard[,c("Metabolite", "QuantMasses" ,"File", "PeakArea")]
-  df_wide = reshape2::dcast(df_sel, Metabolite + QuantMasses ~ File, value.var = "PeakArea")
+    if (is.null(dim(df_standard))) {
+      
+      message("Defined internal standard: ", internalstd)
+      message("Peak areas detected for internal standard in peak area matrix.")
+      
+      #Selected columns for wide format
+      df_sel = df_standard[,c("Metabolite", "QuantMasses" ,"File", "PeakArea")]
+      df_wide = reshape2::dcast(df_sel, Metabolite + QuantMasses ~ File, value.var = "PeakArea")
+      
+      #Export
+      write.csv(df_wide, paste0(path_setup, set_input, "gc/InternalStandard.csv"), row.names = FALSE)
+      
+      message("Data file for internal standard generated and exported to: input/gc/InternalStandard.csv")
+      
+    } else {
+      
+      message("Defined internal standard: ", internalstd)
+      message("WARNING: No peak areas detected for internal standard in peak area matrix.")
+      
+    }
+
   
-  #Export
-  write.csv(df_wide, paste0(path_setup, set_input, "gc/InternalStandard.csv"), row.names = FALSE)
-  
-  message("Data file for internal standard generated and exported to: input/gc/InternalStandard.csv")
-  message("Defined internal standard: ", internalstd)
 }
 
 extraction_alkanes_export <- function(dataframe, phrase = "Alk", met_names = con_se, annotation_file = ann) {

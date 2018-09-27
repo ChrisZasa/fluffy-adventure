@@ -163,14 +163,24 @@ imp_error = 0
    
     if (ca_idx == TRUE) {
      if (mm_ca_idx == TRUE) {
+       
         nick_ca <-  as.character(file_spec[which(file_spec$AssociatedFile == "cin_acid"), "Filename"])
-        cinacid  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_ca), T, sep = ',')
-        check_emptyfile(cinacid, FALSE, "InternalStandard.csv")
+        ca_path <- paste0(path_setup, set_input,'gc/', nick_ca)
+          
+          if (file.exists(ca_path) == TRUE) {
+            cinacid  <-   read.csv(ca_path, T, sep = ',')
+            check_emptyfile(cinacid, FALSE, "InternalStandard.csv")
+          } else {
+            message("WARNING: No file detected: InternalStandard.csv")
+          }
       } else {
+        
         imp_error = imp_error + 1
         message("No internal standard for data input format defined!")
+      
       }
     } else {
+      
       message("No internal standard in Experimental Setup defined!")
     }
 
