@@ -170,8 +170,11 @@ imp_error = 0
           if (file.exists(ca_path) == TRUE) {
             cinacid  <-   read.csv(ca_path, T, sep = ',')
             check_emptyfile(cinacid, FALSE, "InternalStandard.csv")
+            is_exit = 0
+            
           } else {
             message("WARNING: No file detected: InternalStandard.csv")
+            is_exit = 1
           }
       } else {
         
@@ -296,8 +299,6 @@ imp_error = 0
 
 ```{r check_input_files}
 
-
-
 imp_error <- MTXQCp1_checkinput(data_extracts, ann)
 
 if (imp_error != 0) {
@@ -347,17 +348,19 @@ if (alkane_idx == TRUE) {
 ### Internal standard cinnamic acid
 
 ```{r cinacid_qc, tidy = TRUE}
-
-if (mm_ca_idx == TRUE) {
-  if (ca_idx == TRUE) { 
+if (is_exit != 1) {
+  
+  if (mm_ca_idx == TRUE) {
+    if (ca_idx == TRUE) { 
     
-    cin_data = file_shaping(cinacid, shape = "wide", ann, type = "sample", mode = "area")[,c("File", "PeakArea", "Batch_Id")]
-    cinacid_qc = gc_metric_calc(cin_data, title = "cinacid")
+      cin_data = file_shaping(cinacid, shape = "wide", ann, type = "sample", mode = "area")[,c("File", "PeakArea", "Batch_Id")]
+      cinacid_qc = gc_metric_calc(cin_data, title = "cinacid")
     
-  } else {
-   Batch_Id = unique(alk_qc$Batch_Id)
-   cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
-   write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_cinacid.csv'), row.names = F)
+    } else {
+    Batch_Id = unique(alk_qc$Batch_Id)
+    cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
+    write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_cinacid.csv'), row.names = F)
+    }
   }
 }
 
@@ -365,7 +368,7 @@ if (mm_ca_idx == TRUE) {
 
 ```{r cinacid_plot, echo = F, fig.cap = "Quantification of internal extraction standard", fig.width = 5, fig.height = 5}
   
-  if (ca_idx == TRUE && mm_ca_idx == TRUE) {
+  if (ca_idx == TRUE && mm_ca_idx == TRUE && is_exit == 0) {
 
     cinacid_statistics = read.csv(paste0(path_setup, 'output/gc/Cinacid_stats.csv'), TRUE)
     
@@ -388,9 +391,13 @@ if (mm_ca_idx == TRUE) {
     		ylab('PeakArea in (-)') +
         theme(legend.position = "bottom")
     } else {
-      message("Empty data frame!")
-    }   
-  }
+      message("Empty data frame OR no peak areas for internal standard detectable!")
+    } 
+    
+  } else {
+      message("Empty data frame OR no peak areas for internal standard detectable!")
+  } 
+ 
 ```
 
 ### Sum of Area of annotated metabolites per file
@@ -888,14 +895,39 @@ if (nrow(qc_calcurve != 0)) {
 
 ```{r quant_calc_start, tidy = TRUE}
   #1- normalization SumOfArea
-  area_stat = read.csv(paste0(path_setup, 'output/gc/SumArea_stats.csv'), TRUE)
-  data_quant_calc = merge(data_quantified, area_stat[,c("File", "sum_area", "area_fac")])
+
+    #check if SumArea_stats.csv has been created
+    if (file.exists(paste0(path_setup, 'output/gc/SumArea_stats.csv')) == TRUE) {
+      
+      area_stat = read.csv(paste0(path_setup, 'output/gc/SumArea_stats.csv'), TRUE)
+      data_quant_calc = merge(data_quantified, area_stat[,c("File", "sum_area", "area_fac")])
+      message("Sum of area normalisation factor merged successfully.")
+      
+    } else {
+      
+      data_quant_calc = data_quantified
+      data_quant_calc$sum_area = rep(1, length(data_quant_calc$File))
+      data_quant_calc$area_fac = rep(1, length(data_quant_calc$File))
+      
+      message("WARNING: Sum of area normalisation factor set to value = 1 due to missing input.")
+    }
+
   
   #2 - normalization cinnamic acid
   if (ca_idx == TRUE) {
-    data_quant_calc = merge(data_quant_calc, cinacid_statistics[,c("File", "CA_fac", "CA_eval")])
+    if (is_exit == 0) {
+      data_quant_calc = merge(data_quant_calc, cinacid_statistics[,c("File", "CA_fac", "CA_eval")])
+      message("Internal standard factors merged successfully.")
+    } else {
+      data_quant_calc = data_quant_calc
+      data_quant_calc$CA_fac = rep(1, length(data_quant_calc$File))
+      data_quant_calc$Ca_eval = rep(1, length(data_quant_calc$File))
+      
+      message("WARNING: Internal Standard normalisation factor set to value = 1 due to missing input.")
+    }
   } else {
     message("No internal standard defined!")
+ 
   }
   
   #3 - merge with ann and subsequently with cellcount
@@ -957,7 +989,7 @@ if (nrow(qc_calcurve != 0)) {
   
 ```{r corr_ca_sof, warning=FALSE}
   #Correlation between normalisation strategies
-  if (ca_idx == TRUE) {
+  if (ca_idx == TRUE && is_exit == 0) {
   
     Corr_CA_SA_m = unique(data_quant_norm[,c("Lettercode", "Batch_Id")])
     Corr_CA_SA_m$adj_r_squared_corr = rep(NA, length(Corr_CA_SA_m$Lettercode))
@@ -975,11 +1007,13 @@ if (nrow(qc_calcurve != 0)) {
     
     Corr_CA_SA_m = unique(data_wo_na_r[,c('Lettercode', 'Batch_Id' ,'adj_r_squared_corr')])
   
+    message("Computed correlation between internal standard and sum of area normalisation.")
   } else {
     
     Corr_CA_SA_m = unique(data_quant_norm[,c("Lettercode", "Batch_Id")])
     Corr_CA_SA_m$adj_r_squared_corr = rep(NA, length(Corr_CA_SA_m$Lettercode))
     
+    message("WARNING: Correlation between internal standard and sum of area normalisation not possible!")
   }
   
   HM_data = merge(HM_data, Corr_CA_SA_m)
