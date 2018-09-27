@@ -4,7 +4,16 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
-2018-09-25 - publication of repository
+### 2018-09-27 - major update
+
+comment: Please download a new copy of the MTXQCvX2
+
+I updated the following:
+  * MTXQCpart4: tracing empty data frames for internal standard
+  * MTXQCpart1: tracing missing statistics: internal standard or sum of area
+  * conversion_metabolite.csv: replaced value 99 in Mass_Pos
+
+### 2018-09-25 - publication of repository
 
 ## Description
 This current state includes fully automated Rmd-reports for Metabolomics projects.
