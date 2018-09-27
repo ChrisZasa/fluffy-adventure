@@ -1,5 +1,17 @@
-.Rproj.user
+# History files
 .Rhistory
+
+# Session Data files
 .RData
+
+# Rstudio files
+.Rproj.user
 .Ruserdata
+
+# Output files
+*.pdf
+*.tex
+*.html
+
+# Test scenario files
 test/
