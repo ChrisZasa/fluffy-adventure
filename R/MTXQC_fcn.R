@@ -916,7 +916,7 @@ extract_standards_export <- function(dataframe, met_names = con_se, ann_file = a
   df_peak = merge(dataframe, met_names[,c("Metabolite_manual", "Metabolite","Lettercode")])
   df_standard = subset(df_peak, Lettercode %in% internalstd)
   
-    if (is.null(dim(df_standard))) {
+    if (!is.null(dim(df_standard))) {
       
       message("Defined internal standard: ", internalstd)
       message("Peak areas detected for internal standard in peak area matrix.")
