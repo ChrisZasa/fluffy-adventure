@@ -56,19 +56,19 @@ params:
     value: ca_Conc_pmio
   par1:
     input: text
-    label: "Statistics: Define parameter 1 based on your annotation (plot: x-axis)."
+    label: "Statistics: Define parameter 1 (plot: x-axis)."
     value: "Time"
   par2:
     input: text
-    label: "Statistics: Define parameter 2 based on your annotation (plot: subgrouping)."
+    label: "Statistics: Define parameter 2 (plot: subgrouping, fill-value)."
     value: "State"
   par3:
     input: text
-    label: "Statistics: Define parameter 3 based on your annotation (plot: sub-figure panel)."
+    label: "Statistics: Define parameter 3 (plot: sub-figure panel)."
     value: ""
   par4:
     input: text
-    label: "Statistics: Define parameter 4 based on your annotation."
+    label: "Statistics: Define parameter 4."
     value: ""
   updated:
     input: select
@@ -131,7 +131,7 @@ ifelse(!dir.exists(file.path(paste0(path_setup, set_output, set_pp))),
 dir.create(paste0(path_setup, set_output, set_pp, "figure/"))
 
 #set path for figure export and size
-knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 6, 
+knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8, 
                       fig.path = set_fig, 
                       echo = FALSE,  #show R code
                       warning = FALSE, #show warnings
@@ -203,18 +203,27 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 6,
 
 ```{r color_definitions}
 #MOD!
+# This are only examples how you could adjust your plots regarding your needs
 
-#Color code (example: )
-color_cl <- c(
-  `M0` = "#d53e4f",
-  `M0HS` = "#fc8d59",
-  `M1` = "#fee08b",
-  `M1HS` = "#ffffbf",
-  `M2` = "#e6f598",
-  `M2HS` = "#99d594",
-  `Itaconate` = "#3288bd"
-)
 
+# Color code (example: )
+# Replace names of colors with levels of a factor (entries of one condition)
+# Color codes can be either hex-codes or names, e.g., tomato3
+# good resource: colorbrewer2.org
+
+# color_cl <- c(
+#   `M0` = "#d53e4f",
+#   `M0HS` = "#fc8d59",
+#   `M1` = "#fee08b",
+#   `M1HS` = "#ffffbf",
+#   `M2` = "#e8f598",
+#   `M2HS` = "#99d594",
+#   `Itaconate` = "#3288bd"
+# )
+
+
+# Order of factor levels in plots corresponds to the order of levels
+# NA in graphs are a result of an typo in level names
 
 # data_q$Substrate = factor(data_q$Substrate, levels = c("13C15N-Q", "1,5-Cit", "Acetate"))
 # ann$Substrate = factor(ann$Substrate, levels = c("13C15N-Q", "1,5-Cit", "Acetate"))
@@ -225,15 +234,6 @@ color_cl <- c(
 
 # Absolute quantification of metabolites
   
-Calculate the mean and standard deviation for each metabolite over the sampled time range. 
-Following factors should be considered, depending the actual experiment:
-
-  1. Only data points of files matching cinnamic acid quality control
-  2. Include only files with a minumum number of 75% of the maximum number of annotated metabolites in the complete batch
-  3. Only data points within the linear range of the calibration curve
-  
-**Please, consider to modify the filtering criteria regarding your own needs**
-
 
 ```{r Quant_parameter, tidy = TRUE, include = TRUE, echo = TRUE}
 
@@ -245,7 +245,7 @@ Following factors should be considered, depending the actual experiment:
   }
      
   
-  #3 - Linear range calibration curve
+  #2 - Linear range calibration curve
   if (params$analysis == "stringent") {
     data_q_sel = subset(data_q_sel, data_q_sel$islinear == 'linear')
   } else {
@@ -298,17 +298,17 @@ if (length(parvec) == 2) {
                               width = 0.25, position = position_dodge2(0.9)) +
                   theme_bw() +
                   facet_wrap(~ get(params$par2), scales = "free_y", nrow = 1) +
-                    ggtitle(paste0("Quantitative comparison: ", var)) +
+                    ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in (pmol/1e+6 cells)") +
-                  scale_fill_manual(values = color_cl) +
-                  theme(axis.text.y = element_text(size = 6),
-                    axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+                  scale_fill_viridis_d() +
+                  theme(axis.text.y = element_text(size = 8),
+                    axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
                     strip.background = element_rect(fill = "white"),
-                    strip.text.x = element_text(size = 6),
-                    strip.text.y = element_text(size = 6)) +
-                    theme(legend.position = "bottom")
+                    strip.text.x = element_text(size = 8),
+                    strip.text.y = element_text(size = 8)) +
+                    theme(legend.position = "bottom", title = element_blank())
         )
       }
 }
@@ -326,17 +326,17 @@ if (length(parvec) == 3) {
                               width = 0.25, position = position_dodge2(0.9)) +
                   theme_bw() +
                   facet_wrap(~ get(params$par3), scales = "free_y") +
-                    ggtitle(paste0("Quantitative comparison: ", var)) +
+                    ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
-                  ylab("Norm. Quantity in (pmol/1e+6 cells)") +
-                  scale_fill_manual(values = color_cl) +
-                  theme(axis.text.y = element_text(size = 6),
-                    axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+                  ylab("Norm. Quantity in \n (pmol/1e+6 cells)") +
+                  scale_fill_viridis_d() +
+                  theme(axis.text.y = element_text(size = 8),
+                    axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
                     strip.background = element_rect(fill = "white"),
-                    strip.text.x = element_text(size = 6),
-                    strip.text.y = element_text(size = 6)) +
-                    theme(legend.position = "bottom")
+                    strip.text.x = element_text(size = 8),
+                    strip.text.y = element_text(size = 8)) +
+                   theme(legend.position = "bottom", title = element_blank())
         )
       }
 }
@@ -353,17 +353,17 @@ if (length(parvec) == 4) {
                               width = 0.25, position = position_dodge2(0.9)) +
                   theme_bw() +
                   facet_wrap(get(params$par4) ~ get(params$par3), scales = "free_y") +
-                  ggtitle(paste0("Quantitative comparison: ", var)) +
+                  ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
-                  ylab("Norm. Quantity in (pmol/1e+6 cells)") +
-                  scale_fill_manual(values = color_cl) +
-                  theme(axis.text.y = element_text(size = 6),
-                    axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+                  ylab("Norm. Quantity in \n (pmol/1e+6 cells)") +
+                  scale_fill_viridis_d() +
+                  theme(axis.text.y = element_text(size = 8),
+                    axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
                     strip.background = element_rect(fill = "white"),
-                    strip.text.x = element_text(size = 6),
-                    strip.text.y = element_text(size = 6)) +
-                    theme(legend.position = "bottom")
+                    strip.text.x = element_text(size = 8),
+                    strip.text.y = element_text(size = 8)) +
+                    theme(legend.position = "bottom", title = element_blank())
         )
       }
 }
@@ -375,6 +375,12 @@ if (length(parvec) == 4) {
 
 
 # Metabolic profile
+
+An automated plot of the metabolic profile has been implemented so far only for statistical
+analysis with *two* parameter!
+
+In case of more parameter the metabolic profile is determined and exported, but not
+shown with a graphical output. Still under constructions.
 
 
 ```{r qq_profile, results="asis", echo=FALSE, tidy=TRUE}
@@ -416,7 +422,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                                    "Statistics_peakArea_NoCal.csv"), row.names = F)
 ```
 
-```{r relative_areas, echo=FALSE, fig.height=3, fig.width=6, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
+```{r relative_areas, echo=FALSE, fig.height=3, fig.width=8, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
 #MOD!
 
   if (length(parvec) == 2 ) {
@@ -430,17 +436,16 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                       width = 0.25, position = position_dodge(0.9)) +
         facet_wrap( ~ get(params$par2), scales = "free_y", nrow = 1) +
         ggtitle(paste0(var)) +
-        theme(axis.text.y = element_text(size = 6)) +
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_manual(values = color_cl) +
-        theme(axis.text.y = element_text(size = 6),
-              axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+        scale_fill_viridis_d() +
+        theme(axis.text.y = element_text(size = 8),
+              axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
-              strip.text.x = element_text(size = 6),
-              strip.text.y = element_text(size = 6)) +
-        theme(legend.position = "bottom")
+              strip.text.x = element_text(size = 8),
+              strip.text.y = element_text(size = 8)) +
+        theme(legend.position = "bottom", title = element_blank())
       )
     }
   }
@@ -456,17 +461,16 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                       width = 0.25, position = position_dodge(0.9)) +
         facet_wrap( ~ get(params$par3), scales = "free_y", nrow = 1) +
         ggtitle(paste0(var)) +
-        theme(axis.text.y = element_text(size = 6)) +
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_manual(values = color_cl) +
-        theme(axis.text.y = element_text(size = 6),
-              axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+        scale_fill_viridis_d() +
+        theme(axis.text.y = element_text(size = 8),
+              axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
-              strip.text.x = element_text(size = 6),
-              strip.text.y = element_text(size = 6)) +
-        theme(legend.position = "bottom")
+              strip.text.x = element_text(size = 8),
+              strip.text.y = element_text(size = 8)) +
+       theme(legend.position = "bottom", title = element_blank())
       )
     }
   }
@@ -482,17 +486,16 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                       width = 0.25, position = position_dodge(0.9)) +
         facet_wrap(get(params$par4) ~ get(params$par3), scales = "free_y") +
         ggtitle(paste0(var)) +
-        theme(axis.text.y = element_text(size = 6)) +
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_manual(values = color_cl) +
-        theme(axis.text.y = element_text(size = 6),
-              axis.text.x = element_text(size = 6, angle = 90, vjust = 0.3),
+        scale_fill_viridis_d() +
+        theme(axis.text.y = element_text(size = 8),
+              axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
-              strip.text.x = element_text(size = 6),
-              strip.text.y = element_text(size = 6)) +
-        theme(legend.position = "bottom")
+              strip.text.x = element_text(size = 8),
+              strip.text.y = element_text(size = 8)) +
+        theme(legend.position = "bottom", title = element_blank())
       )
     }
   }
@@ -553,11 +556,12 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 ```
 
 
-```{r inc_plot, fig.width=6, fig.height=3, fig.cap="13C-Incorporation."}
+```{r inc_plot, fig.width=7, fig.height=5, fig.cap="13C-Incorporation."}
 #MOD!
 
-#exclude high masses for citric acid
-#li_stat = subset(li_stat, li_stat$Mass_Pos <= 300)
+#Exclude additional fragments for plotting procedure (Cit: m/z 375, 2OG: m/z 288)
+
+li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
 
     
     for (var in unique(li_stat$Lettercode)) {
@@ -568,18 +572,19 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                       position = position_dodge(0.9)) +
             geom_errorbar(aes(ymin = mean_li - sd_li, ymax = mean_li + sd_li),
                       width = 0.25, position = position_dodge(0.9)) +
-            facet_wrap(get(params$par2) ~ Mass_Pos, scales = "free_y", nrow = 2) +
+            facet_wrap(get(params$par2) ~ Mass_Pos, scales = "free_y") +
             theme_bw() +
-            ggtitle(paste0("13C-Incorporation: ", var )) +
-            scale_fill_manual(values = color_cl) +
-            ylab("13C-Incorporation in (-)") +
-            theme(axis.text.y = element_text(size = 6),
-                  axis.text.x = element_text(size = 5),
+            ggtitle(var) +
+            scale_fill_viridis_d() +
+            ylab("13C-Inc. in (-)") +
+            xlab(" ") +
+            theme(axis.text.y = element_text(size = 8),
+                  axis.text.x = element_text(size = 8),
                   strip.background = element_rect(fill = "white"),
-                  strip.text.x = element_text(size = 6),
-                  strip.text.y = element_text(size = 6),
-                  legend.position = 'bottom')
-          )
+                  strip.text.x = element_text(size = 8),
+                  strip.text.y = element_text(size = 8)) + 
+            theme(legend.position = "bottom", title = element_blank())
+      )
     }
 
 ```
@@ -596,7 +601,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 
    #Absolute quantities / Substrate
    stats_q = read.csv(paste0(path_setup, set_output, set_pp,
-                       "Statistics_absQ_ca_Conc_pmio_plain.csv"), TRUE)
+                       "Statistics_absQ_", params$quant, "_plain.csv"), TRUE)
   
    #13C-Inc statistics
    stats_inc = read.csv(paste0(path_setup, set_output, set_pp,
@@ -615,11 +620,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 ```
 
 
-```{r LabQ, echo=FALSE, fig.cap="Labeled quantities", fig.width=5}
-#MOD!
-
- #define the order of your
- #data_combined$Substrate = factor(data_combined$Substrate, levels = c("Acetate", "13C15N-Q", "1,5-Cit"))
+```{r LabQ, echo=FALSE, fig.cap="Labeled quantities", fig.width=7, fig.height=3}
 
 
  for (var in unique(data_combined$Lettercode)) {
@@ -630,18 +631,18 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                   position = position_dodge(0.9)) +
      geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
                   width = 0.25, position = position_dodge(0.9)) +
-        facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y", ncol = 3) +
+        facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y") +
         theme_bw() +
-      	scale_fill_manual(values = color_cl) +
-        ggtitle(paste0("13C-labeled quantities: ", var)) +
+      	scale_fill_viridis_d() +
+        ggtitle(paste0(var)) +
         ylab("13C-Quantities in (pmol/mg tissue)") +
-       	theme(axis.text.y = element_text(size = 6),
-              axis.text.x = element_text(size = 5),
+       	theme(axis.text.y = element_text(size = 8),
+              axis.text.x = element_text(size = 8),
               #axis.text.x = element_blank(),
               strip.background = element_rect(fill = "white"),
-              strip.text.x = element_text(size = 6),
-              strip.text.y = element_text(size = 6),
-              legend.position = "bottom")
+              strip.text.x = element_text(size = 8),
+              strip.text.y = element_text(size = 8),
+              title = element_blank())
   )
 }
 
