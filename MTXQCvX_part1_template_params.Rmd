@@ -12,7 +12,7 @@ params:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: metmax
+    value: maui
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -82,7 +82,7 @@ source('R/MTXQC_config.R')
   
 ## Data import
 
-```{r import_datafiles, tidy  =  TRUE, echo=FALSE} 
+```{r import_datafiles, tidy  =  TRUE} 
 #tracking import errors
 imp_error = 0
 
@@ -134,22 +134,35 @@ imp_error = 0
   #### Annotation files ####
     ## File annotation
     ann_idx <-  as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
-    ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
     
-    if (ncol(ann) == 1) {
-        ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
-        message("colon separator detected: ", ann_idx)
+    if (file.exists(file.path(paste0(path_setup, set_input, ann_idx)))) { 
+      ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
+    
+      if (ncol(ann) == 1) {
+          ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
+          message("colon separator detected: ", ann_idx)
+      }
+    } else {
+      message("FATAL ERROR: Annotation file missing: ", ann_idx)
+      knitr::knit_exit()
     }
     
     check_emptyfile(ann, TRUE, ann_idx)
     
     #Cell count / extract
     se_idx <-  as.character(setup_params[which(setup_params$Parameter == "sample_ext"), "Value"])
-    data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
     
-    if (ncol(data_extracts) == 1) {
-       data_ = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
-       message("colon separator detected: ", se_idx)
+    if (file.exists(file.path(paste0(path_setup, set_input, se_idx)))) { 
+    
+      data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
+    
+      if (ncol(data_extracts) == 1) {
+         data_ = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
+         message("colon separator detected: ", se_idx)
+      }
+    } else {
+       message("FATAL ERROR: Sample_extracts file missing: ", se_idx)
+      knitr::knit_exit()
     }
     
     check_emptyfile(data_extracts, TRUE, se_idx)
@@ -179,11 +192,12 @@ imp_error = 0
       } else {
         
         imp_error = imp_error + 1
-        message("No internal standard for data input format defined!")
+        is_exit = 1
+        message("WARNING: No internal standard for data input format defined!")
       
       }
     } else {
-      
+      is_exit = 1
       message("No internal standard in Experimental Setup defined!")
     }
 
@@ -195,48 +209,92 @@ imp_error = 0
       data_alk  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_alk), T, sep = ',')
       colnames(data_alk)[grepl("file", colnames(data_alk))] = "File"
       check_emptyfile(data_alk, FALSE, nick_alk)
+    
     } else {
       imp_error = imp_error + 1
-      message("No alkane file defined for this input format!")
+      message("WARNING: No alkane file defined for this input format!")
     }
     
-    
+    #m/z 73 Table
     nick_73 <-  as.character(file_spec[which(file_spec$AssociatedFile == "mz_73"), "Filename"])             
     mm_73_idx <-  id_settings[which(id_settings$Parameter == "mz"), "Value"]
     
     if (mm_73_idx != "") {
-      data_73  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_73), T, sep  =  ",")
-      check_emptyfile(data_73, FALSE, nick_73)
+      
+      if (!file.exists(file.path(paste0(path_setup, set_input,'gc/', nick_73)))) {
+        
+        message("WARNING: File missing: ", nick_73)
+        message("Please review MTXQC_ExperimentalSetup!")
+        soa_73_exit = 1
+      
+      } else {
+      
+        data_73  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_73), T, sep  =  ",")
+        check_emptyfile(data_73, FALSE, nick_73)
+        soa_73_exit = 0
+      }
+      
     } else {
+     
       imp_error = imp_error + 1
-      message("No file with m/z 73 values defined for this input format!")
+      soa_73_exit = 1
+      message("WARNING: No file with m/z 73 values defined for this input format!")
+
     }
     
-    
+    ### Peak-Chroma Table
     nick_peaks <-  as.character(file_spec[which(file_spec$AssociatedFile == "peak_densities"), "Filename"])
     mm_peaks_idx <- id_settings[which(id_settings$Parameter == "peakchroma"), "Value"]
     
     if (mm_peaks_idx == TRUE) {
-       total_peaks  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_peaks), T)
-       check_emptyfile(total_peaks, FALSE, nick_peaks)
+      if (!file.exists(file.path(paste0(path_setup, set_input,'gc/', nick_peaks)))) { 
+          message("WARNING: File missing: ", nick_peaks)
+          message("Please review MTXQC_ExperimentalSetup!")
+          soa_exit = 1
+        
+      } else {
+          total_peaks  <-   read.csv(paste0(path_setup, set_input,'gc/', nick_peaks), T)
+          check_emptyfile(total_peaks, FALSE, nick_peaks)
+          soa_exit = 0
+      }
+       
     } else {
       imp_error = imp_error + 1
-      message("No file defined for this input format!")
+      soa_exit = 1
+      message("WARNING: No file defined for this input format! No sum of area normalisation! ", nick_peaks)
     }
    
   #### (2) Absolute quantification ####
 
   ## (2.1) Exported peak areas according to top5 or pTop5 approach
+    
     if ((params$updated == "PeakArea") | (params$updated == "both")) {
+     
       #incorporation of manualy validated data
       nick_samples <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "sample_area"), "Filename"]) 
-      data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
-      check_emptyfile(data_area, TRUE, nick_samples)   
+       if (!file.exists(file.path(paste0(path_setup,  set_input, 'quant/', nick_samples)))) {
+         
+         message("FATAL ERROR: Manual validated peak area file not detected: ", nick_samples)
+         knitr::knit_exit()
+         
+       } else {
+         data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+         check_emptyfile(data_area, TRUE, nick_samples)   
+       }
+      
     } else {
       #only original data
       nick_samples <-  as.character(file_spec[which(file_spec$AssociatedFile == "sample_area"), "Filename"]) 
-      data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
-      check_emptyfile(data_area, TRUE, nick_samples)    
+     
+      if (!file.exists(file.path(paste0(path_setup,  set_input, 'quant/', nick_samples)))) {
+        message("FATAL ERROR: Peak area table not detected: ", nick_samples)
+        knitr::knit_exit()
+      
+      } else {
+        data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+        check_emptyfile(data_area, TRUE, nick_samples)    
+      }
+
     }
     
 
@@ -254,13 +312,29 @@ imp_error = 0
         if (evalinc_idx != FALSE | evalinc_idx == "none") {
           #Mass isotopomer distributions
           nick_psirm <-  as.character(file_spec[which(file_spec$AssociatedFile == "pSIRM_se"), "Filename"])
-          data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
-          check_emptyfile(data_mid, TRUE, nick_psirm)
           
+          if (!file.exists(file.path(paste0(path_setup, set_input,'inc/', nick_psirm)))) {
+            message("FATAL ERROR: Essential file not detected: ", nick_psirm)
+            knitr::knit_exit()
+            
+          } else {
+             data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+            check_emptyfile(data_mid, TRUE, nick_psirm)
+          }
+           
+            
           #13C-Incorporation
           nick_inc <-  as.character(file_spec[which(file_spec$AssociatedFile == "inc"), "Filename"]) 
-          data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
-          check_emptyfile(data_inc, TRUE, nick_inc)
+          
+          if (!file.exists(file.path(paste0(path_setup, set_input,'inc/', nick_inc)))) {
+            message("FATAL ERROR: Essential file missing! ", nick_inc)
+            message("Are you sure it's a pSIRM experiment???")
+            knitr::knit_exit()
+          } else {
+            data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+            check_emptyfile(data_inc, TRUE, nick_inc)
+          }
+          
         } else {
         message("No stable isotope incorporation evaluated.")
         }
@@ -277,13 +351,29 @@ imp_error = 0
         if (evalinc_idx != FALSE | evalinc_idx == "none") {
           #Mass isotopomer distributions
           nick_psirm <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "pSIRM_se"), "Filename"])
-          data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
-          check_emptyfile(data_mid, TRUE, nick_psirm)
+              
+          if (!file.exists(file.path(paste0(path_setup, set_input,'inc/', nick_psirm)))) {
+            message("FATAL ERROR: Essential file missing: ", nick_psirm)
+            message("Did you really validated the incorporation data?")
+            knitr::knit_exit()
+          } else {
+            data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+            check_emptyfile(data_mid, TRUE, nick_psirm)
+          }
+
           
           #13C-Incorporation
           nick_inc <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "inc"), "Filename"]) 
-          data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
-          check_emptyfile(data_inc, TRUE, nick_inc)
+            
+          if (!file.exists(file.path(paste0(path_setup, set_input,'inc/', nick_inc)))) {
+            message("FATAL ERROR: Essential file missing: ", nick_inc)
+            message("Did you really validated the incorporation data?")
+            knitr::knit_exit()
+          } else {
+            data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+            check_emptyfile(data_inc, TRUE, nick_inc)
+          }
+            
         } else {
         message("No stable isotope incorporation evaluated.")
         }
@@ -906,10 +996,10 @@ if (nrow(qc_calcurve != 0)) {
     } else {
       
       data_quant_calc = data_quantified
-      data_quant_calc$sum_area = rep(1, length(data_quant_calc$File))
-      data_quant_calc$area_fac = rep(1, length(data_quant_calc$File))
+      data_quant_calc$sum_area = rep(NA, length(data_quant_calc$File))
+      data_quant_calc$area_fac = rep(NA, length(data_quant_calc$File))
       
-      message("WARNING: Sum of area normalisation factor set to value = 1 due to missing input.")
+      message("WARNING: Sum of area normalisation factor set to value = NA due to missing input.")
     }
 
   
@@ -920,13 +1010,13 @@ if (nrow(qc_calcurve != 0)) {
       message("Internal standard factors merged successfully.")
     } else {
       data_quant_calc = data_quant_calc
-      data_quant_calc$CA_fac = rep(1, length(data_quant_calc$File))
-      data_quant_calc$Ca_eval = rep(1, length(data_quant_calc$File))
+      data_quant_calc$CA_fac = rep(NA, length(data_quant_calc$File))
+      data_quant_calc$Ca_eval = rep(NA, length(data_quant_calc$File))
       
-      message("WARNING: Internal Standard normalisation factor set to value = 1 due to missing input.")
+      message("WARNING: Internal Standard normalisation factor set to value = NA due to missing input.")
     }
   } else {
-    message("No internal standard defined!")
+    message("WARNING: No internal standard defined!")
  
   }
   
@@ -938,12 +1028,22 @@ if (nrow(qc_calcurve != 0)) {
   #different calculation strategies depending on the presence (ca = 1) or absence (ca = 0) 
   #of cinnamic acid
   
-  if (ca_idx == TRUE) {
-    data_quant_norm = normalisation_calc(data_quant_calc, 1)
+  if (ca_idx == TRUE && is_exit == 0) {
+   
+    internalstd = 1
+    
+     if (soa_exit == 1 && soa_73_exit == 1) {
+       soa_norm = 0
+     } else {
+       soa_norm = 1
+     }
   } else {
-    data_quant_norm = normalisation_calc(data_quant_calc, 0)
+    internalstd = 0
   }
-
+  
+  data_quant_norm = normalisation_calc(data_quant_calc, ca = internalstd, soa = soa_norm)
+  
+   
   #export file
   if ((params$updated == "PeakArea") & (params$updated == "both")) {
      

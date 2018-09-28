@@ -197,79 +197,86 @@ absconc = function(met, area){
 
 
 
-normalisation_calc = function(d_quant, ca = 1){
+normalisation_calc = function(d_quant, ca = 1, soa = 1){
   #' This functions performs the calculation of normalised quantities 
   #' considering the sum of Area normalisation and the cinnamic acid factor
   #' Following units are implemented: ul (blood), mg (tissue) and count (cell extracts)
   #' Output states respectively: pmol / ml, pmol / mg or pmol/1e+6 cells
   #' 
-  #' in the absence of cinnamic acid define ca = 0, instead of ca = 1
-  
-  
-  #norm sum of all peak areas (1)
-  d_quant$sumA_Conc = d_quant$corr_absconc / d_quant$area_fac
-  
-  #norm over cinnamic acid factor (2)
-  if (ca == 1) {
-    d_quant$ca_Conc = d_quant$corr_absconc / d_quant$CA_fac
-  } else {
-    d_quant$ca_Conc = rep(NA, length(d_quant$Lettercode))
-  }
-   
-  #norm over cinnamic acid factor (2)
-  if (ca == 1) {
-    d_quant$ca_sumA_Conc = d_quant$ca_Conc / d_quant$area_fac 
-  } else {
-    d_quant$ca_sumA_Conc = rep(NA, length(d_quant$Lettercode))
-  }
- 
-  #calculating  quantities: pmio =  (1) pmol / 1x106 cells, 
+  #' #calculating  quantities: pmio =  (1) pmol / 1x106 cells, 
   #                                 (2) pmol/ug  OR pmol/ul, 
   #                                 (3) pmol/mg OR pmol/mg
-  
-  d_quant$sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$sumA_Conc * 1000 / d_quant$Extract_vol, 
-                                  ifelse(d_quant$Unit == "mg",
-                                         d_quant$sumA_Conc * 1 / d_quant$Extract_vol, 
-                                         d_quant$sumA_Conc * 1e+6 / d_quant$Extract_vol))
-  
-  if (ca == 1) {
-    d_quant$ca_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$ca_Conc * 1000 / d_quant$Extract_vol, 
-                                ifelse(d_quant$Unit == "mg",
-                                       d_quant$ca_Conc * 1 / d_quant$Extract_vol,  
-                                       d_quant$ca_Conc * 1e+6 / d_quant$Extract_vol))
-  } else {
-    d_quant$ca_Conc_pmio = rep(NA, length(d_quant$Lettercode))
-  }
-    
-  
-  if (ca == 1) {
-    d_quant$ca_sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$ca_sumA_Conc * 1000 / d_quant$Extract_vol,
-                                     ifelse(d_quant$Unit == "mg",
-                                            d_quant$ca_sumA_Conc * 1 / d_quant$Extract_vol, 
-                                            d_quant$ca_sumA_Conc * 1e+6 / d_quant$Extract_vol))
-  } else {
-    d_quant$ca_sumA_Conc_pmio = rep(NA, length(d_quant$Lettercode))
-  }
-  
-  #without any kind of normalization
-  d_quant$Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$corr_absconc * 1000 / d_quant$Extract_vol,
-                             ifelse(d_quant$Unit == "mg", 
-                                    d_quant$corr_absconc * 1 / d_quant$Extract_vol,
-                                    d_quant$corr_absconc * 1e+6 / d_quant$Extract_vol)) 
-  
-  
-  #calculation of Mole (M) for UNITS: UL
-  if (ca == 1) {
-    d_quant$Conc_microM = ifelse(d_quant$Unit == "ul", 
-      d_quant$ca_Conc_pmio * d_quant$Extract_vol * 1000 / (1000 * 1000), "")
-  } else {
-    d_quant$Conc_microM = rep(NA, length(d_quant$Lettercode))
-    #d_quant$Conc_microM = d_quant$ifelse(d_quant$Unit == "ul", 
-     #                                    d_quant$Conc_pmio * d_quant$Extract_vol * 1000 / (1000 * 1000), "")
-  }
+  #' 
+  #' in the absence of cinnamic acid define ca = 0, instead of ca = 1
+  #' no sum of area normalisation possbile soa = 0, possible soa == 1
   
   if (nrow(d_quant) == 0) {
+    
     message("Empty data frame! Check column names for matching annotation (sample_extracts, data)!")
+  
+  } else {
+    
+      #without any kind of normalization
+      d_quant$Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$corr_absconc * 1000 / d_quant$Extract_vol,
+                               ifelse(d_quant$Unit == "mg", 
+                                      d_quant$corr_absconc * 1 / d_quant$Extract_vol,
+                                      d_quant$corr_absconc * 1e+6 / d_quant$Extract_vol)) 
+    
+      d_quant$Conc_microM = ifelse(d_quant$Unit == "ul", 
+                                 d_quant$Conc_pmio * d_quant$Extract_vol * 1000 / (1000 * 1000), NA)
+    
+      #norm sum of all peak areas
+      if (soa == 1) {
+        d_quant$sumA_Conc = d_quant$corr_absconc / d_quant$area_fac
+        
+        d_quant$sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$sumA_Conc * 1000 / d_quant$Extract_vol, 
+                                        ifelse(d_quant$Unit == "mg",
+                                               d_quant$sumA_Conc * 1 / d_quant$Extract_vol, 
+                                               d_quant$sumA_Conc * 1e+6 / d_quant$Extract_vol))
+        
+        d_quant$sumA_Conc_microM = ifelse(d_quant$Unit == "ul", 
+                                        d_quant$sumA_Conc_pmio * d_quant$Extract_vol * 1000 / (1000 * 1000), NA)
+      
+      } else {#soa == 0
+        d_quant$sumA_Conc = rep(NA, length(d_quant$Lettercode))
+        d_quant$sumA_Conc_pmio = rep(NA, length(d_quant$Lettercode))
+      }
+    
+      #norm over cinnamic acid factor
+      if (ca == 1) {
+        d_quant$ca_Conc = d_quant$corr_absconc / d_quant$CA_fac
+        
+        d_quant$ca_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$ca_Conc * 1000 / d_quant$Extract_vol, 
+                                      ifelse(d_quant$Unit == "mg",
+                                             d_quant$ca_Conc * 1 / d_quant$Extract_vol,  
+                                             d_quant$ca_Conc * 1e+6 / d_quant$Extract_vol))
+        
+        d_quant$ca_Conc_microM = ifelse(d_quant$Unit == "ul", 
+                                     d_quant$ca_Conc_pmio * d_quant$Extract_vol * 1000 / (1000 * 1000), NA)
+        
+        
+      } else {#ca == 0
+        d_quant$ca_Conc = rep(NA, length(d_quant$Lettercode))
+        d_quant$ca_Conc_pmio = rep(NA, length(d_quant$Lettercode))
+        d_quant$ca_Conc_microM = rep(NA, length(d_quant$Lettercode))
+      }
+       
+      #norm over cinnamic acid factor and sum of Area
+      if (ca == 1 && soa == 1) {
+        d_quant$ca_sumA_Conc = d_quant$ca_Conc / d_quant$area_fac 
+        
+        d_quant$ca_sumA_Conc_pmio = ifelse(d_quant$Unit == "ul", d_quant$ca_sumA_Conc * 1000 / d_quant$Extract_vol,
+                                           ifelse(d_quant$Unit == "mg",
+                                                  d_quant$ca_sumA_Conc * 1 / d_quant$Extract_vol, 
+                                                  d_quant$ca_sumA_Conc * 1e+6 / d_quant$Extract_vol))
+      } 
+    
+      #both normalisation factors missing
+      if (ca != 1 && soa != 1) {
+        d_quant$ca_sumA_Conc = rep(NA, length(d_quant$Lettercode))
+        d_quant$ca_sumA_Conc_pmio = rep(NA, length(d_quant$Lettercode))
+        
+      } 
   }
   
   return(d_quant)
