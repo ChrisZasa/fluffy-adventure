@@ -63,7 +63,7 @@ abstract: MTXQC part 4 provides the transformation of Metmax-derived files for t
 
 # Metmax-parser for MTXQC
 ## Project settings
-```{r setup_output}
+```{r setup_output, echo=FALSE}
 #set path for figure export and size
 
 set_input = "input/"
