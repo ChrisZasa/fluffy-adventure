@@ -12,7 +12,7 @@ params:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: maui
+    value: metmax
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -69,17 +69,14 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       eval = TRUE) #show messages
 ```
 
-
 ```{r source_rfiles}
 source("R/MTXQC_pck.R")
 source('R/MTXQC_fcn.R')
 source('R/MTXQC_colors.R')
 source('R/MTXQC_theme.R')
 source('R/MTXQC_config.R')
-
 ```
 
-  
 ## Data import
 
 ```{r import_datafiles, tidy  =  TRUE} 
@@ -345,10 +342,11 @@ imp_error = 0
       message("It's not a pSIRM experiment!")
     }
   } else {
-    #run if Inc manually validated
+    #run if Inc == manually validated
     if (inc_idx != "qMTX") {
       if (mm_inc_idx != FALSE) {
         if (evalinc_idx != FALSE | evalinc_idx == "none") {
+          
           #Mass isotopomer distributions
           nick_psirm <-  as.character(file_spec_manVal[which(file_spec_manVal$AssociatedFile == "pSIRM_se"), "Filename"])
               
@@ -377,9 +375,9 @@ imp_error = 0
         } else {
         message("No stable isotope incorporation evaluated.")
         }
-      } else (
+      } else {
         message("No MID and 13Inc-calculation defined for this input format.")
-      )
+      }
     } else {
       message("It's not a pSIRM experiment!")
     }
@@ -490,7 +488,7 @@ if (is_exit != 1) {
  
 ```
 
-### Sum of Area of annotated metabolites per file
+### Sum of Area of annotated metabolites
 
 ```{r sumArea_qc, tidy = TRUE}
  
@@ -503,7 +501,7 @@ if (mm_peaks_idx == TRUE) {
   nmin = read.csv(paste0(path_setup, 'output/gc/Min_Annotation.csv'), TRUE)
   knitr::kable(nmin, format = 'markdown', caption = '50& quartile of annotated metabolites per batch.')
 } else {
-  message("No SumOfArea file generated in Metmax parser!")
+  message("SumOfArea normalisation has not been selected in MTXQC part 4!")
 }
  
        
@@ -527,7 +525,7 @@ if (mm_peaks_idx == TRUE) {
           theme(text = element_text(size = 8))
       
     } else {
-      message("No SunArea_stats.csv file detected!")
+      message("No SumArea_stats.csv file detected!")
     }
   }
   
@@ -800,14 +798,24 @@ if (addq_idx == 'yes') {
     #read updated file (containing adj. r-square, slope and intercept)
     qt <-  read.table(file = paste0(path_setup, 'output/quant/top5_QMQcurveInfo.csv'), T) 
     
-    #Determine QC-params for Quantification
-    qc_calcurve <- quant_metric_calc_new(qt)
+      #check empty file
+      if (!is.data.frame(qt) && !nrow(qt)) {
+        message("top5_QMQcurveInfo.csv imported!")
+        
+        #Determine QC-params for Quantification
+        qc_calcurve <- quant_metric_calc_new(qt)
+      } else {
+        message("Empty file detected: quant/top5QMQcurveInfo.csv")
+        message("Please check the annotation of your metabolites.")
+        knitr::knit_exit()
+      }
+
 ```
 
 
 ```{r calcurve_par, echo = TRUE, fig.height = 5, fig.width = 5, fig.cap = "Calibration curves: Nb. of data points."}
 
-if (nrow(qc_calcurve != 0)) {
+if (!is.data.frame(qc_calcurve) && !nrow(qc_calcurve)) {
   ggplot(qc_calcurve, aes(Lettercode, Par_value, color = Parameter)) +
 		geom_point(aes(shape = Parameter), size = 3) +
   	coord_flip() +
