@@ -12,7 +12,7 @@ params:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: metmax
+    value: maui
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -799,15 +799,18 @@ if (addq_idx == 'yes') {
     qt <-  read.table(file = paste0(path_setup, 'output/quant/top5_QMQcurveInfo.csv'), T) 
     
       #check empty file
-      if (!is.data.frame(qt) && !nrow(qt)) {
+      if (is.data.frame(qt) && !nrow(qt == 0)) {
+        message("Empty file detected: quant/top5QMQcurveInfo.csv")
+        message("Please check the annotation of your metabolites.")
+        knitr::knit_exit()
+      
+      } else {
+       
+        
         message("top5_QMQcurveInfo.csv imported!")
         
         #Determine QC-params for Quantification
         qc_calcurve <- quant_metric_calc_new(qt)
-      } else {
-        message("Empty file detected: quant/top5QMQcurveInfo.csv")
-        message("Please check the annotation of your metabolites.")
-        knitr::knit_exit()
       }
 
 ```
@@ -815,7 +818,7 @@ if (addq_idx == 'yes') {
 
 ```{r calcurve_par, echo = TRUE, fig.height = 5, fig.width = 5, fig.cap = "Calibration curves: Nb. of data points."}
 
-if (!is.data.frame(qc_calcurve) && !nrow(qc_calcurve)) {
+if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
   ggplot(qc_calcurve, aes(Lettercode, Par_value, color = Parameter)) +
 		geom_point(aes(shape = Parameter), size = 3) +
   	coord_flip() +
@@ -963,7 +966,8 @@ if (!is.data.frame(qc_calcurve) && !nrow(qc_calcurve)) {
   data_quantified$corr_absconc = data_quantified$absconc * data_quantified$extr_fac
   
   data_q_plot  =  data_quantified
-  data_q_plot[is.na(data_q_plot)]  =  0
+  data_q_plot <- data_q_plot %>% 
+    mutate(corr_absconc = replace(corr_absconc, is.na(corr_absconc), 0))
 ```
 
 ```{r calcurve_sample, fig.width = 6, fig.height = 6}
@@ -1238,7 +1242,7 @@ if (!is.data.frame(qc_calcurve) && !nrow(qc_calcurve)) {
   SE_nascore$na_frac_r  =  round(SE_nascore$na_frac,1)
   
   #Proportional stacked plot
-  n  =  length(unique(factor(SE_nascore$na_frac)))
+  n  =  length(unique(SE_nascore$na_frac))
 ```
   
 ```{r SE_score, echo = FALSE, fig.height = 5, fig.width = 5, fig.cap = "Missing values in mass isotopomer distributions (MID)."} 
@@ -1363,6 +1367,7 @@ if (!is.data.frame(qc_calcurve) && !nrow(qc_calcurve)) {
   #cleaning: negative values
   data_inc_m$Inc_origval = data_inc_m$Inc
   data_inc_m$Inc = ifelse(data_inc_m$Inc_origval < 0, 0, data_inc_m$Inc_origval)
+
 ```
 
   
