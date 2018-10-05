@@ -46,6 +46,7 @@ abstract: This document provides an evaluation of GC-MS derived metabolomics dat
 ## General project settings
 
 ```{r setup_output, echo=FALSE}
+
 #set path for figure export and size
 
 set_input = "input/"
@@ -420,7 +421,7 @@ if (alkane_idx == TRUE) {
       facet_wrap(~Batch_Id, scales = "free") +
       ggtitle('Distribution of Alkanes (#c10 - #c36)') +
       geom_point(aes(color = metabolite)) +
-      scale_color_manual(values = brewer.pal(9, 'Paired'), guide = guide_legend(title = 'Alkane')) +
+      scale_color_manual(values = brewer.pal(9, "Paired"),guide = guide_legend(title = 'Alkane')) +
   		xlab('File') +
   		ylab('Peak area in (-)') +
       theme(text = element_text(size = 8))
@@ -476,7 +477,7 @@ if (is_exit != 1) {
         facet_wrap(~ Batch_Id, scales = "free") +
         scale_color_manual(values = color_ca,
                           guide = guide_legend(title = 'Evaluation CinAacid')) +
-    		ylab('PeakArea in (-)') +
+       ylab('PeakArea in (-)') +
         theme(legend.position = "bottom")
     } else {
       message("Empty data frame OR no peak areas for internal standard detectable!")
@@ -590,9 +591,10 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
   p <-  ggplot(qcm_values, aes(Batch_Id, title)) +
     geom_tile(aes(fill = qc_metric), color = 'white') +
   	coord_flip() +
-    scale_fill_gradient2(mid = 'ghostwhite', high = '#d94801', limits = c(0,1), 
+    scale_fill_gradient2(mid = 'ghostwhite',  high = '#d94801', limits = c(0,1), 
                          na.value = 'ghostwhite',
     										 guide = guide_legend(title = 'Score'))
+
 
   base_size = 7
   p_gc <-  p + theme_bw(base_size = base_size) +

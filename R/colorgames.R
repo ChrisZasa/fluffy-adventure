@@ -12,7 +12,6 @@ theme_set(theme_bw())
 mtxqc_colors <- c(
   `orangecream`        = "#F69256",
   `orange` = "#FDBF54",
-  `apricot`      = "#FDDD8C",
   `apricotlight` = "#FEE6B2",
   `jade`       = "#6cc8be",
   `icedmint`     = "#bfe2d2",
@@ -38,7 +37,15 @@ mtxqc_colors <- c(
   `fresh` = "#F7F5E6",
   `vermillion` = "#333A56",
   `sunshine` = "#52658F",
-  `clean` = "#E8E8E8"
+  `clean` = "#E8E8E8", 
+  `blueberry` = "#6B7A8F", 
+  `apricot` = "#F7882F", 
+  `citrus` = "#F7C331", 
+  `applecore` = "#DCC7AA",
+  `sunflowers` = "#FECE00", 
+  `starrynight` = "#0375B4", 
+  `irises` = "#007849", 
+  `evening` = "#262228"
   
 )
 
@@ -71,7 +78,9 @@ mtxqc_palettes <- list(
   
   `sleek` = mtxqc_cols("clean", "sunshine", "vermillion"),
   
-  `greens` = mtxqc_cols("emarald", "seafoam", "pear")
+  `greens` = mtxqc_cols("emarald", "seafoam", "pear"),
+  `cheerful` = mtxqc_cols("blueberry", "apricot", "citrus", "applecore"), 
+  `art` = mtxqc_cols("sunflowers", "starrynight", "irises", "evening")
   
 )
 
