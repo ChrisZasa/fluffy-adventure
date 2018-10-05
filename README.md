@@ -4,6 +4,14 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-05 - major update
+
+Update: 
+  * Major corrections and modifications in MTXQCvX2 part 2
+  * Restructure of internal R functions organisation
+  * Integration of color styles
+
+
 ### 2018-09-27 - major update
 
 comment: Please download a new copy of the MTXQCvX2
