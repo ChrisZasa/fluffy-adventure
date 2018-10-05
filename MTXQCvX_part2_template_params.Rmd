@@ -95,9 +95,13 @@ title: `r paste("MTXQCvX part2 Postprocessing - PROJECTNAME ", params$analysis)`
 #Project initiation
 
 ```{r init_doc, echo=FALSE, warning=FALSE}
+#mypal-def for color
+mypal = "main"
+
 
 #Source R-Files
 source('R/MTXQC_fcn.R')
+source('R/MTXQC_fcn_metabolicprofile.R')
 source('R/MTXQC_config.R')
 source('R/MTXQC_colors.R')
 source("R/MTXQC_pck.R")
@@ -301,14 +305,15 @@ if (length(parvec) == 2) {
                     ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in (pmol/1e+6 cells)") +
-                  scale_fill_viridis_d() +
+                  scale_fill_mtxqc(palette = mypal) +
+                  #scale_fill_viridis_d() +
                   theme(axis.text.y = element_text(size = 8),
                     axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
                     strip.background = element_rect(fill = "white"),
                     strip.text.x = element_text(size = 8),
                     strip.text.y = element_text(size = 8)) +
-                    theme(legend.position = "bottom", title = element_blank())
+                    theme(legend.position = "right", title = element_blank())
         )
       }
 }
@@ -329,7 +334,7 @@ if (length(parvec) == 3) {
                     ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in \n (pmol/1e+6 cells)") +
-                  scale_fill_viridis_d() +
+                  scale_fill_mtxqc(mypal) +
                   theme(axis.text.y = element_text(size = 8),
                     axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
@@ -356,7 +361,7 @@ if (length(parvec) == 4) {
                   ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in \n (pmol/1e+6 cells)") +
-                  scale_fill_viridis_d() +
+                      scale_fill_mtxqc(mypal) +
                   theme(axis.text.y = element_text(size = 8),
                     axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
                     #axis.text.x = element_blank(),
@@ -439,7 +444,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_viridis_d() +
+            scale_fill_mtxqc(mypal) +
         theme(axis.text.y = element_text(size = 8),
               axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
@@ -464,7 +469,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_viridis_d() +
+            scale_fill_mtxqc(mypal) +
         theme(axis.text.y = element_text(size = 8),
               axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
@@ -489,7 +494,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
         ylab("Peak Area in (-)") +
         xlab("Days") +
         theme_bw() +
-        scale_fill_viridis_d() +
+            scale_fill_mtxqc(mypal) +
         theme(axis.text.y = element_text(size = 8),
               axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3),
               strip.background = element_rect(fill = "white"),
@@ -520,9 +525,9 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 ```{r inc_statistics}
 
   if ("QuantMasses" %in% colnames(data_inc)) {
-        data_inc_m = melt_call(data_inc, c('Metabolite', 'QuantMasses'), c('File','Inc'))
+        data_inc_m = melt(data_inc, id.vars = c('Metabolite', 'QuantMasses'), variable.name = c('File'), value.name = c('Inc'))
   } else {
-        data_inc_m = melt_call(data_inc, c('Metabolite'), c('File', 'Inc'))
+        data_inc_m = melt(data_inc, id.vars = c('Metabolite'), variable.name =  c('File'), value.name = c('Inc'))
   }
 
   #merge with conversion and annotation file
@@ -575,7 +580,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
             facet_wrap(get(params$par2) ~ Mass_Pos, scales = "free_y") +
             theme_bw() +
             ggtitle(var) +
-            scale_fill_viridis_d() +
+                scale_fill_mtxqc(mypal) +
             ylab("13C-Inc. in (-)") +
             xlab(" ") +
             theme(axis.text.y = element_text(size = 8),
@@ -633,7 +638,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
                   width = 0.25, position = position_dodge(0.9)) +
         facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y") +
         theme_bw() +
-      	scale_fill_viridis_d() +
+      	    scale_fill_mtxqc(mypal) +
         ggtitle(paste0(var)) +
         ylab("13C-Quantities in (pmol/mg tissue)") +
        	theme(axis.text.y = element_text(size = 8),
