@@ -88,7 +88,6 @@ mtxqc_palettes <- list(
   `main`  = mtxqc_cols("orangecream", "orange", "apricotlight", "turquoise", "lightgrey", "darkgrey"),
   `cool`  = mtxqc_cols("orangecream", "apricot", "jade", "icedmint"),
   `hot`   = mtxqc_cols("blue", "seafoam", "apricotlight", "fire", "darkred", "darkgrey") ,
-  `akaru` = mtxqc_cols("warm_yellow", "rustyred", "gunmetal", "navyblue"), 
   `clean` = mtxqc_cols("ice", "freshwater", "plaster", "linen"),
   `sleek` = mtxqc_cols("clean", "sunshine", "vermillion"),
   `greens` = mtxqc_cols("emarald", "seafoam", "pear"),

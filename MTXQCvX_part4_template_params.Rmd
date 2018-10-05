@@ -1,10 +1,8 @@
 ---
-title: 'MTXQCvX Part4: PROJECT NAME'
+title: 'MTXQCvX2 Part4: PROJECT NAME'
 author:
-- affiliation: Secret 
-  name: Secret  
-- affiliation: Kempa Lab
-  name: Christin
+- affiliation: Test Lab
+  name: Test Person
 biblio-style: apsr
 output:
   pdf_document:
@@ -95,6 +93,8 @@ source('R/MTXQC_fcn.R')
 source('R/MTXQC_colors.R')
 source('R/MTXQC_theme.R')
 source('R/MTXQC_config.R')
+source("R/MTXQC_fcn_incorp.R")
+source("R/MTXQC_fcn_absQ.R")
 ```
 
 ```{r import_files, tidy=TRUE}

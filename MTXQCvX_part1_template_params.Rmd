@@ -1,8 +1,8 @@
 ---
-title: 'MTXQCvX - Part1: pSIRM'
+title: 'MTXQCvX2 - Part1'
 author:
-- affiliation: test
-  name: test
+- affiliation: Test Lab
+  name: Test Person
 params:
   spath:
     input: text

@@ -77,7 +77,7 @@ metabolic_profile = function(df, groups, value_mean) {
                         max.iter = 3e3) +
         scale_x_log10() +
         facet_grid(as.formula(paste("~",groups[1]))) +
-        scale_fill_manual(values = color_pathway) +
+        scale_fill_mtxqc(values = "hot") +
         #ggtitle(paste0('Metabolic profile of: ', var, " (", params$quant, ", ", params$analysis)) +
         ggtitle(paste('Metabolic profile based on (ls): ', params$quant)) +
         xlab('Fraction of metabolite within its pathway in (%)') +
@@ -106,7 +106,7 @@ metabolic_profile = function(df, groups, value_mean) {
                         max.iter = 3e3) +
         scale_x_log10() +
         facet_grid(as.formula(paste(groups[1],"~",groups[2]))) +
-        scale_fill_manual(values = color_pathway) +
+        scale_fill_mtxqc(palette = "hot") +
         #ggtitle(paste0('Metabolic profile of: ', var, " (", params$quant, ", ", params$analysis)) +
         ggtitle(paste('Metabolic profile based on (ls): ', params$quant)) +
         xlab('Fraction of metabolite within its pathway in (%)') +

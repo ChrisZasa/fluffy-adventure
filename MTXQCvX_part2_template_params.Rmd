@@ -1,9 +1,9 @@
 ---
-#title: "MTXQCvX Part2: Post-Processing -
-#thanks: "Template MTXQCvX part 2 written by Christin Zasada, Kempa Lab"
+#title: "MTXQCvX2 Part2: Post-Processing -
+#thanks: "Template MTXQCvX2 part 2 provided by Christin Zasada, Kempa Lab"
 author:
-- affiliation: AG Kempa / Deubzer
-  name: Birte Arlt
+- affiliation: Test Lab
+  name: Test Person
 biblio-style: apsr
 output:
   pdf_document:
@@ -75,6 +75,19 @@ params:
     choices: [none, PeakArea, Incorporation, both]
     label: "Incorporation manualy validated data:"
     value: none
+  mypal:
+    input: select
+    choices:
+      - main
+      - cheerful
+      - hot
+      - greens
+      - sleek
+      - clean
+      - cool
+      - art
+    label: "Select your color scheme."
+    value: greens
 abstract: This document provides the post-processing of the output files derived from MTXQC part1; including the determination of statistics and visualisation.
   Here you have to work the most to adapt this file to your own needs and the
   experimental setup. Take care of decent plots. Most probably you're going to
@@ -84,7 +97,7 @@ abstract: This document provides the post-processing of the output files derived
 ---
 
 ---
-title: `r paste("MTXQCvX part2 Postprocessing - PROJECTNAME ", params$analysis)`
+title: `r paste("MTXQCvX2 part2 Postprocessing - PROJECTNAME ", params$analysis)`
 ---
 # Summary
 
@@ -96,7 +109,7 @@ title: `r paste("MTXQCvX part2 Postprocessing - PROJECTNAME ", params$analysis)`
 
 ```{r init_doc, echo=FALSE, warning=FALSE}
 #mypal-def for color
-mypal = "main"
+mypal = params$mypal
 
 
 #Source R-Files
@@ -205,10 +218,19 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
 
 ## Define your color scheme and order of factor levels
 
+This report provides a number of pre-defined colors for an graphical output regarding your personal taste. 
+
+Nevertheless - there is one drawback! If due to missing values for a certain subgroup of your data leads to
+an complete absence of a subgroup, the same color might be associated with different levels. 
+
+Therefore I still recommend to optimize the color style in relation to your project in the chunk below. The fixed definition 
+of color code and factor level prevents the mis-association of different factor levels with the same color.
+
+
+
 ```{r color_definitions}
 #MOD!
 # This are only examples how you could adjust your plots regarding your needs
-
 
 # Color code (example: )
 # Replace names of colors with levels of a factor (entries of one condition)
@@ -224,7 +246,6 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
 #   `M2HS` = "#99d594",
 #   `Itaconate` = "#3288bd"
 # )
-
 
 # Order of factor levels in plots corresponds to the order of levels
 # NA in graphs are a result of an typo in level names
@@ -260,7 +281,6 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
                                "Input_values_quantification.csv"), row.names = FALSE)
   
 ```  
-
 
 
 # Statistics and data visualization
@@ -302,7 +322,7 @@ if (length(parvec) == 2) {
                               width = 0.25, position = position_dodge2(0.9)) +
                   theme_bw() +
                   facet_wrap(~ get(params$par2), scales = "free_y", nrow = 1) +
-                    ggtitle(paste0(var)) +
+                  ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in (pmol/1e+6 cells)") +
                   scale_fill_mtxqc(palette = mypal) +
@@ -313,7 +333,9 @@ if (length(parvec) == 2) {
                     strip.background = element_rect(fill = "white"),
                     strip.text.x = element_text(size = 8),
                     strip.text.y = element_text(size = 8)) +
-                    theme(legend.position = "right", title = element_blank())
+                  theme(legend.position = "bottom", legend.title = element_blank(), 
+                          legend.spacing.x = unit(0.25,"cm")) +
+                  guides(fill = guide_legend(nrow = 1))
         )
       }
 }
@@ -330,7 +352,7 @@ if (length(parvec) == 3) {
                   geom_errorbar(aes(ymin = mean_Q - sd_Q, ymax = mean_Q + sd_Q), 
                               width = 0.25, position = position_dodge2(0.9)) +
                   theme_bw() +
-                  facet_wrap(~ get(params$par3), scales = "free_y") +
+                  facet_wrap(get(params$par3) ~ get(params$par2), scales = "free_y") +
                     ggtitle(paste0(var)) +
                   xlab("Labeling time in (min)") +
                   ylab("Norm. Quantity in \n (pmol/1e+6 cells)") +
@@ -341,7 +363,8 @@ if (length(parvec) == 3) {
                     strip.background = element_rect(fill = "white"),
                     strip.text.x = element_text(size = 8),
                     strip.text.y = element_text(size = 8)) +
-                   theme(legend.position = "bottom", title = element_blank())
+                   theme(legend.position = "bottom", legend.spacing.x = unit(0.25, "cm")) +
+                  guides(fill = guide_legend(nrow = 1))
         )
       }
 }
@@ -368,15 +391,14 @@ if (length(parvec) == 4) {
                     strip.background = element_rect(fill = "white"),
                     strip.text.x = element_text(size = 8),
                     strip.text.y = element_text(size = 8)) +
-                    theme(legend.position = "bottom", title = element_blank())
+                    theme(legend.position = "bottom", legend.title = element_blank(),
+                          legend.spacing.x = unit(0.25, "cm")) + 
+                guides(fill = guide_legend(nrow = 1))
         )
       }
 }
 
-
-
 ``` 
-
 
 
 # Metabolic profile
@@ -427,7 +449,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                                    "Statistics_peakArea_NoCal.csv"), row.names = F)
 ```
 
-```{r relative_areas, echo=FALSE, fig.height=3, fig.width=8, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
+```{r relative_areas, echo=FALSE, fig.height=3, fig.width=6, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
 #MOD!
 
   if (length(parvec) == 2 ) {
@@ -439,7 +461,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                       position = position_dodge2(0.9)) +
         geom_errorbar(aes(ymin = mean_area - sd_area, ymax = mean_area + sd_area), 
                       width = 0.25, position = position_dodge(0.9)) +
-        #facet_wrap( ~ get(params$par2), scales = "free_y", nrow = 1) +
+        facet_wrap( ~ get(params$par2), scales = "free_y", nrow = 1) +
         ggtitle(paste0(var)) +
         ylab("Peak Area in (-)") +
         xlab("Days") +
@@ -450,7 +472,8 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
               strip.background = element_rect(fill = "white"),
               strip.text.x = element_text(size = 8),
               strip.text.y = element_text(size = 8)) +
-        theme(legend.position = "bottom", title = element_blank())
+        theme(legend.position = "bottom", legend.spacing.x = unit(0.25, "cm"), legend.title = element_blank()) +
+         guides(fill = guide_legend(nrow = 1))
       )
     }
   }
@@ -475,7 +498,8 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
               strip.background = element_rect(fill = "white"),
               strip.text.x = element_text(size = 8),
               strip.text.y = element_text(size = 8)) +
-       theme(legend.position = "bottom", title = element_blank())
+       theme(legend.position = "bottom", legend.spacing.x = unit(0.25, "cm"), legend.title = element_blank()) +
+         guides(fill = guide_legend(nrow = 1))
       )
     }
   }
@@ -500,7 +524,8 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
               strip.background = element_rect(fill = "white"),
               strip.text.x = element_text(size = 8),
               strip.text.y = element_text(size = 8)) +
-        theme(legend.position = "bottom", title = element_blank())
+       theme(legend.position = "bottom", legend.spacing.x = unit(0.25, "cm"), legend.title = element_blank()) +
+         guides(fill = guide_legend(nrow = 1))
       )
     }
   }
@@ -588,7 +613,8 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
                   strip.background = element_rect(fill = "white"),
                   strip.text.x = element_text(size = 8),
                   strip.text.y = element_text(size = 8)) + 
-            theme(legend.position = "bottom", title = element_blank())
+            theme(legend.position = "bottom", legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm")) +
+          guides(fill = guide_legend(nrow = 1))
       )
     }
 
@@ -647,7 +673,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
               strip.background = element_rect(fill = "white"),
               strip.text.x = element_text(size = 8),
               strip.text.y = element_text(size = 8),
-              title = element_blank())
+              legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm"))
   )
 }
 

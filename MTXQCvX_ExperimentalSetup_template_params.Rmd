@@ -1,5 +1,5 @@
 ---
-title: 'MTXQCvX - Experimental Setup - PROJECT TITLE'
+title: 'MTXQCvX2 - Experimental Setup - PROJECT TITLE'
 author:
 - affiliation: LAB, LAB LOCATION 
   name: NAME ONE 
