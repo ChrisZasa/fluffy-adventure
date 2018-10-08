@@ -160,7 +160,7 @@ imp_error = 0
       data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
     
       if (ncol(data_extracts) == 1) {
-         data_ = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
+         data_extracts = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
          message("colon separator detected: ", se_idx)
       }
     } else {
@@ -185,6 +185,11 @@ imp_error = 0
           
           if (file.exists(ca_path) == TRUE) {
             cinacid  <-   read.csv(ca_path, T, sep = ',')
+            
+            #Which internalstandard exported in InternalStandard.csv
+            intstd = unique(cinacid$Metabolite)
+            message("Defined Internal Standard: ", intstd)
+            
             check_emptyfile(cinacid, FALSE, "InternalStandard.csv")
             is_exit = 0
             
@@ -439,38 +444,38 @@ if (alkane_idx == TRUE) {
 ```
 
 ## Data normalization
-### Internal standard cinnamic acid
+### Internal standard evaluation
 
-```{r cinacid_qc, tidy = TRUE}
+```{r internalstandard_qc, tidy = TRUE}
 if (is_exit != 1) {
   
   if (mm_ca_idx == TRUE) {
     if (ca_idx == TRUE) { 
     
       cin_data = file_shaping(cinacid, shape = "wide", ann, type = "sample", mode = "area")[,c("File", "PeakArea", "Batch_Id")]
-      cinacid_qc = gc_metric_calc(cin_data, title = "cinacid")
+      cinacid_qc = gc_metric_calc(cin_data, title = "internalstandard")
     
     } else {
     Batch_Id = unique(alk_qc$Batch_Id)
     cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
-    write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_cinacid.csv'), row.names = F)
+    write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_IntStandard.csv'), row.names = F)
     }
   }
 }
 
 ```
 
-```{r cinacid_plot, echo = F, fig.cap = "Quantification of internal extraction standard", fig.width = 5, fig.height = 5}
+```{r internalstandard_plot, echo = F, fig.cap = "Quantification of internal extraction standard", fig.width = 5, fig.height = 5}
   
   if (ca_idx == TRUE && mm_ca_idx == TRUE && is_exit == 0) {
 
-    cinacid_statistics = read.csv(paste0(path_setup, 'output/gc/Cinacid_stats.csv'), TRUE)
+    cinacid_statistics = read.csv(paste0(path_setup, 'output/gc/IntStandard_stats.csv'), TRUE)
     
     if (nrow(cinacid_statistics) != 0) {
       cin_f = c('below','within','above')
-      cinacid_statistics$CA_eval = factor(cinacid_statistics$CA_eval, levels = cin_f) 
+      cinacid_statistics$CA_eval = factor(cinacid_statistics$IntStd_eval, levels = cin_f) 
     
-     ggplot(cinacid_statistics, aes(File, PeakArea, color = CA_eval)) +
+     ggplot(cinacid_statistics, aes(File, PeakArea, color = IntStd_eval)) +
         geom_point() +
         #geom_bar(stat = "identity", size = .3, color = "black") +
         coord_flip() +
@@ -481,7 +486,7 @@ if (is_exit != 1) {
         theme(text = element_text(size = 8)) + 
         facet_wrap(~ Batch_Id, scales = "free") +
         scale_color_manual(values = color_ca,
-                          guide = guide_legend(title = 'Evaluation CinAacid')) +
+                          guide = guide_legend(title = 'Eval: Internal Standard')) +
        ylab('PeakArea in (-)') +
         theme(legend.position = "bottom")
     } else {
@@ -644,6 +649,14 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 	  nb_id = length(batch_id_def)
 	  file_names <- dir(paste0(path_setup, set_input,"quant/"), pattern = ".tsv") 
 	  
+	  #stop if no files detectable
+	  if (length(file_names) == 0) {
+	    message("No tsv-files detected! Please check the folder: input/quant/")
+	    knitr::knit_exit()
+	  } else {
+	    message("In folder input/quant: .tsv-files detected!")
+	  }
+	  
 	  if (length(batch_id_def) < length(file_names)) {
 	    message("Please check your annotation file. Your annotation files contains less files derived
 	      from different Batches, than you copied in the MTXQC project! Continue processing though!")
@@ -675,7 +688,7 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```
 
 ## Generation of ManualQuantTable: Additional calibration curves (Qadd)
-```{r add_calcurves, fig.height = 3, fig.width =5, fig.cap = "Additional Calibration curves"}
+```{r add_calcurves, fig.height = 2.5, fig.width =5, fig.cap = "Additional Calibration curves"}
 
 #identify param settings
 addq_idx = as.character(setup_params[which(setup_params$Parameter == "addQ"), "Value"])
@@ -757,7 +770,6 @@ if (addq_idx == 'yes') {
 ```
 
 ```{r merge_mqts}
-  
 
   if (addq_idx == 'yes') {
     #prepare Quant-Standards
@@ -812,10 +824,7 @@ if (addq_idx == 'yes') {
         knitr::knit_exit()
       
       } else {
-       
-        
         message("top5_QMQcurveInfo.csv imported!")
-        
         #Determine QC-params for Quantification
         qc_calcurve <- quant_metric_calc_new(qt)
       }
@@ -1025,12 +1034,12 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
   #2 - normalization cinnamic acid
   if (ca_idx == TRUE) {
     if (is_exit == 0) {
-      data_quant_calc = merge(data_quant_calc, cinacid_statistics[,c("File", "CA_fac", "CA_eval")])
+      data_quant_calc = merge(data_quant_calc, cinacid_statistics[,c("File", "IntStd_fac", "IntStd_eval")])
       message("Internal standard factors merged successfully.")
     } else {
       data_quant_calc = data_quant_calc
-      data_quant_calc$CA_fac = rep(NA, length(data_quant_calc$File))
-      data_quant_calc$Ca_eval = rep(NA, length(data_quant_calc$File))
+      data_quant_calc$IntStd_fac = rep(NA, length(data_quant_calc$File))
+      data_quant_calc$IntStd_eval = rep(NA, length(data_quant_calc$File))
       
       message("WARNING: Internal Standard normalisation factor set to value = NA due to missing input.")
     }
@@ -1116,13 +1125,13 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
     
     ### rcorr.cinacid.sumA
     #calculate Rsquare for this only for data points within calibration curve
-    data_within = subset(data_quant_norm, data_quant_norm$CA_eval == 'within')
+    data_within = subset(data_quant_norm, data_quant_norm$IntStd_eval == 'within')
     
-    data_within_sel = data_within[,c('Lettercode', 'Batch_Id','sumA_Conc_pmio','ca_Conc_pmio')]      
+    data_within_sel = data_within[,c('Lettercode', 'Batch_Id','sumA_Conc_pmio','IntStd_Conc_pmio')]      
     data_wo_na = subset(data_within_sel, !is.na(data_within_sel$sumA_Conc_pmio))
     
     data_wo_na_r  =  ddply(data_wo_na, c("Lettercode", "Batch_Id"), transform, 
-                   adj_r_squared_corr = (summary(lm(sumA_Conc_pmio ~ ca_Conc_pmio)))$adj.r.squared)
+                   adj_r_squared_corr = (summary(lm(sumA_Conc_pmio ~ IntStd_Conc_pmio)))$adj.r.squared)
     
     Corr_CA_SA_m = unique(data_wo_na_r[,c('Lettercode', 'Batch_Id' ,'adj_r_squared_corr')])
   

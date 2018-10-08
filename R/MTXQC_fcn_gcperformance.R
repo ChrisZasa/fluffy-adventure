@@ -19,16 +19,16 @@ gc_metric_calc = function(dataframe, dataframe2 = NULL, title) {
   }
   
   #CINACID
-  if (title == "cinacid") {
+  if (title == "internalstandard") {
     df_stat <-  ddply(dataframe, c("Batch_Id"), transform, 
-                      CA_fac = PeakArea / mean(PeakArea))
+                      IntStd_fac = PeakArea / mean(PeakArea))
     
     #Quality check - should be within a factors range of 0.65 and 1.45
-    df_stat$CA_eval <-  ifelse(df_stat$CA_fac >= 0.65 & df_stat$CA_fac <= 1.45, 'within', 
-                               ifelse(df_stat$CA_fac < 0.65, 'below','above'))
+    df_stat$IntStd_eval <-  ifelse(df_stat$IntStd_fac >= 0.65 & df_stat$IntStd_fac <= 1.45, 'within', 
+                               ifelse(df_stat$IntStd_fac < 0.65, 'below','above'))
     
     #Export CA-normalization information
-    write.csv(df_stat, paste0(path_setup,'output/gc/Cinacid_normfactors.csv'), row.names = F)
+    write.csv(df_stat, paste0(path_setup,'output/gc/IntStandard_normfactors.csv'), row.names = F)
     
     #calculate cinnamic acid-factor
     batch_stats <-  ddply(df_stat, c("Batch_Id"), transform,
@@ -36,7 +36,7 @@ gc_metric_calc = function(dataframe, dataframe2 = NULL, title) {
                           mean_batch = mean(PeakArea, na.rm = TRUE),
                           sd_batch = sd(PeakArea, na.rm = TRUE))
     
-    write.csv(batch_stats, paste0(path_setup, 'output/gc/Cinacid_stats.csv'), row.names = F)
+    write.csv(batch_stats, paste0(path_setup, 'output/gc/IntStandard_stats.csv'), row.names = F)
   }
   
   #SUMOFAREA
