@@ -4,6 +4,13 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-08 - minor update
+
+Update: 
+  * Renaming of cinnamic acid related entries to internal standard
+  * accordingly updated MTXQCvX_part1 and part2, as well as R functions
+  * minor adjustments of plotting settings in MTXQCvX part2
+  
 ### 2018-10-05 - major update
 
 Update: 
