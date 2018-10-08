@@ -42,18 +42,20 @@ params:
     input: select
     label: 'Perform post-processing based on:'
     choices:
-    - Area
+    - PeakArea
     - absconc
     - corr_absconc
-    - sumA_Conc
-    - ca_Conc
-    - ca_sumA_Conc
-    - sumA_Conc_pmio
-    - ca_Conc_pmio
-    - ca_sumA_Conc_pmio
     - Conc_pmio
     - Conc_microM
-    value: ca_Conc_pmio
+    - sumA_Conc
+    - sumA_Conc_pmio
+    - sumA_Conc_microM
+    - IntStd_Conc
+    - IntStd_Conc_pmio
+    - IntStd_Conc_microM
+    - IntStd_sumA_Conc
+    - IntStd_sumA_Conc_pmio
+    value: IntStd_Conc_pmio
   par1:
     input: text
     label: "Statistics: Define parameter 1 (plot: x-axis)."
@@ -110,7 +112,6 @@ title: `r paste("MTXQCvX2 part2 Postprocessing - PROJECTNAME ", params$analysis)
 ```{r init_doc, echo=FALSE, warning=FALSE}
 #mypal-def for color
 mypal = params$mypal
-
 
 #Source R-Files
 source('R/MTXQC_fcn.R')
@@ -190,7 +191,6 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
   #### Parameter for stats
   parvec = check_parvector(params)
   
-
   ### (1) Calculated absolute quantities derived from MTXQCp1
     if ((params$updated == "PeakArea") & (params$updated == "both")) {
       data_q = read.csv(paste0(path_setup, set_output,'quant/CalculationFileData_manVal.csv'), T) 
@@ -212,7 +212,7 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
     }
 
   ### Defined experimental conditions according to annotation file
-  knitr::kable(summary(ann),caption = "Statistical summary of annotation file.", format = "markdown")
+  knitr::kable(summary(ann),caption = "Statistical summary of annotation file.", format = "pandoc")
 
 ```
 
@@ -264,7 +264,7 @@ of color code and factor level prevents the mis-association of different factor 
 
   #1 - QC cinnamic acid == within
   if (params$ca_fac == "QC") {
-    data_q_sel = subset(data_q, data_q$CA_eval == 'within')
+    data_q_sel = subset(data_q, data_q$IntStd_eval == 'within')
   } else {
     data_q_sel = data_q
   }
@@ -286,7 +286,7 @@ of color code and factor level prevents the mis-association of different factor 
 # Statistics and data visualization
 ## Perform the required statistics
 
-```{r statistics, tidy=TRUE, echo=TRUE}
+```{r statistics, tidy=TRUE}
 #MOD!
     comb_par = c("Lettercode", parvec)
     print(comb_par)
@@ -302,12 +302,16 @@ of color code and factor level prevents the mis-association of different factor 
    write.csv(quant_ss_plain, paste0(path_setup, set_output, set_pp, "Statistics_absQ_", 
                              params$quant, "_plain.csv"), row.names = F)
    
+   if (nrow(quant_ss_plain) == 0) {
+     message("WARNING: Empty file detected: Statistics_absQ_par_plain.csv")
+   }
+   
 ```
 
 
 ## Advanced plotting of quantities for a complex set of conditions
 
-```{r quantities_plot, echo=FALSE, fig.width=6, fig.height=3, fig.cap="Absolute quantities."}
+```{r quantities_plot, echo=FALSE, fig.width=6, fig.height=3}
 #MOD!  
 
 if (length(parvec) == 2) {
@@ -449,7 +453,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
                                    "Statistics_peakArea_NoCal.csv"), row.names = F)
 ```
 
-```{r relative_areas, echo=FALSE, fig.height=3, fig.width=6, fig.cap="Peak area based analysis of metabolites without available calibration curves."}
+```{r relative_areas, echo=FALSE, fig.height=3, fig.width=6}
 #MOD!
 
   if (length(parvec) == 2 ) {
@@ -586,7 +590,7 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 ```
 
 
-```{r inc_plot, fig.width=7, fig.height=5, fig.cap="13C-Incorporation."}
+```{r inc_plot, fig.width=6, fig.height=3}
 #MOD!
 
 #Exclude additional fragments for plotting procedure (Cit: m/z 375, 2OG: m/z 288)
@@ -651,7 +655,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
 ```
 
 
-```{r LabQ, echo=FALSE, fig.cap="Labeled quantities", fig.width=7, fig.height=3}
+```{r LabQ, echo=FALSE, fig.width=6, fig.height=3}
 
 
  for (var in unique(data_combined$Lettercode)) {
