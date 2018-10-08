@@ -64,10 +64,10 @@ if (params$spath == "") {
 
 knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       fig.path = set_fig,  
-                      echo = TRUE,  #TRUE - show R code
+                      echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
                       message = TRUE,
-                      eval = FALSE) #show messages
+                      eval = TRUE) #show messages
 ```
 
 ```{r source_rfiles}
