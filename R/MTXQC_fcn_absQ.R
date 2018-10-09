@@ -1,17 +1,14 @@
 ####### MTXQC functions - Absolute Quantification ######
 
 
-qcurve_top5_rsquare = function(df, path, diff_set){
+qcurve_top5_rsquare = function(df, path){
   #'Determination of calibration curves based on the
   #'ManualQuantTable. 
   #'Two versions are currently implemented:
   #'  (1) - considering different Batch_Ids (diff_set == "yes")
   #'  (2) - data only one setup (else option)
   #'
-  
-  
-  if (diff_set == "yes") {
-    
+
     #here we get the r-squared for each linear regression curve
     df = ddply(df, c("Metabolite_short", "Batch_Id", "Origin"), 
                transform, adj_r_squared = summary(lm(Concentration ~ ChromIntensities))$adj.r.squared)
@@ -31,27 +28,8 @@ qcurve_top5_rsquare = function(df, path, diff_set){
     #let's write these data into a file
     write.table(df, file = paste0(path, "output/quant/top5_QMQcurveInfo.csv"), row.names = F)
     message('top5_QMQcurveInfo.csv generated!')
-  } else {
-    
-    #here we get the r-squared for each linear regression curve
-    df = ddply(df, c("Metabolite_short", "Batch_Id"), transform, adj_r_squared = summary(lm(Concentration ~ ChromIntensities))$adj.r.squared)
-    
-    #here we get the y-intercept for each linear regression curve
-    df = ddply(df, c("Metabolite_short", "Batch_Id"), transform, intercept = coefficients(lm(Concentration ~ ChromIntensities))[1])
-    
-    #here we get the slope for each linear regression curve
-    df = ddply(df, c("Metabolite_short", "Batch_Id"), transform, slope = coefficients(lm(Concentration ~ ChromIntensities))[2])
-    
-    #max and min value
-    df = ddply(df, c('Metabolite_short'), transform, max = max(Concentration), min = min(Concentration))
-    
-    #let's write these data into a file
-    write.table(df, file = paste0(path, "output/quant/top5_QMQcurveInfo.csv"), row.names = F)
-    message('top5_QMQcurveInfo.csv generated!')
-  } 
+
 }
-
-
 
 islinear_nacalc = function(met, test, cc){
   #'This functions checks if the determined peak area
