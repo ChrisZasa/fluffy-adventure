@@ -920,7 +920,7 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 ```
 
 
-```{r samples_range, echo = FALSE, fig.width = 5, fig.height = 5, fig.cap = "Distribution of data points regarding linear range of the calibration curve"}
+```{r samples_range, echo = FALSE, fig.width = 5, fig.height = 7, fig.cap = "Distribution of data points regarding linear range of the calibration curve"}
  if (nrow(lin_cal != 0)) {
    if (addq_idx == "yes") {
     
@@ -931,7 +931,6 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
       geom_bar(stat = 'identity', size = .25, color = 'black') +
       scale_fill_manual(values = color_linearity, 
                         guide = guide_legend(title = 'Evaluation')) +
-    	ggtitle('Fraction of measurements regarding quantification curve: Qstd') +
     	coord_flip() +
     	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
     	xlab('Derivate') +
@@ -946,7 +945,6 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
       geom_bar(stat = 'identity', size = .25, color = 'black') +
       scale_fill_manual(values = color_linearity, 
                         guide = guide_legend(title = 'Evaluation')) +
-    	ggtitle('Fraction of measurements regarding quantification curve: Qadd') +
     	coord_flip() +
     	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
     	xlab('Derivate') +
@@ -961,7 +959,7 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
     geom_bar(stat = 'identity', size = .25, color = 'black') +
     scale_fill_manual(values = color_linearity, 
                       guide = guide_legend(title = 'Evaluation')) +
-  	ggtitle('Fraction of measurements regarding quantification curve') +
+  	#ggtitle('Fraction of measurements regarding quantification curve') +
   	coord_flip() +
   	facet_wrap(Origin ~ Batch_Id, scales = "free_y") +
   	xlab('Derivate') +
