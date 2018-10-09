@@ -818,7 +818,7 @@ if (addq_idx == 'yes') {
     cal_clean <-  subset(cal_clean, cal_clean$ChromIntensities != -99) 
   
     #calculate adj. Rsquare, intercept and slope
-    qcurve_top5_rsquare(cal_clean, path_setup, "yes") 
+    qcurve_top5_rsquare(cal_clean, path_setup) 
 
     #read updated file (containing adj. r-square, slope and intercept)
     qt <-  read.table(file = paste0(path_setup, 'output/quant/top5_QMQcurveInfo.csv'), T) 
