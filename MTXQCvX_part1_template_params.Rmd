@@ -12,7 +12,7 @@ params:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: metmax
+    value: maui
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -1212,13 +1212,10 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 
 ```{r exit_noInc}
 
-
   if (inc_idx == "qMTX") {
      message("No evaluation of isotope data included.")
      knitr::knit_exit()
   }
-  
-
 ```
 
 
@@ -1238,15 +1235,36 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 ```
 
 ## NA count
-```{r se_nacount, tidy = TRUE}
+```{r se_nacount, tidy = TRUE, fig.height = 6, fig.width = 5}
+
+#catch empty file due to missing values in input file for MIDs
+if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
+    
+    message("WARNING: Empty file occured for MID evaluation")
+    message("Evaluation of stable isotope incorporation canceled!")
+    message("Check input data in pSIRM_SpectraData.csv")
+    
+    #print GC-performance and AbsQuantification
+    a <- p_gc
+    b <- p_1
+    
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(10, 6)))
+    vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+    print(a, vp = vplayout(1:2, 4:6))  # key is to define vplayout
+    print(b, vp = vplayout(3:10, 1:6))
+    
+    #stop further processing
+    knitr::knit_exit()
+} else {
+  
   #replace all Zero-val with NA in SamplePeakArea
   data_SE_na  =  data_SE
   data_SE_na[data_SE_na  ==  0]  =  NA
   
- # SE_nascore = mid_metric_calc(data_SE_na)
+  # SE_nascore = mid_metric_calc(data_SE_na)
   
   ### old version
-  
   #count NA in Sample and Backup; calculate ratio
   SE_nascore  =  ddply(data_SE_na, c("File", "Lettercode", "Batch_Id"), summarise,
                    na_SPA  =  sum(is.na(SamplePeakArea)),
@@ -1263,6 +1281,8 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
   
   #Proportional stacked plot
   n  =  length(unique(SE_nascore$na_frac))
+}
+
 ```
   
 ```{r SE_score, echo = FALSE, fig.height = 5, fig.width = 5, fig.cap = "Missing values in mass isotopomer distributions (MID)."} 
