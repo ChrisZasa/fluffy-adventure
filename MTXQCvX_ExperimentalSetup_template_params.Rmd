@@ -9,7 +9,7 @@ params:
   subf:
     input: text
     label: "Run MTXQC based on data in subfolder:"
-    value: "test"
+    value: ""
   inputformat:
     input: select
     label: "Select the input format of your data"
@@ -53,7 +53,7 @@ params:
     input: select
     label: "Integrate additional calibration curves into all batches of the project"
     choices: ["yes", "no"]
-    value: yes
+    value: no
   quant:
     input: select
     choices: [Quant1_v3, Quant1_v4, Quant1_ind]

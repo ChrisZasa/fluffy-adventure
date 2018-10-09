@@ -12,7 +12,7 @@ params:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: maui
+    value: metmax
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -452,7 +452,11 @@ if (is_exit != 1) {
   if (mm_ca_idx == TRUE) {
     if (ca_idx == TRUE) { 
     
-      cin_data = file_shaping(cinacid, shape = "wide", ann, type = "sample", mode = "area")[,c("File", "PeakArea", "Batch_Id")]
+      cin_data = file_shaping(cinacid, shape = "wide", 
+                                file_annotation = ann, 
+                                type = "sample", 
+                                inc = FALSE)[,c("File", "PeakArea", "Batch_Id")]
+      
       cinacid_qc = gc_metric_calc(cin_data, title = "internalstandard")
     
     } else {
@@ -504,7 +508,9 @@ if (is_exit != 1) {
 ```{r sumArea_qc, tidy = TRUE}
  
 if (mm_peaks_idx == TRUE) {
-  suma_data <-  file_shaping(data_area, shape = 'wide', ann, type = "sample", mode = "area")
+  suma_data <-  file_shaping(data_area, shape = 'wide', 
+                      ann, type = "sample", 
+                      inc = FALSE)
   
   suma_qc <-  gc_metric_calc(suma_data, title = 'sumofarea')
   
@@ -574,8 +580,8 @@ if (mm_peaks_idx == TRUE) {
 ```{r mass73_stats, tidy = TRUE}
   #m/z 73 and total peaks data
 if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
-  data_deriv = file_shaping(data_73, shape = 'long', ann, type = "sample", mode = "area")
-  total_peaks = file_shaping(total_peaks, 'long', ann, type = "sample", mode = "area")
+  data_deriv = file_shaping(data_73, shape = 'long', ann, type = "sample", inc = FALSE)
+  total_peaks = file_shaping(total_peaks, 'long', ann, type = "sample", inc = FALSE)
 
   deriv_comb = gc_metric_calc(dataframe = data_deriv, dataframe2 = total_peaks, title = 'mz73')
 } else {
@@ -736,7 +742,7 @@ if (addq_idx == 'yes') {
   #peak areas from quantmassareamatrix
   df_peakareas <-  file_shaping(data_area, shape = 'wide', 
                                 file_annotation = ann_addq, 
-                                complete_ann = TRUE, type = "addQ", mode = "area")
+                                complete_ann = TRUE, type = "addQ", inc = FALSE)
   
   #add annotation lists for metabolite names
   df_peakareas <-  merge(df_peakareas, con_se[,c("Metabolite","Lettercode")])
@@ -888,7 +894,7 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 ```{r pools_linrange, tidy = TRUE}
   #area import  
   #data = read.csv(paste0(path_setup, 'input/quant/quantMassAreasMatrix.csv'), header = T, sep = ',')
-  data_exp = file_shaping(data_area, shape = 'wide', ann, FALSE, type = "sample", mode = "area")
+  data_exp = file_shaping(data_area, shape = 'wide', ann, FALSE, type = "sample", inc = FALSE)
   data_ann = merge(data_exp, con_se)
   
   #clean-up: Q_sel == "x" or nopsirm == "x" (its required to remove technical replicates due to pSIRM)
@@ -1224,7 +1230,7 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 
 ```{r se_imp, tidy = TRUE}
 
-  data_mid_all = file_shaping(data_mid, shape = 'long', ann, type = "sample", mode = "area")
+  data_mid_all = file_shaping(data_mid, shape = 'long', ann, type = "sample", inc = FALSE)
   data_mid_all = merge(data_mid_all, con_se)
  
   #remove duplicates due to LI calculation 
@@ -1281,13 +1287,7 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 ```
 
 ## 3-Lowest of MID
-```{r SE_low3A_noneval, tidy = TRUE}  
-  #SamplePeakArea
- # SE_eval_samples = data_SE_na[,c("Lettercode","File", "Batch_Id" ,"SamplePeakArea")]
-  #SE_eval_backups = data_SE_na[,c("Lettercode","File", "Batch_Id" ,"BackupPeakArea")]
-  #SE_eval_low_stats = mid_metric_calc2(SE_eval_samples, SE_eval_backups)
-  
-```
+
 
 ```{r calc_na_score, tidy = TRUE}  
   SE_nascore$na_frac_r  =  as.factor(SE_nascore$na_frac_r)
@@ -1375,8 +1375,8 @@ if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
 ## $^{13}C$-Isotope incorporation
 ```{r inc_imp, tidy = TRUE}
 
-  data_incorporation = file_shaping(data_inc, shape = "wide", ann, type = "sample", mode = "inc")
-  colnames(data_incorporation)[grepl('PeakArea', colnames(data_incorporation))] <- "Inc"
+  data_incorporation = file_shaping(data_inc, shape = "wide", ann, type = "sample", inc = TRUE)
+  colnames(data_incorporation)[grepl('MID_Intensity', colnames(data_incorporation))] <- "Inc"
 
   data_inc_m  =  merge(data_incorporation, con_se)
   
