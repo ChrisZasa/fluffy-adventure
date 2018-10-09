@@ -115,7 +115,7 @@ extract_standards_export <- function(dataframe, met_names = con_se, ann_file = a
   df_standard = subset(df_peak, Lettercode %in% internalstd)
   
   #if (!is.null(dim(df_standard))) {
-  if (!is.data.frame(df_standard) && !nrow(df_standard)) {
+  if (is.data.frame(df_standard) && nrow(df_standard != 0)) {
     
     message("Defined internal standard: ", internalstd)
     message("Peak areas detected for internal standard in peak area matrix.")

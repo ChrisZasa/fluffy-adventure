@@ -97,6 +97,7 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   }
   
   #calculate MIDs
+  dataframe$MID_Intensity = as.numeric(dataframe$MID_Intensity)
   dataframe = ddply(dataframe, c("File", "Metabolite"), transform, 
                     SampleMID = MID_Intensity / sum(MID_Intensity))
   

@@ -22,19 +22,19 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test"
+    value: "exp173_metmax_mod"
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
-    value: "metmax_area.csv"
+    value: "areamatrix.csv"
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: ""
+    value: "mz73_all.csv"
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: ""
+    value: "mid_all.csv"
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
@@ -46,7 +46,7 @@ params:
   peakchroma:
     input: checkbox
     label: "Generate input table for sum of area normalisation (use: peakarea matrix)"
-    value: FALSE
+    value: TRUE
   mqt:
     input: checkbox
     label: "Generate ManualQuantTable and samples peakarea table."
@@ -54,7 +54,7 @@ params:
   inc:
     input: checkbox
     label: "Calculate stable isotope incorporation and generate corresponding files."
-    value: FALSE
+    value: TRUE
 thanks: Template MTXQCvX part 4 written by Christin Zasada, Kempa Lab
 abstract: MTXQC part 4 provides the transformation of Metmax-derived files for the usage as input files for MTXQC part 1. This report provides three modes - (1) basic - creates tables required for GC-MS performance, (2) Quant - Generation of ManualQuantTable (3) Inc - Calculation of 13C-isotope incorporation.
 ---
@@ -95,6 +95,7 @@ source('R/MTXQC_theme.R')
 source('R/MTXQC_config.R')
 source("R/MTXQC_fcn_incorp.R")
 source("R/MTXQC_fcn_absQ.R")
+source("R/MTXQC_fcn_gcperformance.R")
 ```
 
 ```{r import_files, tidy=TRUE}
@@ -120,62 +121,114 @@ source("R/MTXQC_fcn_absQ.R")
     ## File annotation
     temp_file = "file annotation"
     ann_idx <-  as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
-    ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
     
-      if (ncol(ann) == 1) {
-        ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
-      }
+    if (file.exists(paste0(path_setup, "input/", ann_idx))) {
     
-    check_emptyfile(ann, TRUE, temp_file)
-    
+      ann  <-   read.csv(paste0(path_setup, set_input, ann_idx), T)
+      
+        if (ncol(ann) == 1) {
+          ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
+          
+        }
+      
+      check_emptyfile(ann, TRUE, temp_file)
+    } else {
+      message("FATAL ERROR: Annotation missing!")
+    }
+      
+      
     #Cell count / extract
     temp_file = "sample_extracts"
     se_idx <-  as.character(setup_params[which(setup_params$Parameter == "sample_ext"), "Value"])
-    data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
+    #data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
     
-     if (ncol(data_extracts) == 1) {
-        ann = read.csv(paste0(path_setup, set_input, se_idx), T, sep = ";")
+    file_nick = paste0(path_setup, set_input, se_idx)
+    if (file.exists(file_nick)) {
+      
+      data_extracts <-  read.csv(paste0(path_setup, set_input, se_idx), T)
+      
+      if (ncol(data_extracts) == 1) {
+        data_extracts = read.csv(file_nick, T, sep = ";")
       }
-    check_emptyfile(data_extracts, TRUE, temp_file)
+      check_emptyfile(data_extracts, TRUE, temp_file)
+      message("Sample extracts file imported!")
+      
+    } else {
+      message("WARNING: Sample extracts file missing!")
+    }
+     
     
   #### Different input files for the modes
-  if (params$matrix != "") {
-    table_area = read.csv(paste0(path_setup, set_input, "metmax/", params$matrix), T)
-
-  #!modified code    
-     if (ncol(table_area) == 1) {
-        table_area = read.csv(paste0(path_setup, set_input, "metmax/", params$matrix), T, sep = ";")
-      }
+  #peak areas
     
-    message("PeakArea matrix imported!")
-  } else {
-    message("No peakarea matrix defined!")
-  } 
+  if (params$matrix != "") {
+    temp_file = "peakareas"
+    filedir = paste0(path_setup, set_input, "metmax/", params$matrix)
+    
+    if (file.exists(filedir)) {
+       table_area = read.csv(filedir, TRUE)
+       
+       if (ncol(table_area) == 1) {
+         table_area = read.csv(filedir, TRUE, sep = ";")
+       }
+       check_emptyfile(data_area, essential =  TRUE, temp_file)
+       message("Peak areas sucessfully imported!")
+    } else {
+      message("WARNING: No file for peak area values defined!")
+    }
+  }
   
+  #m/z73-values
   if (params$mz != "") {
-    table_mz = read.csv(paste0(path_setup, set_input, "metmax/", params$mz), T)
+    temp_file = "mz73-values"
+    filedir = paste0(path_setup, set_input, "metmax/", params$mz)
+  
+    if (file.exists(filedir)) {
+      table_mz = read.csv(filedir, TRUE)
+    
+      if (ncol(table_mz) == 1) {
+        table_mz = read.csv(filedir, T, sep = ";")
+      }
+      check_emptyfile(table_mz, essential =  TRUE, temp_file)
+    }
     message("Matrix with m/z 73-values imported")
   } else {
-    message("No file for m/z 73 values defined!")
+    message("WARNING: No file for m/z 73 values defined!")
   }
+  
+  #MIDs-values
     
   if (params$mid != "") {
-   table_mid = read.csv(paste0(path_setup, set_input, "metmax/", params$mid), T)
-   message("MIDs-matrix imported!")
-  } else {
-    message("No file for mass isotopomer distributions (MIDs) defined!")
-  } 
+    temp_file = "MIDs"
+    filedir = paste0(path_setup, set_input, "metmax/", params$mid)
+    
+    if (file.exists(filedir)) {
+      table_mid = read.csv(filedir, TRUE)
+      
+      if (ncol(table_mid) == 1) {
+        table_mid = read.csv(filedir, TRUE, sep = ";")
+      }
+      check_emptyfile(data_mid, essential =  TRUE, temp_file)
+      message("MID-values sucessfully imported! ")
+      
+    } else {
+      message("WARNING: No file containing MID-values defined!")
+    }
+  }
   
   #Check if InternalStandard defined in conversion_list
   
   if (params$intstd == TRUE ) {
     is_subs = subset(con_se, con_se$Standards == "InternalStandard")
-    
+
     if (!nrow(is_subs)) {
       message("Please define your internal standard in the conversion_metabolite.csv file!")
       knitr::knit_exit()
     } else {
       message("Internal Standard defintion detected in conversion_metabolite.csv.")
+      
+      id_intstd = is_subs$Metabolite_short
+      message("Internal Standard defined: ", id_intstd)
     }
   }
     
@@ -197,13 +250,12 @@ source("R/MTXQC_fcn_absQ.R")
 ## GC-Performance
 ### Internal extraction standard
 
-```{r internalstandard}
+```{r internalstandard, warning=FALSE}
 
   if (params$intstd == TRUE) {
     df_peakareas <- file_shaping(table_area, shape = "wide",
                                   type = "sample",
-                                  file_annotation = ann,
-                                  complete_ann = FALSE)
+                                  file_annotation = ann)
 
    extract_standards_export(df_peakareas, met_names = con_se, ann_file = ann)
   }
@@ -211,26 +263,24 @@ source("R/MTXQC_fcn_absQ.R")
 
 ### Alkane intensity distribution
 
-```{r alkane_extraction}
+```{r alkane_extraction, warning=FALSE}
   
   if (params$alkanes == TRUE) {
     df_peakareas <- file_shaping(table_area, shape = "wide",
                                     type = "sample",
-                                    file_annotation = ann,
-                                    complete_ann = FALSE)
+                                    file_annotation = ann)
   
     extraction_alkanes_export(df_peakareas)
   }
 ```
 
 ### PeakDensities
-```{r peakdensities}
+```{r peakdensities, warning=FALSE}
   if (params$peakchroma == TRUE) {
     
     df_peakareas <- file_shaping(table_area, shape = "wide",
                                     type = "sample",
-                                    file_annotation = ann,
-                                    complete_ann = FALSE)
+                                    file_annotation = ann)
     
     df_peakareas = merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
     df_sel = df_peakareas[,c("Metabolite", "QuantMasses", "File", "PeakArea")]
@@ -246,11 +296,13 @@ source("R/MTXQC_fcn_absQ.R")
 ```
 
 ### Derivatisation efficiency
-```{r mz73_extraction}
+```{r mz73_extraction, warning=FALSE}
 
   if (params$mz != "") {
     #workaround 1 - Metmax with mass 73
-    table_mz_new = file_shaping(table_mz, shape = "wide", ann, FALSE)
+    table_mz_new = file_shaping(table_mz, shape = "wide",
+                                type = "sample",
+                                file_annotation = ann)
   
     table_mz73_short = table_mz_new[c("File", "PeakArea")]
     
@@ -266,7 +318,7 @@ source("R/MTXQC_fcn_absQ.R")
 
 ## Absolute Quantification
 ### Generation of ManualQuantTable and PeakArea-matrix
-```{r Quant, tidy = TRUE}
+```{r Quant, tidy = TRUE, warning=FALSE}
 
 if (params$mqt == TRUE) {
   #### Create ManualQuantTable ####
@@ -284,20 +336,19 @@ if (params$mqt == TRUE) {
   
     df_peakareas <-  file_shaping(table_area, shape = 'wide', 
                                   file_annotation = ann_addq,
-                                  type = "quant",
+                                  type = "quant", 
                                   complete_ann = TRUE)
     
     df_peakareas_ann <-  merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite" ,"Lettercode")])
     df_peakareas_sel <-  subset(df_peakareas_ann, Lettercode %in% unique(quant_table$Lettercode))
     
     #4 - Generate ManualQuantTable
-    mqt_std = create_manualquanttable(df_peakareas_sel, q1_values = quant_table, con_se, FALSE)
+    mqt_std = create_manualquanttable(df_peakareas_sel, q1_values = quant_table, con_se)
    
     #### Generate quantAreaMatrix-input file
     df_peakareas <- file_shaping(table_area, shape = "wide",
                                   file_annotation = ann,
-                                  type = "sample",
-                                  complete_ann = FALSE)
+                                  type = "sample")
     
     df_peakareas_ann2 <- merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
     
@@ -315,13 +366,11 @@ if (params$mqt == TRUE) {
 ```{r Incorporation, tidy=TRUE}
   if (params$inc == TRUE) {
     
-		# data import
-		#table_mid = read.csv(paste0(path_setup, set_input, "inc/MID_combined_data.csv"), header = T)
-		table_mid_long = melt(table_mid, id.vars = c("name", "mass"), 
-		                      variable.name = "File", value.name = "MID_Intensity")
-		
-		colnames(table_mid_long)[grepl("name", colnames(table_mid_long))] <- "Metabolite_manual"
-		colnames(table_mid_long)[grepl("mass", colnames(table_mid_long))] <- "Mass_mz"
+    #input data transformation
+    table_mid_long = file_shaping(table_mid, shape = "wide", 
+                                  file_annotation = ann,
+                                  inc = TRUE, 
+                                  type = "sample")
 		
 		#merge MID with conversion list
 		table_conv = merge(table_mid_long, con_se[,c("Metabolite_manual", "Metabolite_short", "Metabolite", "Lettercode")])

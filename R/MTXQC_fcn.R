@@ -130,7 +130,7 @@ check_emptyfile <-  function(dataframe, essential = FALSE, tfile = NULL) {
 }
 
 
-file_shaping = function(dataframe, shape = "long", file_annotation, type, mode = NA, complete_ann = FALSE) {
+file_shaping = function(dataframe, shape = "long", file_annotation, type, inc = FALSE, complete_ann = FALSE) {
 ### Function: File-shaping
 #' including:
 #' melting of wide to long format
@@ -143,11 +143,12 @@ file_shaping = function(dataframe, shape = "long", file_annotation, type, mode =
   #check File
   colnames(dataframe)[grepl("file", colnames(dataframe))] <- "File" 
   
-  #metmax shaping
+  #metmax shaping if row.load and ri are still present in the input
   test_row = "row.load" %in% names(dataframe)
   
   if (shape == "wide") {
   
+    #row.load and ri still present
     if (test_row == TRUE) {
       idx_ri = grep("ri", colnames(dataframe))
       idx_row = grep("row.load", colnames(dataframe))
@@ -155,20 +156,26 @@ file_shaping = function(dataframe, shape = "long", file_annotation, type, mode =
       dataframe = reshape2::melt(df, id.vars = c("name", "mass"), value.name = "PeakArea",
         variable.name = "File", na.rm = TRUE)
       
-      colnames(dataframe)[grepl("name", colnames(dataframe))] <- "Metabolite_manual"
-      colnames(dataframe)[grepl("mass", colnames(dataframe))] <- "QuantMasses"
+      if (inc == TRUE) {
+        colnames(dataframe)[grepl("name", colnames(dataframe))] <- "Metabolite_manual"
+        colnames(dataframe)[grepl("PeakArea", colnames(dataframe))] <- "MID_Intensity"
+        colnames(dataframe)[grepl("mass", colnames(dataframe))] <- "Mass_mz"
+      } else {
+        colnames(dataframe)[grepl("name", colnames(dataframe))] <- "Metabolite_manual"
+        colnames(dataframe)[grepl("mass", colnames(dataframe))] <- "QuantMasses"
+      }
     }
     
+    #row.load and ri already deleted
     if (test_row == FALSE) {
-      if (mode != "inc") {
+      if (inc == FALSE) {
         data_proc = dataframe
         dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite", "QuantMasses"), 
                                    value.name = "PeakArea", variable.name = "File", na.rm = TRUE)
-      } else
-      {
+      } else {
         data_proc = dataframe
         dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite"), 
-                                   value.name = "PeakArea", variable.name = "File", na.rm = TRUE)
+                                   value.name = "MID_Intensity", variable.name = "File", na.rm = TRUE)
       }
     }
   }
@@ -177,17 +184,17 @@ file_shaping = function(dataframe, shape = "long", file_annotation, type, mode =
   dataframe$Batch_Id  = sapply(strsplit(as.character(dataframe$File), "\\_"), "[[", 1)
   
   #merge with annotation to exclude project-unrelated data
-  if (complete_ann == FALSE) {
-    dataframe = merge(dataframe, file_annotation[,c("File", "Type")])
-  }
+    if (complete_ann == FALSE) {
+      dataframe = merge(dataframe, file_annotation[,c("File", "Type")])
+    } 
+    #
+    if (complete_ann == TRUE) {
+      #written for the generation of MQTable
+      dataframe = merge(dataframe, file_annotation)
+      colnames(dataframe)[grep('PeakArea', colnames(dataframe))] <- 'ChromIntensities'
+    }
   
-  #
-  if (complete_ann == TRUE) {
-    #written for the generation of MQTable
-    dataframe = merge(dataframe, file_annotation)
-    colnames(dataframe)[grep('PeakArea', colnames(dataframe))] <- 'ChromIntensities'
-  }
-  
+  #include only data from files == sample
   if (type == "sample") {
     dataframe = subset(dataframe, dataframe$Type == as.character(type))
   }
