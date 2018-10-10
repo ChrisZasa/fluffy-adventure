@@ -186,6 +186,10 @@ imp_error = 0
           if (file.exists(ca_path) == TRUE) {
             cinacid  <-   read.csv(ca_path, T, sep = ',')
             
+            if (ncol(cinacid) == 1) {
+              cinacid  <-   read.csv(ca_path, T, sep = ';')
+            }
+            
             #Which internalstandard exported in InternalStandard.csv
             intstd = unique(cinacid$Metabolite)
             message("Defined Internal Standard: ", intstd)
@@ -287,6 +291,10 @@ imp_error = 0
          
        } else {
          data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+         
+         if (ncol(data_area) == 1) {
+           data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T, sep = ";")
+         }
          check_emptyfile(data_area, TRUE, nick_samples)   
        }
       
@@ -300,6 +308,10 @@ imp_error = 0
       
       } else {
         data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T)
+        
+        if (ncol(data_area) == 1) {
+           data_area  <-   read.csv(paste0(path_setup,  set_input, 'quant/', nick_samples), T, sep = ";")
+         }
         check_emptyfile(data_area, TRUE, nick_samples)    
       }
 
@@ -327,6 +339,10 @@ imp_error = 0
             
           } else {
              data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+             
+             if (ncol(data_mid) == 1) {
+                data_mid  <-   read.csv(paste0(path_setup,  set_input, 'inc/', nick_psirm), T, sep = ";")
+            }
             check_emptyfile(data_mid, TRUE, nick_psirm)
           }
            
@@ -340,6 +356,10 @@ imp_error = 0
             knitr::knit_exit()
           } else {
             data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+            
+            if (ncol(data_inc) == 1) {
+                data_inc  <-   read.csv(paste0(path_setup,  set_input, 'inc/', nick_inc), T, sep = ";")
+            }
             check_emptyfile(data_inc, TRUE, nick_inc)
           }
           
@@ -367,6 +387,10 @@ imp_error = 0
             knitr::knit_exit()
           } else {
             data_mid  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_psirm), T)
+            
+            if (ncol(data_mid) == 1) {
+                data_mid  <-   read.csv(paste0(path_setup,  set_input, 'inc/', nick_psirm), T, sep = ";")
+            }
             check_emptyfile(data_mid, TRUE, nick_psirm)
           }
 
@@ -380,6 +404,10 @@ imp_error = 0
             knitr::knit_exit()
           } else {
             data_inc  <-   read.csv(paste0(path_setup, set_input,'inc/', nick_inc), T)
+            
+            if (ncol(data_inc) == 1) {
+                data_inc  <-   read.csv(paste0(path_setup,  set_input, 'inc/', nick_inc), T, sep = ";")
+            }
             check_emptyfile(data_inc, TRUE, nick_inc)
           }
             
