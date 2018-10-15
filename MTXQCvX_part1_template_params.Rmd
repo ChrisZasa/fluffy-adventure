@@ -676,43 +676,23 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 
 	if (params$data == "maui") {
 	
-	  #Create batch_id vector
-	  batch_id_def = create_batchid(ann)
-
-	  #count and check number of required MQT raw tables
-	  nb_id = length(batch_id_def)
-	  file_names <- dir(paste0(path_setup, set_input,"quant/"), pattern = ".tsv") 
+	  #check ManualQuantTable.tsv and defined Batch-Ids in annotation file
+	  batch_id_def = check_mqt_batchids(ann, path_setup)
 	  
-	  #stop if no files detectable
-	  if (length(file_names) == 0) {
-	    message("No tsv-files detected! Please check the folder: input/quant/")
-	    knitr::knit_exit()
-	  } else {
-	    message("In folder input/quant: .tsv-files detected!")
-	  }
-	  
-	  if (length(batch_id_def) < length(file_names)) {
-	    message("Please check your annotation file. Your annotation files contains less files derived
-	      from different Batches, than you copied in the MTXQC project! Continue processing though!")
-	  }
-	  
-	  if (length(batch_id_def) > length(file_names)) {
-			message("Please check the number of ManualQuantTables.tsv in your MTXQC project. \n
-                There are more batches defined in your annotation file, than tsv-files present. \n
-			          Continue processing though!")
-	  } else {
-			message("Correct matching of ManualQuantTable files and annotation file content!")
-	  }
-			cual <- do.call(rbind, lapply(file_names, 
+	  #extract tsv-file names
+	  file_names <- dir(paste0(path_setup, set_input, "quant/"), pattern = ".tsv") 
+		
+	  #combine all tsv-files, add Batch-Id
+	  cual <- do.call(rbind, lapply(file_names, 
 								 function(x) cbind(read.csv(paste0(path_setup, set_input, 
 										  "quant/", x), sep = "\t"), 
 										  Batch_Id = strsplit(x,'\\.')[[1]][1])))
 	   
-			write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
+		write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
 			
-			#generate ManualQuantTable
-      mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
-      message("ManualQuantTable generated and exported!")
+		#generate ManualQuantTable
+    mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
+    message("ManualQuantTable generated and exported!")
 	}
 
 	if (params$data == "metmax") {
@@ -866,7 +846,7 @@ if (addq_idx == 'yes') {
 ```
 
 
-```{r calcurve_par, echo = TRUE, fig.height = 5, fig.width = 5, fig.cap = "Calibration curves: Nb. of data points."}
+```{r calcurve_par, fig.height = 5, fig.width = 5, fig.cap = "Calibration curves: Nb. of data points."}
 
 if (is.data.frame(qc_calcurve) && nrow(qc_calcurve != 0)) {
   ggplot(qc_calcurve, aes(Lettercode, Par_value, color = Parameter)) +
