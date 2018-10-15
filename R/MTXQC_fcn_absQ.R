@@ -1,5 +1,53 @@
 ####### MTXQC functions - Absolute Quantification ######
 
+check_mqt_batchids <- function(df_annotation, dir = path_setup) {
+  #'Check matching ManualQuantTable.tsv files and annotation file
+  #'
+  #'
+  #'
+  #'
+  
+  
+  #Create batch_id vector
+  batch_id_def = create_batchid(df_annotation)
+  
+  #count and check number of required MQT raw tables
+  nb_id = length(batch_id_def)
+  file_names <- dir(paste0(dir, "input/quant/"), pattern = ".tsv") 
+  
+  #stop if no files detectable
+  if (length(file_names) == 0) {
+    message("FATAL ERROR: No tsv-files detected! Please check the folder: input/quant/")
+    knitr::knit_exit()
+  } else {
+    message("In folder input/quant: .tsv-files detected!")
+  }
+  
+  #stop if missing renaming of tsv-file
+  temp = grepl("ManualQ", file_names)
+  if (temp == TRUE) {
+    message("FATAL ERROR: Please rename your ManualQuantTable.tsv files with Batch-Id!")
+    knitr::knit_exit()
+  } else {
+    message("All ManualQuantTable.tsv-files renamed!")
+  }
+  
+  #check number of defined batch-ids in input/quant and annotation file
+  if (length(batch_id_def) < length(file_names)) {
+    message("WARNING: Please check your annotation file!") 
+    message("WARNING: Less files defined than you copied in the MTXQC project!")
+  }
+  
+  if (length(batch_id_def) > length(file_names)) {
+    message("WARNING: Please check the number of ManualQuantTables.tsv in your MTXQC project.")
+    message("WARNING: More batches defined in your annotation file, than tsv-files present.")
+  } else {
+    message("Correct matching of ManualQuantTable files and annotation file content!")
+  }
+  
+  return(batch_id_def)
+}
+
 
 qcurve_top5_rsquare = function(df, path){
   #'Determination of calibration curves based on the
