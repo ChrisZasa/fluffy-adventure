@@ -4,6 +4,19 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+
+### 2018-10-15 - minor update
+
+I updated the error messages and actual catching errors related to ManualQuantTable.tsc-files. 
+
+In detail MTXQCvX2_part1 checks now if you have renamed ManualQuantTable.tsv and if not, 
+it exits the processing of your data. A related FATAL ERROR is shown in the pdf and directs
+you what to do in order to solve this issue.
+
+I hope it helps!
+
+
+
 ### 2018-10-08 - minor update
 
 Update: 
