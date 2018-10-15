@@ -5,6 +5,19 @@ Automated version of MTXQCvX2 - fluffy adventure
 ## Version and updates
 
 
+### 2018-10-15 - major update
+
+*Quick fix*
+
+Correction of file name after integration of incorporation data performed by MTXQCvX2_part3.
+
+Issue: 
+  * wrong file name pSIRM_Spectra_man.csv
+  * correct: pSIRM_SpectraData_man.csv
+  
+Please download a new zip-file of MTXQCvX2!
+
+
 ### 2018-10-15 - minor update
 
 I updated the error messages and actual catching errors related to ManualQuantTable.tsc-files. 
