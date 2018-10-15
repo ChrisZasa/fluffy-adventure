@@ -62,7 +62,7 @@ evaluate_peakareas <-  function(dataframe) {
                                    dataframe$ManVal_PeakArea,
                                    ifelse(!is.na(dataframe$PeakAreas), dataframe$PeakAreas, NA))
   
-  dataframe$check_diff= ifelse(!is.na(dataframe$PeakArea), dataframe$ManVal_PeakArea - dataframe$PeakAreas, dataframe$ManVal_PeakArea)
+  dataframe$check_diff = ifelse(!is.na(dataframe$PeakArea), dataframe$ManVal_PeakArea - dataframe$PeakAreas, dataframe$ManVal_PeakArea)
   
   
   quant_nonzero = subset(dataframe, !is.na(dataframe$check_diff))
@@ -158,7 +158,7 @@ integrate_manVal_MIDs <- function(dataframe, corrected_mids) {
   fused_mids = ddply(fused_mids, c("File", "Metabolite"), transform, 
                      SampleMID = SamplePeakArea / sum(SamplePeakArea))
   
-  write.csv(fused_mids, paste0(path_setup, set_input, "inc/pSIRM_Spectra_manVal.csv"), row.names = FALSE)
-  message("Manually validated MIDs have been incorporated and saved in: ", paste0(set_input, "inc/pSIRM_Spectra_manVal.csv"))
+  write.csv(fused_mids, paste0(path_setup, set_input, "inc/pSIRM_SpectraData_manVal.csv"), row.names = FALSE)
+  message("Manually validated MIDs have been incorporated and saved in: ", paste0(set_input, "inc/pSIRM_SpectraData_manVal.csv"))
   return(fused_mids)   
 }
