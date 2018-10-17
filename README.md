@@ -4,6 +4,25 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-16 - major update
+
+*Important fix in case you have issues with MTXQCvX2_part3 - ManualValidation of PeakAreas*
+
+Integration of warning messages if you have the following issue:
+  * multiple values for a single metabolite and file in ManVal_PeakAreas.csv
+  * resulting in a warning: aggregation function missing
+  * cause a malfunction of the integration of peakareas into original file
+  
+The fix shows now detailed warning messages and where to check to fix the issue.
+
+If warning occurs:
+  * check Aggregationfailure.csv file created in project-folder/output
+  * mean_val reflects average value for metabolite across the project
+  * mean_val shows values in single, double digits: these are duplicated values
+  * fix these duplicates values per metaboltie and file in ManVal_PeakAreas.csv
+  * Re-do Integragtion of peakareas
+    
+
 
 ### 2018-10-15 - major update
 
