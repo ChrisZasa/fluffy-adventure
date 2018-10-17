@@ -77,16 +77,16 @@ evaluate_peakareas <-  function(dataframe) {
     nb_mod_peaks = length(quant_nonzero$check_diff)
     message('Number of modified peak areas: ', nb_mod_peaks)
     
-    ##plot
-    quant_nonzero = merge(quant_nonzero, con_se)
+    ##first: plot tendency of modified peak areas for each intermediate
+    quant_nonzero = merge(quant_nonzero, con_se[,c("Lettercode", "Metabolite")])
     
     print(ggplot(quant_nonzero, aes(check_diff, fill = Lettercode)) +
             geom_histogram(size = .3, color = 'black') +
             theme_bw() +
-            ggtitle('Validated peak area: check_diff = ManVal - PeakArea') +
+            ggtitle('Check_diff = ManVal-PeakArea - Original-PeakArea') +
             theme(legend.position = "bottom"))
     
-    ## second check: count modified peak areas per metabolite
+    ##second check: count modified peak areas per metabolite
     man_stat = ddply(quant_nonzero, c("Lettercode"), summarise,
                      n_mod = length(ManVal_PeakArea))
     
@@ -94,23 +94,53 @@ evaluate_peakareas <-  function(dataframe) {
             geom_point() +
             coord_flip() +
             theme_bw() +
-            ggtitle('Validation of peak areas') +
+            ggtitle('Number of validated peak areas / intermediate') +
             theme(legend.position = "bottom") +
             ylab("Nb. of manually validated peaks") +
             xlab("Metabolite"))
     
     ## convert long into wide format and export into:
     ## output/quant/quantAreaMattrix_manVal.csv
+    
+    
     dataframe_wide = dcast(dataframe, Metabolite + QuantMasses ~ File, 
                            value.var = 'Comb_PeakArea')
     
+      ##ERROR: aggregation function missing
+        
+        test_long = reshape2::melt(dataframe_wide, c("Metabolite", "QuantMasses"), na.rm = TRUE)
+    
+        test = ddply(test_long, c("Metabolite"), summarise, 
+                     mean_val = mean(value))
+        
+        if (mean(test$mean_val) <= 250) {
+          
+          ## WARNING aggregation function missing
+          message("WARNING: Be cautious if you get a warning like: aggregation function missing.")
+          message("WARNING: If so - check your MassAreasMatrix_ManVal.csv - file.")
+          message("WARNING: Most probably you have multiple values for one file and metabolite! dcast failes!")
+          
+          write.csv(test, paste0(path_setup, set_output, "ManVal-Aggregationfailure.csv"), row.names = FALSE)
+          
+          message("Have a look at ManVal-Aggregationfailure.csv in output-folder!")
+          
+        } else {
+          message("Integration of validated peak areas seems to be fine!")
+        }
+    
+        
+    
     #Export
     write.csv(dataframe_wide, paste0(path_setup, set_input, 
-                                     'quant/quantMassAreasMatrix_manVal.csv'))
+                                     'quant/quantMassAreasMatrix_manVal.csv'), row.names = FALSE)
     
     file_name = paste0(set_input, "quant/MassAreasMatrix_ManVal.csv")
     
-    message("Manual validated peak areas have been merged original data and saved in: ", file_name) 
+    message("Manual validated peak areas have been merged original data") 
+    message("Updated peak areas saved in: ", file_name) 
+    
+    
+   
   }
   
 }

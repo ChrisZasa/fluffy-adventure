@@ -25,7 +25,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test_sabrina"
+    value: "test"
   folder:
     input: text
     label: "Define folder where to export and import files."
@@ -53,7 +53,7 @@ abstract: This document provides the manual validation of GC-MS derived data (MT
 
 # Data transformation for convenient manual validation
 
-```{r quitknitting_immediately}
+```{r quitknitting_immediately, echo=FALSE}
 
 #if (params$inputformat != "maui") {
  # message("This input format is currently not integrated in this module! Sorry!")
@@ -69,7 +69,7 @@ if ((params$prep != "none") & (params$eval != "none")) {
 ```
 
 
-```{r init_directory, warning=FALSE}
+```{r init_directory, warning=FALSE, echo=FALSE}
 #MOD!
 set_input = "input/"
 set_output = "output/"
