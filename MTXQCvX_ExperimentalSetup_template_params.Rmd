@@ -43,17 +43,17 @@ params:
     multiple: FALSE
     choices: [cell extracts, blood/serum, tissue, supernatant, mixed]
     label: 'Specify the origin of samples:'
-    value: mixed
+    value: ""
   addQ:
     input: select
     label: "Include additional calibration curves for the absolute quantification."
     choices: ["yes", "no"]
-    value: no
+    value: "no"
   addQ_Int:
     input: select
     label: "Integrate additional calibration curves into all batches of the project"
     choices: ["yes", "no"]
-    value: no
+    value: "no"
   quant:
     input: select
     choices: [Quant1_v3, Quant1_v4, Quant1_ind]
@@ -66,7 +66,7 @@ params:
   backups:
     input: text
     label: "Technical replicates per sample:"
-    value: 1
+    value: 2
 output:
   pdf_document:
     citation_package: natbib
@@ -164,7 +164,6 @@ Samples have been measured using the following methods
       3. Split: 1:5
       4. MS-method: Lizzy-like
       
-
 
 # General MTXQC parameter
 ```{r par_table}
