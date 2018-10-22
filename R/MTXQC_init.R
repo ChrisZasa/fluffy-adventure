@@ -79,7 +79,7 @@ initiate_MTXQC = function(subfolder = "") {
   list_packages <- c("ggplot2", "reshape2", "RColorBrewer", "plyr", "scales",
                      "kableExtra", "magrittr", "grid", "gridExtra", "shiny", "knitr",
                      "rmarkdown", "formatR", "readr", "tinytex", "gplots", "devtools",
-                      "dplyr", "ggrepel")
+                      "dplyr", "ggrepel", "tufte")
   
   new_packages <- list_packages[!(list_packages %in% 
                                      installed.packages()[,"Package"])]
