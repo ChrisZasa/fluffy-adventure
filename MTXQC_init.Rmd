@@ -23,27 +23,28 @@ This document provides you a quick guidance through the first steps of the MTXQC
 
 Detailed information to distinct steps are provided in addition in the MTXQC-OneNotebook [^1]. You need to setup a microsoft office account or need to remember your credentials. Keywords that could be used to find the correct information in the OneNotebook are marked in bold throughout this document.
 
+Short vignettes for each MTXQCvX2 modules and other selected processes are summarised in the folder `man/vignettes/`.
+
 [^1]: Shared link: https://1drv.ms/u/s!Aq56mkSqDxZjgTu-LvPV2xFTWWGu
 
 
 ### First steps:
    
     1. Download the current version of MTXQCvX2 from github.com/ChrisZasa/fluffy-adventure
-    2. Create a new folder for your analysis
-    3. Open here a new Rproject
-    4. Copy all files extracted from the zip-archive downloaded from github.
-    5. Open MTXQC_init.Rmd (you are reading the knitted version)
+    2. Create a new folder - directory of your Rproject.
+    3. Initiate a new Rproject (.Rproj)
+    4. Copy all files extracted from the zip-archive downloaded from github into this folder.
+    5. Open MTXQC_init.Rmd (you are reading the knitted version of this file)
     6. Click the small triangle next to the Knit button and select: Knit with parameter
-    7. Define a project folder name
-    8. Copy your Maui- or Metmax-derived input files
+    7. Define a project folder name, e.g, HEK293_glucose
+    8. Copy your Maui- or Metmax-derived input files into the corresponding folders
     9. Follow the detailed instructions (folder man/vignettes/*)
 
 Once the folder structure in your project has been initiated and all required packages have been installed, 
 proceed with copying all input files.
 
 Detailed instructions for MAUI-projects and Metmax-extracted projects are described in the corresponding
-vignettes - have a look at *man/vignettes/*.
-
+vignettes - have a look at `man/vignettes/`.
 
 
 ```{r create_directory, message=FALSE, warning=FALSE,echo=FALSE}
