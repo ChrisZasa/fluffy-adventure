@@ -6,7 +6,7 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ### 2018-10-22 - major update
 
-Version: 1.0.2
+Version: 1.0.3
 
 I have included first files of documentation in the folder man/vignettes. You need to knit each `.Rmd`. file in order read
 these files in a comfortable format. You might to need to run `install.packages("tufte")` prior rendering a file.
