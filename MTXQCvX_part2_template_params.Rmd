@@ -4,6 +4,8 @@
 author:
 - affiliation: Test Lab
   name: Test Person
+- affiliation: Test Lab
+  name: Test Person
 biblio-style: apsr
 output:
   pdf_document:
@@ -99,12 +101,11 @@ abstract: This document provides the post-processing of the output files derived
 ---
 
 ---
-title: `r paste("MTXQCvX2 part2 Postprocessing - PROJECTNAME ", params$analysis)`
+title: `r paste("MTXQCvX2 part2 ", params$analysis, " Par: ", params$par1, " ", params$par2, " ", params$par3, " ", params$par4, )`
 ---
 # Summary
 
 *Summarise the most important findings or questions.*
-
 
 
 #Project initiation
@@ -122,15 +123,10 @@ source("R/MTXQC_pck.R")
 
 set_input = "input/"
 set_output = "output/"
+
 ## subfolder for postprocessing
-
 #Defining pp-folder
-  if (params$analysis == "less_stringent") {
-      set_pp = paste0(Sys.Date(), "_PostProcessing_lessStringent_", params$quant, "/")
-    } else {
-      set_pp = paste0(Sys.Date(), "_PostProcessing_stringent_", params$quant, "/")
-    }
-
+set_pp = paste0(Sys.Date(), "_PostProc_", params$analysis, "_",params$ca_fac, "_" ,params$quant, "/")
 
 #directory definition and figure_name definition
 if (params$subs == "") {
@@ -258,11 +254,10 @@ of color code and factor level prevents the mis-association of different factor 
 
 
 # Absolute quantification of metabolites
-  
 
 ```{r Quant_parameter, tidy = TRUE, include = TRUE, echo = TRUE}
 
-  #1 - QC cinnamic acid == within
+  #1 - QC cinnamic acid / internal standard == within
   if (params$ca_fac == "QC") {
     data_q_sel = subset(data_q, data_q$IntStd_eval == 'within')
   } else {
@@ -623,8 +618,6 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
     }
 
 ```
-
-
 
 # 13C-Quantities
 

@@ -3,6 +3,8 @@ title: 'MTXQCvX2 Part4: PROJECT NAME'
 author:
 - affiliation: Test Lab
   name: Test Person
+- affiliation: Test Lab
+  name: Test Person
 biblio-style: apsr
 output:
   pdf_document:
@@ -22,39 +24,39 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "exp173_metmax_mod"
+    value: ""
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
-    value: "areamatrix.csv"
+    value: ""
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: "mz73_all.csv"
+    value: ""
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: "mid_all.csv"
+    value: ""
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
-    value: TRUE
+    value: FALSE
   alkanes:
     input: checkbox
     label: "Generate input table for alkane intensities (definition: Alk)."
-    value: TRUE
+    value: FALSE
   peakchroma:
     input: checkbox
     label: "Generate input table for sum of area normalisation (use: peakarea matrix)"
-    value: TRUE
+    value: FALSE
   mqt:
     input: checkbox
     label: "Generate ManualQuantTable and samples peakarea table."
-    value: TRUE
+    value: FALSE
   inc:
     input: checkbox
     label: "Calculate stable isotope incorporation and generate corresponding files."
-    value: TRUE
+    value: FALSE
 thanks: Template MTXQCvX part 4 written by Christin Zasada, Kempa Lab
 abstract: MTXQC part 4 provides the transformation of Metmax-derived files for the usage as input files for MTXQC part 1. This report provides three modes - (1) basic - creates tables required for GC-MS performance, (2) Quant - Generation of ManualQuantTable (3) Inc - Calculation of 13C-isotope incorporation.
 ---
@@ -253,7 +255,8 @@ source("R/MTXQC_fcn_gcperformance.R")
 ```{r internalstandard, warning=FALSE}
 
   if (params$intstd == TRUE) {
-    df_peakareas <- file_shaping(table_area, shape = "wide",
+    df_peakareas <- file_shaping(table_area, 
+                                  shape = "wide",
                                   type = "sample",
                                   file_annotation = ann)
 
@@ -266,9 +269,10 @@ source("R/MTXQC_fcn_gcperformance.R")
 ```{r alkane_extraction, warning=FALSE}
   
   if (params$alkanes == TRUE) {
-    df_peakareas <- file_shaping(table_area, shape = "wide",
-                                    type = "sample",
-                                    file_annotation = ann)
+    df_peakareas <- file_shaping(table_area, 
+                                  shape = "wide",
+                                  type = "sample",
+                                  file_annotation = ann)
   
     extraction_alkanes_export(df_peakareas)
   }
@@ -317,47 +321,47 @@ source("R/MTXQC_fcn_gcperformance.R")
 ```  
 
 ## Absolute Quantification
-### Generation of ManualQuantTable and PeakArea-matrix
+### Generation of ManualQuantTable and peakarea matrix table
 ```{r Quant, tidy = TRUE, warning=FALSE}
 
-if (params$mqt == TRUE) {
-  #### Create ManualQuantTable ####
-    #1 - import Quant1-values for Quant-Mix
-    q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
-    
-    quant1 = read.csv("config_mtx/quant1_values.csv", header = T)
-    quant_table = quant1[,c("Letter_Derivate", q_idx)]
-    quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
-   
-    #3 - Extract peak areas / chromintensities
-    #identifer phrase in annotation file for Quant-samples, add annotation
-    addq_phrase <-  "Q"
-    ann_addq <-  extract_addQ_annotation(annotation_file = ann, phrase = addq_phrase)
-  
-    df_peakareas <-  file_shaping(table_area, shape = 'wide', 
-                                  file_annotation = ann_addq,
-                                  type = "quant", 
-                                  complete_ann = TRUE)
-    
-    df_peakareas_ann <-  merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite" ,"Lettercode")])
-    df_peakareas_sel <-  subset(df_peakareas_ann, Lettercode %in% unique(quant_table$Lettercode))
-    
-    #4 - Generate ManualQuantTable
-    mqt_std = create_manualquanttable(df_peakareas_sel, q1_values = quant_table, con_se)
-   
+  if (params$mqt == TRUE) {
+    #### Create ManualQuantTable ####
+      #1 - import Quant1-values for Quant-Mix
+      q_idx = as.character(setup_params[which(setup_params$Parameter == "quant"), "Value"])
+      
+      quant1 = read.csv("config_mtx/quant1_values.csv", header = T)
+      quant_table = quant1[,c("Letter_Derivate", q_idx)]
+      quant_table = merge(quant_table, pathway_profile)[,c("Letter_Derivate", "Lettercode", as.character(q_idx))]
+     
+      #3 - Extract peak areas / chromintensities
+        #identifer phrase in annotation file for Quant-samples, add annotation
+        addq_phrase <-  "Q"
+        ann_addq <-  extract_addQ_annotation(annotation_file = ann, phrase = addq_phrase)
+      
+        df_peakareas <-  file_shaping(table_area, shape = 'wide', 
+                                      file_annotation = ann_addq,
+                                      type = "quant", 
+                                      complete_ann = TRUE)
+        
+        df_peakareas_ann <-  merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite" ,"Lettercode")])
+        df_peakareas_sel <-  subset(df_peakareas_ann, Lettercode %in% unique(quant_table$Lettercode))
+      
+      #4 - Generate ManualQuantTable
+        mqt_std = create_manualquanttable(df_peakareas_sel, q1_values = quant_table, con_se)
+     
     #### Generate quantAreaMatrix-input file
-    df_peakareas <- file_shaping(table_area, shape = "wide",
-                                  file_annotation = ann,
-                                  type = "sample")
-    
-    df_peakareas_ann2 <- merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
-    
-    df_save = dcast(df_peakareas_ann2, Metabolite + QuantMasses ~ File, value.var = "PeakArea")
-    write.csv(df_save, paste0(path_setup, set_input, "quant/quantMassAreasMatrix.csv"), row.names = FALSE)
-    
-    message("quantMassAreaMatrix.csv has been generated and saved in input/quant/.")
-} else {
-    message("No ManualQuantTable or PeakAreaMatrix generated due to settings for processing.")
+      df_peakareas <- file_shaping(table_area, shape = "wide",
+                                    file_annotation = ann,
+                                    type = "sample")
+      
+      df_peakareas_ann2 <- merge(df_peakareas, con_se[,c("Metabolite_manual", "Metabolite")])
+      
+      df_save = dcast(df_peakareas_ann2, Metabolite + QuantMasses ~ File, value.var = "PeakArea")
+      write.csv(df_save, paste0(path_setup, set_input, "quant/quantMassAreasMatrix.csv"), row.names = FALSE)
+      
+      message("quantMassAreaMatrix.csv has been generated and saved in input/quant/.")
+  } else {
+      message("No ManualQuantTable or PeakAreaMatrix generated due to settings for processing.")
   }
 ```
   

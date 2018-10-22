@@ -1,0 +1,103 @@
+---
+title: "MTXQCvX2 for Maui-projects"
+subtitle: "How to use MTXQCvX2 for Maui-projects"
+author: "Christin Zasada"
+output:
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_html: default
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+
+The following article describes briefly how to use MTXQCvX2 in case you used Maui for the annotation 
+of your metabolomics project. It does not matter if you have performed an experiment 
+including stable isotopes or if you just aim for the quantification of few intermediates. 
+
+A summary of the general workflow is shown below, followed by more detailed instructions explaining required input files. Check out the sidenotes^[exactly, like this one... ] for hints and suggestions.
+
+
+# Quick view
+
+1. Setup R-project and copy MTXQC-files^[Check for the latest release: github.com/ChrisZasa/fluffy-adventure]
+2. Knit with parameter: MTXQC_init.Rmd
+3. Copy input files 
+4. Create annotation.csv and sample_extracts.csv files^[Details further down this document]
+5. Define the internal standard^[see below InternalStandard]
+6. Knit with parameter: MTXQC_ExperimentalSetup.Rmd
+7. Knit with parameter: MTXQC_part1.Rmd
+8. Knit with parameter: MTXQC_part2.Rmd
+9. If required - proceed with ManualValidation^[see vignettes/MTXQCvX2_part3]
+
+
+# Input files derived from a single Maui-Project
+
+## Input-Folder: gc
+  
+- Alcane_intensities.csv (Diagnostics/Export Alcane intensities)
+- InternalStandard.csv ^[see more details below]
+- MassSum-73.csv (Diagnostics/QC Mass Sum Export for mass 73)
+- PeakDensities-Chroma.csv (Diagnostics/ExportPeakDensities)
+
+## Input-Folder: quant
+
+- ManualQuantTable.tsv - rename it - e.g., e18125cz.tsv ^[Location: Maui-project/export/QM-AbsoluteQuantification/...] ^[C://Users/User-name/MauiProjects/...]
+- quantMassAreasMatrix.csv (Quantification export of samplesPeakGroups)
+
+## Input-Folder: inc
+
+- DataMatrix.csv (Export % Label of pSIRM-samplesPeakGroups)
+- pSIRM_SpectraData.csv (pSIRM Spectra Export)^[Requires the selection of Natural_MIDs.txt]
+
+# Multiple MAUI-projects
+
+Certain circumstances might require the combination of multiple MAUI-projects into one MTXQC-project. This might be the case when you run the same samples in split and splitless or your experimental setup has been measured in multiple batches in order to avoid derivatisation effects.
+
+1. Create in the MTXQC-project folder a new folder, e.g., raw-data
+2. Create subfolder for each MAUI-run
+3. Copy the required files into each subfolder
+4. Update the parameter of combine-sets.R file^[inst/template_files/...] 
+5. Execute the script
+6. Merged files have been generated and copied into input-folder
+7. Copy the renamed tsv-files separately into input/quant/...
+
+# Annotation-file
+
+The annotation file relate file names with experimental conditions or specify quantification standards in your batch. 
+Two columns - **File and Type** are obligatory and in the case of absence MTXQCvX_part1 stops and shows an error message.
+
+1. Copy first row of quantMassAreaMatrix.csv file
+2. Paste & transpose the content into a new Excel-File
+3. Rename Metabolite into File
+4. Remove QuantMasses (last entry of the column)
+5. Add column Type and specify either as sample or addQ1_dilution^[additional quantification standards included in your setup, see for further details vignettes/additionalQuant]
+6. Add further columns specifying your experimental conditions, e.g., Cellline and Treatment ...^[optimal: two-three parameter, max: four parameter. Consider possible combinations, e.g., HCT116-control, HCT116-BPTES]
+7. Save as csv-file (folder: input/...)
+
+# Sample_extracts-file
+
+The sample_extracts.csv file helps to determine correct absolute quantities in the manner of pmol/1e+6 cells or pmol/mg tissue. 
+
+Two columns are obligatory and have to be included: **Extract_vol** and **Unit**^[Define: count, mg or ul]. Please specify for each experimental condition that differs in extracted quantities. Column names of the experimental conditions have to match with the annotation file. Otherwise MTXQCvX2_part1 stops processing and throws an error message in the report. An example file can be modified and reused^[inst/template_files/...]. Save the created file as csv-file into the input folder as well.
+
+# Internal Standard
+
+MTXQCvX2 allows the specification of project-specific internal standards. Corresponding compounds have to be marked as an internal standard in the conversion_metabolite.csv file^[config_mtx/conversion_metabolites.csv, column Standard == InternalStandard]. 
+
+Peak areas for the defined compound are either generated by the export of cinAcidPeakGroups container in Maui, or could be extracted from the samplePeakGroups.csv file. Peak areas should be copied into a new csv-file and named InternalStandard. CinAcid-derived exported file shou be renamed, respectively.
+
+
+The defined internal standards are listed with their complete name in the MTXQC report. 
+

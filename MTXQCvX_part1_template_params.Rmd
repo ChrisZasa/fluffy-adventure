@@ -1,13 +1,15 @@
 ---
-title: 'MTXQCvX2 - Part1'
+title: 'MTXQCvX2 - Part1: PROJECTNAME'
 author:
+- affiliation: Test Lab
+  name: Test Person
 - affiliation: Test Lab
   name: Test Person
 params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test"
+    value: ""
   data:
     input: select
     choices: [maui, metmax]
@@ -39,9 +41,6 @@ abstract: This document provides an evaluation of GC-MS derived metabolomics dat
 ---
 
 # MTXQCvX part1
-## Summary
-
-** Summarise your major findings and important details. DO NOT skip this part.**
 
 ## General project settings
 
@@ -449,7 +448,7 @@ if (alkane_idx == TRUE) {
 ```
 
 
-```{r alkanes, fig.height = 5, fig.width = 5, fig.cap =  "Alkane intensities summarised per each file. Drop of intensities shows questionable files."}
+```{r alkanes, fig.height = 5, fig.width = 5, fig.cap =  "Distribution of Alkanes (#c10 - #c36)"}
   
   if (alkane_idx == TRUE) {
    if (!nrow(data_alk) == 0) {
@@ -457,7 +456,7 @@ if (alkane_idx == TRUE) {
   		geom_boxplot() +
   		coord_flip() +
       facet_wrap(~Batch_Id, scales = "free") +
-      ggtitle('Distribution of Alkanes (#c10 - #c36)') +
+      #ggtitle('Distribution of Alkanes (#c10 - #c36)') +
       geom_point(aes(color = metabolite)) +
       scale_color_manual(values = brewer.pal(9, "Paired"),guide = guide_legend(title = 'Alkane')) +
   		xlab('File') +
@@ -488,9 +487,9 @@ if (is_exit != 1) {
       cinacid_qc = gc_metric_calc(cin_data, title = "internalstandard")
     
     } else {
-    Batch_Id = unique(alk_qc$Batch_Id)
-    cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
-    write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_IntStandard.csv'), row.names = F)
+      Batch_Id = unique(alk_qc$Batch_Id)
+      cinacid_qc = data.frame(Batch_Id, qc_metric = rep(NA, length(Batch_Id)))
+      write.csv(cinacid_qc, paste0(path_setup,'output/gc/qcmetric_IntStandard.csv'), row.names = F)
     }
   }
 }
@@ -507,7 +506,7 @@ if (is_exit != 1) {
       cin_f = c('below','within','above')
       cinacid_statistics$CA_eval = factor(cinacid_statistics$IntStd_eval, levels = cin_f) 
     
-     ggplot(cinacid_statistics, aes(File, PeakArea, color = IntStd_eval)) +
+      ggplot(cinacid_statistics, aes(File, PeakArea, color = IntStd_eval)) +
         geom_point() +
         #geom_bar(stat = "identity", size = .3, color = "black") +
         coord_flip() +
@@ -721,7 +720,7 @@ if (addq_idx == 'yes') {
     message(paste0("Colon separator detected in: ", nick_addq))
   }
   
-  #adding annotations
+  #select Q_sel == "x"
   con_se_quant = subset(con_se, con_se$Q_sel == "x")
   
   #Extract quant1-values for additional substances defined input/add_quant/ nick_addq
@@ -748,9 +747,12 @@ if (addq_idx == 'yes') {
   }
 
   #peak areas from quantmassareamatrix
-  df_peakareas <-  file_shaping(data_area, shape = 'wide', 
+  df_peakareas <-  file_shaping(data_area, 
+                                shape = 'wide', 
                                 file_annotation = ann_addq, 
-                                complete_ann = TRUE, type = "addQ", inc = FALSE)
+                                complete_ann = TRUE, 
+                                type = "addQ", 
+                                inc = FALSE)
   
   #add annotation lists for metabolite names
   df_peakareas <-  merge(df_peakareas, con_se[,c("Metabolite","Lettercode")])
