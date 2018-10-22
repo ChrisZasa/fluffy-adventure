@@ -1,0 +1,130 @@
+---
+title: "MTXQCvX2 for Metmax-projects"
+subtitle: "How to use MTXQCvX2 for Maui-projects"
+author: "Christin Zasada"
+output:
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_html: default
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+This document describes how to use MTXQCvX2^[Check for the latest release: github.com/ChrisZasa/fluffy-adventure] in combination with metmax^[http://gmd.mpimp-golm.mpg.de/apps/metmax/default.htm]. 
+
+
+Historically, MTXQCvX2 has been developed and optimized for Maui-derived input files. The MTXQCvX2_part4 functions as a converter of metmax-derived files in order to create suitable input formats for MTXQCvX_part1. This module could also be used to convert tables derived from other programs as long as they are confirm with the herein described tables. Mandatory columns are referenced in the text. 
+
+The general workflow of the NMTXQCvX2 project is briefly shown below in **quick view**. More detailed instructions are summarised in the following paragraphs. For more detailed explanations about the individual input parameter for each module of MTXQCvX2 please proceed to read the documentation about the individual modules and their knitting parameter^[`vignettes/MTXQCvX2_ParamDefinition`]. The relation of knitting parameter, input and output files are described in each section.   
+
+
+# Quick view
+
+1. Setup R-project and copy MTXQC-files
+2. Knit with parameter: `MTXQC_init.Rmd`
+3. Copy input files 
+4. Create annotation.csv and sample_extracts.csv files^[Details further down this document]
+5. Update metabolite names in `conversion_metabolite.csv`^[Column: Metabolite_manual]
+6. Define the internal standard and/or alkanes^[Also in conversion_metabolite.csv; see below paragraph Standards]
+7. Knit with parameter: `MTXQC_ExperimentalSetup.Rmd`
+8. Knit with parameter: `MTXQC_part4.Rmd`
+9. Knit with parameter: `MTXQC_part1.Rmd`
+10. Knit with parameter: `MTXQC_part2.Rmd`
+11. If required - proceed with MTXQC_part3 - ManualValidation^[See `vignettes/MTXQCvX2_part3`]
+
+
+# Input files derived from a ChromaToF/Metmax-Project
+
+If you need an introduction about how to use metmax have a look at the separate documentation^[`vignettes/Metmax_intro.csv`].
+
+## Quantification - PeakAreas.csv^[Required for: all parameter, just not `calculation stable isotope incorporation`] 
+
+You need a file containing all extracted peak areas for each metabolite and file^[Tools/Options/Retention analysis, Parameter: Area]. The header of metmax-extracted files looks like shown below (see table 1). Please, remember to delete the second header row, representing the column loads for each file before saving as csv-file. Otherwise you end up with weird imported dataframes in R. 
+Quantification masses have to be updated while processing in ChromaToF prior the export of the data e.g., with a reference search^[See `vignette/ReferenceSearch`] or using statistical compare. pSIRM experiments require the definition of pTop5 masses^[Extended list of quant masses considering isotope incorporation] instead of top5 masses in the reference in order to take into account the shift of intensities induced by the application of stable isotopes^[Mandatory columns: name, mass, files] 
+
+
+```{r metmax_header, results='asis', echo=FALSE}
+
+df = data.frame(name = c("Lac", "Pyr", "Cit"), mass = c(219, 174, 273), ri = c(1051, 1042, 1805), row.load = c(0.76, 0.65, 0.99), file_1 = c(15423, 56978, 1326), file_2 = c(135444, 46888, 23321), file_x = c(465486, 4354544, 132121))
+
+knitr::kable(df, caption = c("Example metmax-extracted file containing peak areas."))
+
+
+```
+
+MTXQCvX_part4 takes care of the formatting and correct column names of the peak areas file and saves it^[`input/quant/quantMassAreasMatrix.csv`].  MTXQCvX_part4 generates also the file PeakDensities-Chroma.csv^[`input/gc/PeakDensities-Chroma.csv`], in case you have selected the option to include sum of area normalisation while knitting this module.
+
+
+## Isotope incorporation - MIDs.csv^[Required for `calculation isotope incorporation`] 
+
+In order to determine the incorporation of stable isotopes MTXQCvX2 requires as an input the mass isotopomer distributions (MIDs) for each intermediate and measurement^[Tools/Options/Isotope concentrator; Parameter: IntensityOfMass]. Fragments for each intermediate have to be pre-defined in metmax at Tools/Options/metabolite masses. They can be imported^[`inst/template_files/MetMax_MIDs.txt`] or manually specified each by each. An example of the metmax output is shown in table 2. The output has to be saved as csv-file, including the deletion of the partial row `column.load`, respectively^[Mandatory columns: name, mass, files].
+
+
+```{r metmax_header_mid, results='asis', echo=FALSE}
+
+df2 = data.frame(name = c("Lac", "Lac", "Lac","Lac", "Lac"), 
+                mass = c(219, 220, 221, 222, 223), 
+                ri = rep(1051, 5), 
+                row.load = rep(0.85, 5), 
+                file_1 = c(31026, 3607, 1222, 188,0),
+                file_2 = c(5165829,662277,111481,1003494,33542),
+                file_x = c(5829,277,81,10023,342))
+
+knitr::kable(df2, caption = "Example metmax-extracted file containing MIDs.")
+
+
+```
+
+MTXQCvX_part4 calculates the stable isotope incorporation and exports DataMatrix.csv as well as pSIRM_SpectraData.csv^[`input/inc/DataMatrix` & `pSIRM_SpectraData.csv`]. The mathematics behind are outlined in Pietzke et al. (2014)^[Pietzke, Zasada, Mudrich, and Kempa. 2014. Cancer & Metabolism 2 (1): 9. doi:10.1186/2049-3002-2-9.]. 
+
+**Important**: Extracted MIDs have to match with defined mass couples for each metabolite in MTXQCvX2^[`config_mtx/incorpo_calc_masses.csv`]. Please refer for more details to `vignettes/config_mtx-files`.
+
+
+## Derivatisation efficiency - mz73.csv^[Required for: `sum of area normalisation`]
+
+The extraction of intensities for the ion m/z 73 works analogous to the extraction of MIDs^[Tools/Options/Isotope concentrator; Parameter: IntensityOfMass]. Mass ranges have to be defined for each intermediate for the mass 73 by defining starting and end mass with 73. MTXQCvX_part4 generates the file MassSum-73.csv^[`input/gc/MassSum-73.csv`]. Check `inst\template_files\` for reference. Hopefully soon a new metmax button extracting specific intensities across the batch.
+
+
+# Further required input-files
+## Annotation-file
+
+The annotation file relate file names with experimental conditions or specify quantification standards in your batch. 
+Two columns - **File and Type** are obligatory and in the case of absence MTXQCvX_part1 stops and shows an error message.
+
+1. Copy first row of `quantMassAreaMatrix.csv` file
+2. Paste & transpose the content into a new Excel-File, first column
+3. Rename Metabolite -> File
+4. Remove all other entries than file names (e.g., mass, ri)
+5. Add column Type and specify either as sample or addQ1_dilution^[Additional quantification standards included in your setup, see for further details `vignettes/additionalQuant`]
+6. Add further columns specifying your experimental conditions, e.g., Cellline and Treatment ...^[Optimum: two-three parameter, max: four parameter. Consider possible combinations, e.g., HCT116-control, HCT116-BPTES]
+7. Save as csv-file^[`input/Annotation.csv`]
+
+## Sample_extracts-file
+
+The sample_extracts.csv file helps to determine correct absolute quantities in the manner of pmol/1e+6 cells or pmol/mg tissue. Two columns are obligatory and have to be included: **Extract_vol** and **Unit**^[Unit = [count, mg, ul]]. Please specify for each experimental condition that differs in extracted quantities. Column names of the experimental conditions have to match with the annotation file. Otherwise MTXQCvX2_part1 stops processing and throws an error message in the report. An example file can be modified and reused^[`inst/template_files/...`]. Save the created file as csv-file into the input folder as well^[`input/Sample_extracts.csv`].
+
+
+## conversion_metabolite.csv -  $Metabolite_manual
+
+Prior the analysis you need to match the names of your intermediates with the conversion_metabolite.csv file. 
+You need to add the corresponding name for each intermediate in the column Metabolite_manual. General suggestion for naming conventions in ChromaToF: Metabolite_Derivate, optional in case of main- (MP) and byproducts (BP) Metabolite_Derivate_MP/BP. An example for both: Lactic acid_(2TMS) or Glucose_(1MEOX)(5TMS)_MP.
+
+Missing intermediate can be added to this list. If you want to do so, please consultate the `vignette/config_mtx` first and follow the corresponding instructions how to extend conversion_metabolite.csv.
+
+
+## conversion_metabolite.csv - $Standards
+
+MTXQCvX2 allows the specification of project-specific internal standards. Corresponding compounds have to be marked as an internal standard in the conversion_metabolite.csv file^[`config_mtx/conversion_metabolites.csv`, column Standard == InternalStandard]. Accordingly, MTXQCvX+part4 extracts peak areas from peakarea-file and generates InternalStandard.csv^[`input/gc/InternalStandard.csv`].
+
+In the same way alkanes are be defined in conversion_metabolite.csv. Each alkane has to be flag tagged with Alk in the column Standard^[`config_mtx/conversion_metabolites.csv`, column Standard == Alk]. This gives you the opportunity to implement customizes mixtures of alkanes in order to determine the retention index. The in-lab approach considers nine alkanes from c10 to c36. MTXQCvX_part4 recognises the flag tag and generates based on peakarea-file Alcane_intensities.csv^[`input/gc/Alcane_intensities.csv`, (it should be alkane, I know, but Maui doesn't...)].
