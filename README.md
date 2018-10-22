@@ -4,6 +4,16 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-22 - major update
+
+Version: 1.0.2
+
+I have included first files of documentation in the folder man/vignettes. You need to knit each `.Rmd`. file in order read
+these files in a comfortable format. You might to need to run `install.packages("tufte")` prior rendering a file.
+
+Furthermore I have implemented smaller bug fixes, typos and such kind of things.
+
+
 ### 2018-10-16 - major update
 
 *Important fix in case you have issues with MTXQCvX2_part3 - ManualValidation of PeakAreas*
