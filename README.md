@@ -4,6 +4,22 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-24 - major update
+
+Version: 1.0.3.900
+
+MTXQCvX_part3
+I corrected the integration of manually validated MIDs and original MIDs (pSIRM_SpectraData.csv).
+Previoulsy the corrected MIDs have been integrated into the table containing only the lowQ MIDs, the
+file that has been generated as template to add corrected MID values. 
+In consequence the lowQ/goodQ plot did not include the goodQ MIDs after re-processing MTXQCvX_part1.
+
+The determination of the isotope incorporation hasn't been incorrect, though. This is done in a 
+separate process and has been correct before.
+
+Anyhow - please download the new version.
+
+
 ### 2018-10-22 - major update
 
 Version: 1.0.3
