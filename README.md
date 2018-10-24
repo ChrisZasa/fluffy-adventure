@@ -6,6 +6,11 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ### 2018-10-24 - major update
 
+Version: 1.0.3.901
+
+another bug fixed. Esstial for additional quantification standards.
+
+
 Version: 1.0.3.900
 
 MTXQCvX_part3
