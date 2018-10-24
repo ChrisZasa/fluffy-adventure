@@ -155,7 +155,7 @@ evaluate_modified_mids <-  function(df_check) {
   print(knitr::kable(df_stat, format = "markdown", 
                      caption = "Frequency of validated isotope incorporation values."))
   
-  #extract
+  #extract corrected MIDs/Files
   cor = subset(df_check, df_check$ManVal_check == 'x')
   cor_lettercode_file = unique(cor[,c('File','Lettercode' ,'ManVal_check')])
   
@@ -165,28 +165,31 @@ evaluate_modified_mids <-  function(df_check) {
 }
 
 
-integrate_manVal_MIDs <- function(dataframe, corrected_mids) {
+integrate_manVal_MIDs <- function(dataframe, corrected_mids, original_mids) {
   
   temp = merge(dataframe, corrected_mids, all.x = TRUE)
   
   #corrected MIDS
   mid_corr = subset(temp, temp$ManVal_check == "x")
-  mid_corr_sel = mid_corr[,c("File", "Lettercode", "Metabolite", "Mass_mz", "ManVal_Intensity",
-                             "BackupPeakArea", "BackupMID")]
+  mid_corr_sel = mid_corr[,c("File", "Metabolite", "Mass_mz", "ManVal_Intensity")]
   
-  colnames(mid_corr_sel)[grepl("ManVal_Intensity", colnames(mid_corr_sel))] <- "SamplePeakArea"
+  #merge with original MIDs
+  colnames(original_mids)[grepl("Mass.m.z.", colnames(original_mids))] <- "Mass_mz"
+  colnames(original_mids)[grepl("SamplePeakArea", colnames(original_mids))] <- "SamplePeakArea_orig"
+  colnames(original_mids)[grepl("SampleMID", colnames(original_mids))] <- "SampleMID_orig"
   
+  mid_merge = merge(original_mids, mid_corr_sel, all.x = TRUE)
   
-  #original MIDs
-  mid_original = subset(temp, is.na(temp$ManVal_check))
-  mid_o_sel = mid_original[,c("File", "Lettercode", "Metabolite", "Mass_mz", "SamplePeakArea",
-                              "BackupPeakArea", "BackupMID")]
+  mid_merge$SamplePeakArea = ifelse(is.na(mid_merge$ManVal_Intensity), mid_merge$SamplePeakArea_orig,
+                                    mid_merge$ManVal_Intensity)
   
-  fused_mids = rbind(mid_corr_sel, mid_o_sel)
-  
-  
-  fused_mids = ddply(fused_mids, c("File", "Metabolite"), transform, 
+  mid_merge = ddply(mid_merge, c("File", "Metabolite"), transform, 
                      SampleMID = SamplePeakArea / sum(SamplePeakArea))
+  
+  write.csv(mid_merge, paste0(path_setup, set_output, set_val, "inc/Fused_MIDs.csv"), row.names = FALSE)
+  
+  idx_ori1 = which(grepl("_orig", colnames(mid_merge)))
+  fused_mids = mid_merge[,c(-idx_ori1)]
   
   write.csv(fused_mids, paste0(path_setup, set_input, "inc/pSIRM_SpectraData_manVal.csv"), row.names = FALSE)
   message("Manually validated MIDs have been incorporated and saved in: ", paste0(set_input, "inc/pSIRM_SpectraData_manVal.csv"))
