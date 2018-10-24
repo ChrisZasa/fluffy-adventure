@@ -448,7 +448,7 @@ if (alkane_idx == TRUE) {
 ```
 
 
-```{r alkanes, fig.height = 5, fig.width = 5, fig.cap =  "Distribution of Alkanes (#c10 - #c36)"}
+```{r alkanes, fig.height = 5, fig.width = 5, fig.cap =  "Distribution of Alkanes (c10 - c36)"}
   
   if (alkane_idx == TRUE) {
    if (!nrow(data_alk) == 0) {
@@ -652,6 +652,7 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
  
 ```
 
+\newpage
 
 # MTXQC - Quantitative metabolomics
 ## Generation of ManualQuantTable: Quant-Standards (Qstd)
