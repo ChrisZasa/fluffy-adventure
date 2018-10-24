@@ -678,6 +678,7 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 	
 	  #check ManualQuantTable.tsv and defined Batch-Ids in annotation file
 	  batch_id_def = check_mqt_batchids(ann, path_setup)
+	  nb_id = length(batch_id_def)
 	  
 	  #extract tsv-file names
 	  file_names <- dir(paste0(path_setup, set_input, "quant/"), pattern = ".tsv") 
