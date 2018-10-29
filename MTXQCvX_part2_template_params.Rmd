@@ -101,7 +101,7 @@ abstract: This document provides the post-processing of the output files derived
 ---
 
 ---
-title: `r paste("MTXQCvX2 part2 ", params$analysis, " Par: ", params$par1, " ", params$par2, " ", params$par3, " ", params$par4, )`
+title: `r paste("MTXQCvX2 part2 - PostProcessing ", params$analysis)`
 ---
 # Summary
 
