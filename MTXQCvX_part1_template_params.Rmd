@@ -607,11 +607,13 @@ if (mm_peaks_idx == TRUE) {
 ```{r mass73_stats, tidy = TRUE}
   #m/z 73 and total peaks data
 if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
+  
   data_deriv = file_shaping(data_73, shape = 'long', ann, type = "sample", inc = FALSE)
   total_peaks = file_shaping(total_peaks, 'long', ann, type = "sample", inc = FALSE)
 
   deriv_comb = gc_metric_calc(dataframe = data_deriv, dataframe2 = total_peaks, title = 'mz73')
-} else {
+
+  } else {
   message("No input files detected. Either MassSum-73.csv or PeakDensities-Chroma.csv")
 }
   
@@ -781,10 +783,7 @@ if (addq_idx == 'yes') {
   ###### Create ManualQuantTable with additional measurements
   mqt_addq <-  create_manualquanttable(addq_sel, quant_1add, met_translation = con_se,
                 plot = TRUE)
-  
- 
 }
-
 ```
 
 ```{r merge_mqts}
@@ -1605,7 +1604,7 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 
 # List of abbreviations
 
-```{r setup, echo=FALSE}
+```{r abbrev, echo=FALSE}
 
 library(tidyverse)
 temp = select(con_se, "Lettercode", "Metabolite_short", "Q1_value" ,"nopsirm") %>%
