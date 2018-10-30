@@ -4,6 +4,17 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-10-30 - major update
+
+Verion: 1.0.4
+
+Updates:
+
+  - added a list of metabolite abbreviations at the end of MTXQCvX2 part1 and part2
+  - minor bug fixes in graphs
+  
+
+
 ### 2018-10-24 - major update
 
 Version: 1.0.3.901
