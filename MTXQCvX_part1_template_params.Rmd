@@ -9,7 +9,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: ""
+    value: "test"
   data:
     input: select
     choices: [maui, metmax]
@@ -1600,6 +1600,22 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
   print(b, vp = vplayout(3:10, 1:6))
 
 ```
+
+\clearpage
+
+# List of abbreviations
+
+```{r setup, echo=FALSE}
+
+library(tidyverse)
+temp = select(con_se, "Lettercode", "Metabolite_short", "Q1_value" ,"nopsirm") %>%
+      arrange(Lettercode)
+
+kable(temp,"latex", longtable = T, booktabs = T) %>%
+  kable_styling(latex_options = c("scale_down"))
+```
+
+
 
 *End of the document*
 
