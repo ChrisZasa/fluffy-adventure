@@ -9,7 +9,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test"
+    value: "gln_lab2"
   data:
     input: select
     choices: [maui, metmax]
@@ -19,7 +19,7 @@ params:
     input: select
     choices: [none, PeakArea, Incorporation, both]
     label: "Incorporation manualy validated data:"
-    value: none
+    value: PeakArea
 output:
   pdf_document:
     citation_package: natbib
@@ -724,13 +724,12 @@ if (addq_idx == 'yes') {
     message(paste0("Colon separator detected in: ", nick_addq))
   }
   
-  #select Q_sel == "x"
+  #select Q_sel == "x" -> requires to check all metabolites that should be checked for absolute quantification
   con_se_quant = subset(con_se, con_se$Q_sel == "x")
   
   #Extract quant1-values for additional substances defined input/add_quant/ nick_addq
   quant_1add <-  merge(quant_1add, con_se_quant[,c("Lettercode", "Metabolite")])
-  quant_1add <-  merge(quant_1add, pathway_profile[,c("Lettercode", "Letter_Derivate")])
-    
+  
   knitr::kable(quant_1add, format = 'pandoc', 
       caption = 'Quant1:1-values for additional calibration curves.')
 

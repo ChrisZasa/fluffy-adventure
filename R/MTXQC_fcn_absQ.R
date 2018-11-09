@@ -24,12 +24,15 @@ check_mqt_batchids <- function(df_annotation, dir = path_setup) {
   }
   
   #stop if missing renaming of tsv-file
-  temp = grepl("ManualQ", file_names)
+  #temp = grepl("ManualQ", file_names)
+  
+  temp = "ManualQuantTable.tsv" %in% file_names
+  
   if (temp == TRUE) {
     message("FATAL ERROR: Please rename your ManualQuantTable.tsv files with Batch-Id!")
     knitr::knit_exit()
   } else {
-    message("All ManualQuantTable.tsv-files renamed!")
+    message("CHECKED: All ManualQuantTable.tsv-files renamed!")
   }
   
   #check number of defined batch-ids in input/quant and annotation file
