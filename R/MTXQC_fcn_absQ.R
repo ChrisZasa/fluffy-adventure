@@ -24,12 +24,15 @@ check_mqt_batchids <- function(df_annotation, dir = path_setup) {
   }
   
   #stop if missing renaming of tsv-file
-  temp = grepl("ManualQ", file_names)
+  #temp = grepl("ManualQ", file_names)
+  
+  temp = "ManualQuantTable.tsv" %in% file_names
+  
   if (temp == TRUE) {
     message("FATAL ERROR: Please rename your ManualQuantTable.tsv files with Batch-Id!")
     knitr::knit_exit()
   } else {
-    message("All ManualQuantTable.tsv-files renamed!")
+    message("CHECKED: All ManualQuantTable.tsv-files renamed!")
   }
   
   #check number of defined batch-ids in input/quant and annotation file
@@ -122,12 +125,9 @@ absconc = function(met, area){
 normalisation_calc = function(d_quant, ca = 1, soa = 1){
   #' This functions performs the calculation of normalised quantities 
   #' considering the sum of Area normalisation and the cinnamic acid factor
-  #' Following units are implemented: ul (blood), mg (tissue) and count (cell extracts)
-  #' Output states respectively: pmol / ml, pmol / mg or pmol/1e+6 cells
+  #' Following units are implemented: ul (blood), mg (tissue OR protein) and count (cell extracts)
+  #' Output states respectively: pmol/ml, pmol/mg or pmol/1e+6 cells
   #' 
-  #' #calculating  quantities: pmio =  (1) pmol / 1x106 cells, 
-  #                                 (2) pmol/ug  OR pmol/ul, 
-  #                                 (3) pmol/mg OR pmol/mg
   #' 
   #' in the absence of cinnamic acid define ca = 0, instead of ca = 1
   #' no sum of area normalisation possbile soa = 0, possible soa == 1

@@ -1,1 +1,160 @@
-Metabolite_manual;Metabolite;Metabolite_short;Lettercode;Q1_value;Mass_Pos;SE_sel;Q_sel;nopsirm;Standards;Acetoacetic acid_(1MEOX)(1TMS)_MP_RI:1132_BMD;Acetoacetic acid_(1MEOX)(1TMS);Aceto_1MEOX_1TMS;;;;;x;;Acetoacetic acid_(2TMS)_MP_RI:1239_GMDpred;Acetoacetic acid_(2TMS);Aceto_2TMS;;;;;x;#Adenosine (3TMS);Adenosine (3TMS)_noIdent;Adenosine (3TMS);Adenosine_3TMS;;;;x;;;Adenosine_(4TMS)_MP_RI:2644_IDENT:A+B;Adenosine_(4TMS);Adenosine_4TMS;;;;x;x;;Alanine_ beta-_(2TMS)_BP_RI:1188_IDENT:A+D;Alanine_ beta-_(2TMS);bAla_2TMS;x;;;;x;#Alanine beta- (3TMS);Alanine beta- (3TMS);Alanine beta- (3TMS);bAla_3TMS;x;;;;x;#Alanine (2TMS);Alanine_(2TMS)_BP_RI:1097_IDENT:B+C;Alanine_(2TMS);Ala_2TMS;x;118;x;x;;#Alanine (3TMS);Alanine_(3TMS)_MP_RI:1367_IDENT:B+C;Alanine_(3TMS);Ala_3TMS;x;190;x;x;;#Aspartic acid_(2TMS);Aspartic acid_(2TMS)_BP_RI:1433_IDENT:A+C;Aspartic acid_(2TMS);Asp_2TMS;;249;x;x;;#Aspartic acid_(3TMS);Aspartic acid_(3TMS)_MP_RI:1517_IDENT:A+C;Aspartic acid_(3TMS)  ;Asp_3TMS;;;x;x;x;Benzoic acid__(1TMS);Benzoic acid__(1TMS)_SP_RI:1251_GMDpred;Benzoic acid__(1TMS);Benzoic;;;;;x;Butanoic acid_ 3-hydroxy-_(2TMS);Butanoic acid_ 3-hydroxy-_(2TMS)_MP_RI:1156_IDENTA+B;Butanoic acid_ 3-hydroxy-_(2TMS);Butanoic_3hydr;x;;;;x;#Butanoic acid 4-amino- (3TMS);Butanoic acid_ 4-amino-_(3TMS)_MP_RI:1527_IDENT:A+C;Butanoic acid_ 4-amino-_(3TMS);Butanoic_4amino;x;;;;x;Butanoic acid, 2-hydroxy- (2TMS);Butanoic acid, 2-hydroxy- (2TMS)_noIdent;Butanoic acid, 2-hydroxy- (2TMS);Butanoic_2hydr;;;;;x;#Cinnamic acid_trans- (1TMS);Cinnamic acid, trans- (1TMS)_noIdent;Cinnamic acid, trans- (1TMS);CinAcid;;;;;x;;Citric acid 275_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 275_(4TMS);Cit;;275;x;;;;Citric acid 276_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 276_(4TMS);Cit;;276;;;;;Citric acid 277_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 277_(4TMS)  ;Cit;;277;;;;;Citric acid 278_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 278_(4TMS);Cit;;278;;;;;Citric acid 377_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 377_(4TMS);Cit;;377;;;;;Citric acid 378_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 378_(4TMS) ;Cit;;378;;;;;Citric acid 379_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 379_(4TMS) ;Cit;;379;;;;;Citric acid 380_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 380_(4TMS) ;Cit;;380;;;;;Citric acid 381_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid 381_(4TMS)  ;Cit;;381;;;;#Citric acid (4TMS);Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D;Citric acid_(4TMS) ;Cit;x;273;;x;x;;Creatinine_(3TMS)_MP_RI:1549_IDENT:B+C;Creatinine_(3TMS);Creatinine;x;;;;x;#Cysteine (3TMS);Cysteine_(3TMS)_MP_RI:1554_IDENT:B+D;Cysteine_(3TMS);Cysteine;;;;;x;;Cytosine_(2TMS)_MP_RI:1520_IDENT:A+B;Cytosine_(2TMS);Cytosine;x;;;;x;#c10;Decane_n-_1000_Alk;c10;c10;;;;;;Alk;Dehydroascorbic acid dimer_(2MEOX)_MP_RI:1843_GMDpred;Dehydroascorbic acid dimer;AscDimer;;;;;x;#Dihydroxyacetone phosphate (1MEOX) (3TMS) BP;Dihydroxyacetone phosphate_(1MEOX)(3TMS)_BP_RI:1751_IDENT:A+B;DHAP_BP;DHAP_BP;x;403;x;x;;#Dihydroxyacetone phosphate (1MEOX) (3TMS) MP;Dihydroxyacetone phosphate_(1MEOX)(3TMS)_MP_RI:1739_IDENT:A+B;DHAP_MP;DHAP_MP;x;403;x;x;;#c22;Docosane_n-_2200_Alk;c22;c22;;;;;;Alk#c12;Dodecane_n-_1200_Alk;c12;c12;;;;;;Alk#c32;Dotriacontane_n-_3200_Alk;c32;c32;;;;;;Alk#Erythritol_(4TMS);Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B;Erythritol_(4TMS);Ery_4TMS;;;;;x;#Ethanolamine (3TMS);Ethanolamine_(3TMS)_SP_RI:1268_GMDpred;Ethanolamine_(3TMS);EtNH3;;;x;x;x;#Ethanolaminephosphate (4TMS);Ethanolaminephosphate (4TMS)_M000000_A177014-101-0_NA_1774.08_TRUE_VAR5_ALK;Ethanolaminephosphate (4TMS);EtNH4P;;;;;x;#Fructose (1MEOX) (5TMS) BP;Fructose_(1MEOX)(5TMS)_BP_RI:1872_IDENT:B+C;Fructose_(1MEOX)(5TMS)_BP;Frc_BP;x;220;x;x;;#Fructose (1MEOX) (5TMS) MP;Fructose_(1MEOX)(5TMS)_MP_RI:1862_IDENT:B+C;Fructose_(1MEOX)(5TMS)_MP  ;Frc_MP;x;220;x;x;;#FBP BP;Fructose-1_6-diphosphate_(1MEOX)(7TMS)_BP_RI:2699_IDENT:B+C;Fructose-1_6-diphosphate_(1MEOX)(7TMS)_BP  ;FBP_BP;x;220;x;x;;#FBP MP;Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP_RI:2705_IDENT:B+C;Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP  ;FBP_MP;x;220;x;x;;;Fructose-1-phosphate_(1MEOX)(6TMS)_MP_RI:2291_IDENT:B+D;Fructose-1-phosphate_(1MEOX)(6TMS)_MP;Frc1P_MP;x;220;x;x;;#Fructose-6-phosphate (1MEOX) (6TMS);Fructose-6-phosphate_(1MEOX)(6TMS)_MP_RI:2302_IDENT:A+C;Fructose-6-phosphate_(1MEOX)(6TMS) _MP;Frc6P_MP;x;220;x;x;;;Fucose (1MEOX) (4TMS) MP_M000591_A173002-101-0_NA_1716.3_TRUE_VAR5_ALK;Fucose (1MEOX) (4TMS) ;Fuc;;;;;x;;Fumaric acid 247_(2TMS)_MP_RI:1366_IDENT:A+C;Fumaric acid 247_(2TMS);Fum;;247;x;;;;Fumaric acid 249_(2TMS)_MP_RI:1366_IDENT:A+C;Fumaric acid 249_(2TMS) ;Fum;;249;;;;#Fumaric acid (2TMS);Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C;Fumaric acid_(2TMS);Fum;x;245;;x;;;Galacturonic acid_(1MEOX)(5TMS)_BP_RI:1957_IDENT:B+D;Galacturonic acid_(1MEOX)(5TMS);GalAcid;;;;;x;;Gluconic acid_(6TMS)_MP_RI:1996_IDENT:B+C;Gluconic acid_(6TMS);GluAcid;;;;;x;#Gluconic acid-6-phosphate_(7TMS)_MP;Gluconic acid-6-phosphate_(7TMS)_MP_RI:2426_IDENT:A+D;Gluconic acid-6-phosphate_(7TMS) ;PGA6;x;220;x;x;;#Glucopyranose [-H20]_(4TMS);Glucopyranose [-H20]_(4TMS)_SP_RI:1763_GMDpred;Glucopyranose [-H20]_(4TMS);GlcPyr;;;;;x;;Glucosamine_(1MEOX)(5TMS)_MP_RI:1932_IDENT:A+B;Glucosamine_(1MEOX)(5TMS);Glc_NH3;;;;;x;#Glucose_(1MEOX)(5TMS)_BP;Glucose_(1MEOX)(5TMS)_BP_RI:1904_IDENT:B+D;Glucose_(1MEOX)(5TMS_BP;Glc BP;x;220;x;x;;#Glucose (1MEOX) (5TMS) MP;Glucose_(1MEOX)(5TMS)_MP_RI:1886_IDENT:B+D;Glucose_(1MEOX)(5TMS)_MP;Glc MP;x;220;x;x;;#Glucose-6-phosphate (1MEOX) (6TMS) MP;Glucose-1/6-phosphate_(1MEOX)(6TMS)_MP_RI:2316_IDENT:C+D/A+B;Glucose-1/6-phosphate_(1MEOX)(6TMS)  ;Glc6P_MP;x;220;x;x;;#Glucose-6-phosphate (1MEOX) (6TMS) BP;Glucose-6-phosphate_(1MEOX)(6TMS)_BP_RI:2317_IDENT:A+B;Glucose-6-phosphate_(1MEOX)(6TMS);Glc6P_BP;x;220;x;x;;;Glutamic acid_(2TMS)_BP_RI:1533_IDENT:A+B;Glutamic acid_(2TMS);Glu_2TMS;x;281;x;x;;#Glutamic acid (3TMS);Glutamic acid_(3TMS)_MP_RI:1620_IDENT:A+B;Glutamic acid_(3TMS) ;Glu_3TMS;x;353;x;x;;;Glutamine_(3TMS)_MP_RI:1770_IDENT:C+D;Glutamine_(3TMS);Gln_3TMS;x;352;x;x;;#Glutaric acid_ 2-hydroxy-_(3TMS);Glutaric acid_ 2-hydroxy-_(3TMS)_MP_RI:1577_IDENT:A+D;Glutaric acid_ 2-hydroxy-_(3TMS);Glut_2hydroxy;x;;x;x;;;Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C;Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)  ;Glut_2oxo;;200;x;;;;Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C;Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)  ;Glut_2oxo;;203;;;;;Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C;Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)  ;Glut_2oxo;;290;;;;;Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C;Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS) ;Glut_2oxo;;293;;;;#2OG;Glutaric acid_ 2-oxo-_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C;Glutaric acid_ 2-oxo-_(1MEOX)(2TMS);Glut_2oxo;x;198;;x;;#Glutaric acid (2TMS);Glutaric acid_(2TMS)_MP_RI:1418_IDENT:A+B;Glutaric acid_(2TMS)  ;Glut;x;;x;;;#Glyceraldehyde-3-phosphate (1MEOX) (3TMS);Glyceraldehyde-3-phosphate_(1MEOX)(3TMS)_BP_RI:1712_BMD;Glyceraldehyde-3-phosphate_(1MEOX)(3TMS);GA3P;;359;x;x;;#Glyceric acid_(3TMS);Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B;Glyceric acid_(3TMS);GlycAcid;;;;;x;#Glyceric acid (3TMS);Glyceric acid_(3TMS)_MP_RI:1342_IDENT:A+B;Glyceric acid_(3TMS);GA;x;;x;x;;;Glyceric acid-2-phosphate_(4TMS)_SP_RI:1766_GMDpred;Glyceric acid-2-phosphate_(4TMS);2PGA;;;x;;x;#Glyceric acid-3-phosphate (4TMS);Glyceric acid-3-phosphate_(4TMS)_MP_RI:1802_IDENT:B+D;Glyceric acid-3-phosphate_(4TMS);3PGA;x;359;x;x;;#Glycerol (3TMS);Glycerol_(3TMS)_MP_RI:1280_IDENT:C+D;Glycerol_(3TMS)  ;Glyc;x;221;x;x;;;Glycerol-2-phosphate (4TMS)_noIdent;Glycerol-2-phosphate (4TMS);Glyc2P;;;x;;x;#Glycerol-3-phosphate (4TMS);Glycerol-3-phosphate_(4TMS)_MP_RI:1756_IDENT:B+C;Glycerol-3-phosphate_(4TMS);Glyc3P;x;359;x;x;;#Glycine (2TMS);Glycine_(2TMS)_BP_RI:1117_IDENT:A+C;Glycine_(2TMS);Gly_2TMS;x;;x;;x;#Glycine (3TMS);Glycine_(3TMS)_MP_RI:1314_IDENT:A+C;Glycine_(3TMS)  ;Gly_3TMS;x;278;x;x;;#Glycolic acid (2TMS);Glycolic acid_(2TMS)_SP_RI:1073_GMDpred;Glycolic acid_(2TMS);GlycolicAcid;;;;;x;#c17;Heptadecane_n-_1700_Alk;c17;c17;;;;;;Alk#c36;Hexatriacontane_n-_3600_Alk;c36;c36;;;;;;Alk#Hydroxylamine (3TMS);Hydroxylamine (3TMS)_noIdent;Hydroxylamine (3TMS);Hydroxylamine;;;;;x;;Hypotaurine_(3TMS)_MP_RI:1597_IDENT:A+C;Hypotaurine_(3TMS);Hypotaurine;x;;;;x;;Hypoxanthine_(2TMS)_MP_RI:1807_IDENT:B+D;Hypoxanthine_(2TMS);Hypoxanthine;;;;;x;;Inosine_(4TMS)_MP_RI:2586_IDENT:C+D;Inosine_(4TMS);Inosine;;;;;x;#Inositol myo;Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D;Inositol_ myo-_(6TMS);Inositol_myo;x;;;;x;#Isoleucine (1TMS);Isoleucine_(1TMS)_BP_RI:1174_IDENT:A+D;Isoleucine_(1TMS);Iso_1TMS;x;;;;x;#Isoleucine_(2TMS);Isoleucine_(2TMS)_MP_RI:1302_IDENT:A+D;Isoleucine_(2TMS);Iso_2TMS;x;;;;x;#Lactic acid;Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C;Lactic acid_(2TMS) ;Lac;x;222;x;x;;#Lactose_(1MEOX)(8TMS);Lactose_(1MEOX)(8TMS)_BP_RI:2693_IDENT:B+D;Lactose_(1MEOX)(8TMS);Lcs;;;;;x;#Leucine (1TMS);Leucine (1TMS)_M000025_A118001-101-0_NA_1151.06_TRUE_VAR5_ALK;Leucine (1TMS);Leu_1TMS;;;;;x;#Leucine (2TMS);Leucine_(1TMS)_BP_RI:1153_IDENT:B+C;Leucine_(1TMS);Leu_1TMS;x;;;;x;#Leucine_(2TMS);Leucine_(2TMS)_MP_RI:1277_IDENT:B+C;Leucine_(2TMS);Leu_2TMS;x;;;;x;;Lumichrome (2MEOX)_noIdent;Lumichrome (2MEOX);Lumichrome;;;;;x;#Lysine (3TMS);Lysine_(3TMS)_BP_RI:1849_IDENT:A+C;Lysine_(3TMS);Lys_3TMS;;;;;x;;Lysine_(4TMS)_MP_RI:1915_IDENT:A+C;Lysine_(4TMS);Lys_4TMS;;;;;x;;Malic acid 247_(3TMS)_MP_RI:1487_IDENT:B+D;Malic acid 247_(3TMS)  ;Mal;;247;x;;;;Malic acid 248_(3TMS)_MP_RI:1487_IDENT:B+D;Malic acid 248_(3TMS);Mal;;248;;;;;Malic acid 249_(3TMS)_MP_RI:1487_IDENT:B+D;Malic acid 249_(3TMS);Mal;;249;;;;#Malic acid (3TMS);Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D;Malic acid_(3TMS);Mal;x;245;;x;;#Maltose_(1MEOX)(8TMS);Maltose_(1MEOX)(8TMS)_MP_RI:2723_IDENT:C+D;Maltose_(1MEOX)(8TMS);Mls;;;;;x;;Mannitol_(6TMS)_SP_RI:1917_GMDpred;Mannitol_(6TMS);Man;;;;;x;;Methionine_(1TMS)_BP_RI:1422_IDENT:C+D;Methionine_(1TMS);Met_1TMS;x;;;;x;#NA_M000000_A114002-101-0_NA_1123.41_PRED_VAR5_ALK;NA_M000000_A114002-101-0_NA_1123.41_PRED_VAR5_ALK;NA_A114002;NA_A114002;;;;;x;#NA_M000000_A125004-101-0_NA_1230.64_PRED_VAR5_ALK;NA_M000000_A125004-101-0_NA_1230.64_PRED_VAR5_ALK;NA_A125004;NA_A125004;;;;;x;#NA_M000000_A203003-101-0_NA_2013.82_PRED_VAR5_ALK;NA_M000000_A203003-101-0_NA_2013.82_PRED_VAR5_ALK;NA_A203003;NA_A203003;;;;;x;#NA_M000805_A127003-101-0_NA_1235.69_PRED_VAR5_ALK;NA_M000805_A127003-101-0_NA_1235.69_PRED_VAR5_ALK;NA_A127003;NA_A127003;;;;;x;#c19;Nonadecane_n-_1900_Alk;c19;c19;;;;;;Alk#c28;Octacosane_n-_2800_Alk;c28;c28;;;;;;Alk#Ornithine (3TMS);Ornithine (3TMS)_M000028_A176006-101-0_NA_1750.77_TRUE_VAR5_ALK;Ornithine (3TMS);Orn;;;;;x;#Oxalic acid (2TMS);Oxalic acid (2TMS)_noIdent;Oxalic acid_(2TMS);OxAcid;;;;;x;Pantothenic acid_(3TMS);Pantothenic acid_(3TMS)_MP_RI:1993_IDENT:A+D;Pantothenic acid_(3TMS);Pantothenic_acid;x;;;;x;#c15;Pentadecane_n-_1500_Alk;c15;c15;;;;;;Alk#Phenylalanine (1TMS);Phenylalanine (1TMS)_M000011_A157001-101-0_NA_1556.05_TRUE_VAR5_ALK;Phenylalanine (1TMS);Phe_1TMS;;;;;x;#Phenylalanine_(1TMS);Phenylalanine_(1TMS)_BP_RI:1547_IDENT:B+C;Phenylalanine_(1TMS);pAla;;;;;x;#Phenylalanine (2TMS);Phenylalanine_(2TMS)_MP_RI:1625_IDENT:B+C;Phenylalanine_(2TMS);Phe_2TMS;;;;;x;#Phosphoenolpyruvic acid (3TMS);Phosphoenolpyruvic acid_(3TMS)_MP_RI:1598_IDENT:A+D;PEP_(3TMS);PEP_3TMS;x;372;x;x;;#Phosphoric acid (3TMS);Phosphoric acid (3TMS)_noIdent;Phosphoric acid (3TMS);PhosAcid;;;;;x;;Phosphoric acid monomethyl ester_(2TMS)_SP_RI:1176_GMDpred;Phosphoric acid monomethyl ester_(2TMS);PhosAcid_mono;;;;;x;#Proline [+CO2]_(2TMS)_BP;Proline [+CO2]_(2TMS)_BP_RI:1585_IDENT:A+B;Proline [+CO2]_(2TMS);Pro_co2;x;;;;x;#Proline (1TMS);Proline_(1TMS)_BP_RI:1172_IDENT:A+B;Proline_(1TMS);Pro_1TMS;x;;;;x;#Proline (2TMS);Proline_(2TMS)_MP_RI:1305_IDENT:A+B;Proline_(2TMS);Pro_2TMS;x;;;;x;#Putrescine (4TMS);Putrescine_(4TMS)_MP_RI:1730_IDENT:A+D;Putrescine_(4TMS);Putrescine;x;;;;x;;Pyroglutamic acid_(1TMS)_SP_RI:1500_GMDpred;Pyroglutamic acid_(1TMS);Pyroglut_1TMS;x;263;x;x;;#Pyroglutamic acid (2TMS);Pyroglutamic acid_(2TMS)_MP_RI:1518_IDENT:A+D;Pyroglutamic acid_(2TMS);Pyroglut_2TMS;x;263;x;x;;;Pyruvic acid_ 3-hydroxy-_(1MEOX)(2TMS)_BP_RI:1294_IDENT:B+D;Puyruvic acid_3hydroxy_(1MEOX)(2TMS);Pyr_3hydroxy;;;;;x;#Pyruvic acid (1MEOX) (1TMS);Pyruvic acid_(1MEOX)(1TMS)_MP_RI:1045_IDENT:A+D;Pyruvic acid_(1MEOX)(1TMS)  ;Pyr;x;177;x;x;;;Ribose_ 2-deoxy-_(1MEOX)(3TMS)_BP_RI:1572_IDENT:A+D;Ribose_ 2-deoxy-_(1MEOX)(3TMS)_BP;Ribose_2deoxy_BP;;;;;x;;Ribose_ 2-deoxy-_(1MEOX)(3TMS)_MP_RI:1574_IDENT:A+D;Ribose_ 2-deoxy-_(1MEOX)(3TMS)_MP;Ribose_2deoxy_MP;;;;;x;#Ribose_(1MEOX)(4TMS)_BP;Ribose_(1MEOX)(4TMS)_BP_RI:1672_IDENT:B+D;Ribose_(1MEOX)(4TMS)_BP;Rib_BP;x;;;;x;;Ribose_(1MEOX)(4TMS)_MP_RI:1672_IDENT:B+D;Ribose_(1MEOX)(4TMS)_MP;Rib_MP;x;;;;x;#Ribose-5-phosphate (1 MEOX) (5TMS) BP;Ribose-5-phosphate_(1MEOX)(5TMS)_BP_RI:2103_IDENT:C+D;Ribose-5-phosphate;R5P_BP;x;220;x;x;;#Ribose-5-phosphate (1 MEOX) (5TMS) MP;Ribose-5-phosphate_(1MEOX)(5TMS)_MP_RI:2103_IDENT:C+D;Ribose-5-phosphate;R5P_MP;x;221;x;x;;;Ribulose-5-phosphate_(1MEOX)(5TMS)_MP_RI:2112_IDENT:A+B;Ribulose-5-phosphate_(1MEOX)(5TMS);Ribu5P;;220;x;x;;#Serine (2TMS);Serine_(2TMS)_BP_RI:1260_IDENT:C+D;Serine_(2TMS);Ser_2TMS;x;118;x;x;;#Serine (3TMS);Serine_(3TMS)_MP_RI:1373_IDENT:C+D;Serine_(3TMS) ;Ser_3TMS;x;206;x;x;;#Serine_(4TMS);Serine_(4TMS)_BP_RI:1571_IDENT:C+D;Serine_(4TMS);Ser_4TMS;x;293;x;x;;;Sorbitol (6TMS)_MP_RI:2352_IDENT:no;Sorbitol (6TMS);Sor_6TMS;;220;x;x;;#Sorbitol (6TMS);Sorbitol_(6TMS)_MP_RI:1926_IDENT:A+D;Sorbitol (6TMS);Sor_6TMS;;220;x;x;;InternalStandard;Succinic acid 249_(2TMS)_MP_RI:1327_IDENT:A+D;Succinic acid 249_(2TMS);Suc;;249;x;;;;Succinic acid 251_(2TMS)_MP_RI:1327_IDENT:A+D;Succinic acid 251_(2TMS) ;Suc;;251;;;;#Succinic acid (2TMS);Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D;Succinic acid_(2TMS);Suc;x;247;;x;;;Sucrose (8TMS)_MP_RI:2623_IDENT:no;Sucrose_(8TMS);Scr_8TMS;;220;x;x;;#Sucrose (8TMS);Sucrose_(8TMS)_MP_RI:2632_IDENT:A+C;Sucrose_(8TMS);Scr_8TMS;;220;x;x;x;#Threonic acid (4TMS);Threonic acid (4TMS)_M000078_A156001-101-0_NA_1545.94_TRUE_VAR5_ALK;Threonic acid (4TMS);ThrAcid;;;;;x;#Threonine 2TMS;Threonine_(2TMS)_BP_RI:1303_IDENT:C+D;Threonine_(2TMS);Thr_2TMS;x;;;;x;#Threonine_(3TMS);Threonine_(3TMS)_MP_RI:1397_IDENT:C+D;Threonine_(3TMS);Thr_3TMS;x;;;;x;#Threonine allo 3TMS;Threonine, allo- (2TMS)_noIdent;Threonine_allo_(2TMS);Thr_allo_2TMS;;;;;x;#Threonine_allo-_(2TMS);Threonine, allo- (3TMS)_noIdent;Threonine_allo_(2TMS);Thr_allo_3TMS;;;;;x;#Tyrosine_(2TMS);Tyrosine_(2TMS)_BP_RI:1883_IDENT:B+D;Tyrosine_(2TMS);Tyr_2TMS;;;;;x;#Unknown 114;Unknown 114;unk_114;unk_114;;;;;x;#Unknown 171;Unknown 171;unk_171;unk_171;;;;;x;#Unknown 202;Unknown 202;unk_202;unk_202;;;;;x;#Unknown 218;Unknown 218;unk_218;unk_218;;;;;x;#Unknown 258;Unknown 258;unk_258;unk_258;;;;;x;#Unknown 33;Unknown 33;unk_33;unk_33;;;;;x;#Unknown 79;Unknown 79;unk_79;unk_79;;;;;x;#Unknown 82;Unknown 82;unk_82;unk_82;;;;;x;#Uracil_(2TMS);Uracil_(2TMS)_MP_RI:1350_IDENT:A+C;Uracil_(2TMS);Uracil;x;;;;x;#Urea (2TMS);Urea_(2TMS)_MP_RI:1249_IDENT:A+C;Urea_(2TMS);Urea;;;;;x;#Uridine (3TMS);Uridine_(3TMS)_MP_RI:2469_IDENT:A+D;Uridine_(3TMS);Uridine;;;;;x;#Valine (1TMS);Valine_(1TMS)_BP_RI:1084_IDENT:B+D;Valine_(1TMS);Val_1TMS;x;;;;x;#Valine (2TMS);Valine_(2TMS)_MP_RI:1212_IDENT:B+D;Valine_(2TMS);Val_2TMS;x;;;;x;#Adenine (2TMS);Adenine_(2TMS);Adenine_(2TMS);A_2TMS;;;;;x;#Ribitol (5TMS);Ribitol (5TMS;Ribitol (5TMS;Rbt_5TMS;;;;;x;#Tryptophan (2TMS);Tryptophan (2TMS);Tryptophan (2TMS);Try_2TMS;;;;;x;#Tyrosine (3TMS);Tyrosine (3TMS);Tyrosine (3TMS);Tyr_3TMS;;;;;;
+Metabolite_manual,Metabolite,Metabolite_short,Lettercode,Q1_value,Mass_Pos,SE_sel,Q_sel,nopsirm,Standards
+#Ethanolaminephosphate (4TMS)_M000000_A177014-101-0_NA_1774.08_TRUE_VAR5_ALK,#Ethanolaminephosphate (4TMS)_M000000_A177014-101-0_NA_1774.08_TRUE_VAR5_ALK,Ethanolaminephosphate (4TMS),EtNH4P,,,,,x,
+#Fucose (1MEOX) (4TMS) MP_M000591_A173002-101-0_NA_1716.3_TRUE_VAR5_ALK,#Fucose (1MEOX) (4TMS) MP_M000591_A173002-101-0_NA_1716.3_TRUE_VAR5_ALK,Fucose (1MEOX) (4TMS) ,Fuc,,,,,x,
+,Acetoacetic acid_(1MEOX)(1TMS)_MP_RI:1132_BMD,Acetoacetic acid_(1MEOX)(1TMS),Aceto_1MEOX_1TMS,,,,,x,
+,Acetoacetic acid_(2TMS)_MP_RI:1239_GMDpred,Acetoacetic acid_(2TMS),Aceto_2TMS,,,,,x,
+#Adenosine (3TMS)_M000287_A261002-101-0_NA_2609.85_PRED_VAR5_ALK,Adenosine (3TMS)_noIdent,Adenosine (3TMS),Adenosine_3TMS,,99,,x,,
+,Adenosine_(4TMS)_MP_RI:2644_IDENT:A+B,Adenosine_(4TMS),Adenosine_4TMS,,99,,x,x,
+,Alanine_ beta-_(2TMS)_BP_RI:1188_IDENT:A+D,Alanine_ beta-_(2TMS),bAla_2TMS,x,,,,x,
+#Alanine (2TMS)_M000000_A110001-101-0_NA_1087.41_TRUE_VAR5_ALK,Alanine_(2TMS)_BP_RI:1097_IDENT:B+C,Alanine_(2TMS),Ala_2TMS,x,118,x,x,,
+#Alanine (3TMS)_M000026_A138002-101-0_NA_1356.55_TRUE_VAR5_ALK,Alanine_(3TMS)_MP_RI:1367_IDENT:B+C,Alanine_(3TMS),Ala_3TMS,x,190,x,x,,
+#Aspartic acid_(2TMS)_BP_RI:1431_IDENT:A+C,Aspartic acid_(2TMS)_BP_RI:1433_IDENT:A+C,Aspartic acid_(2TMS),Asp_2TMS,,249,x,x,,
+#Aspartic acid (3TMS),Aspartic acid_(3TMS)_MP_RI:1517_IDENT:A+C,Aspartic acid_(3TMS)  ,Asp_3TMS,,,x,,x,
+"#Benzoic acid, (1TMS)_M000347_A128003-101-0_NA_1250.69_PRED_VAR5_ALK",Benzoic acid__(1TMS)_SP_RI:1251_GMDpred,Benzoic acid__(1TMS),Benzoic,,,,,x,
+"#Butanoic acid, 2-hydroxy- (2TMS)_M000000_A111002-101-0_NA_1112.52_TRUE_VAR5_ALK","Butanoic acid, 2-hydroxy- (2TMS)_noIdent","Butanoic acid, 2-hydroxy- (2TMS)",Butanoic_2hydr,,,,,x,
+"#Butanoic acid, 3-hydroxy-_(2TMS)_MP_RI:1153_IDENTA+B",Butanoic acid_ 3-hydroxy-_(2TMS)_MP_RI:1156_IDENTA+B,Butanoic acid_ 3-hydroxy-_(2TMS),Butanoic_3hydr,x,,,,x,
+,Butanoic acid_ 4-amino-_(3TMS)_MP_RI:1527_IDENT:A+C,Butanoic acid_ 4-amino-_(3TMS),Butanoic_4amino,x,,,,x,
+"#Cinnamic acid, trans- (1TMS)","Cinnamic acid, trans- (1TMS)_noIdent","Cinnamic acid, trans- (1TMS)",CinAcid,,,,,x,InternalStandard
+,Citric acid 275_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 275_(4TMS),Cit,,275,x,,,
+,Citric acid 276_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 276_(4TMS),Cit,,276,,,,
+,Citric acid 277_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 277_(4TMS)  ,Cit,,277,,,,
+,Citric acid 278_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 278_(4TMS),Cit,,278,,,,
+,Citric acid 377_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 377_(4TMS),Cit,,377,,,,
+,Citric acid 378_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 378_(4TMS) ,Cit,,378,,,,
+,Citric acid 379_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 379_(4TMS) ,Cit,,379,,,,
+,Citric acid 380_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 380_(4TMS) ,Cit,,380,,,,
+,Citric acid 381_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid 381_(4TMS)  ,Cit,,381,,,,
+#Citric acid_(4TMS)_MP_RI:1810_IDENT:B+D,Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D,Citric acid_(4TMS) ,Cit,x,273,,x,x,
+,Creatinine_(3TMS)_MP_RI:1549_IDENT:B+C,Creatinine_(3TMS),Creatinine,x,,,,x,
+,Cysteine_(3TMS)_MP_RI:1554_IDENT:B+D,Cysteine_(3TMS),Cysteine,,,,,x,
+,Cytosine_(2TMS)_MP_RI:1520_IDENT:A+B,Cytosine_(2TMS),Cytosine,x,,,,x,
+#c10,Decane_n-_1000_Alk,c10,c10,,142,,,,Alk
+,Dehydroascorbic acid dimer_(2MEOX)_MP_RI:1843_GMDpred,Dehydroascorbic acid dimer,AscDimer,,,,,x,
+,Dihydroxyacetone phosphate_(1MEOX)(3TMS)_BP_RI:1751_IDENT:A+B,DHAP_BP,DHAP_BP,x,403,x,x,,
+,Dihydroxyacetone phosphate_(1MEOX)(3TMS)_MP_RI:1739_IDENT:A+B,DHAP_MP,DHAP_MP,x,403,x,x,,
+#c22,Docosane_n-_2200_Alk,c22,c22,,226,,,,Alk
+#c12,Dodecane_n-_1200_Alk,c12,c12,,170,,,,Alk
+#c32,Dotriacontane_n-_3200_Alk,c32,c32,,155,,,,Alk
+,Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B,Erythritol_(4TMS),Ery_4TMS,,,,,x,
+#Ethanolamine (3TMS)_M000096_A128002-101-0_NA_1261.65_PRED_VAR5_ALK,Ethanolamine_(3TMS)_SP_RI:1268_GMDpred,Ethanolamine_(3TMS),EtNH3,,,,x,x,
+#Fructose_(1MEOX)(5TMS)_BP_RI:1870_IDENT:B+C,Fructose_(1MEOX)(5TMS)_BP_RI:1872_IDENT:B+C,Fructose_(1MEOX)(5TMS)_BP,Frc_BP,x,220,x,x,,
+#Fructose_(1MEOX)(5TMS)_MP_RI:1860_IDENT:B+C,Fructose_(1MEOX)(5TMS)_MP_RI:1862_IDENT:B+C,Fructose_(1MEOX)(5TMS)_MP  ,Frc_MP,x,220,x,x,,
+,Fructose-1_6-diphosphate_(1MEOX)(7TMS)_BP_RI:2699_IDENT:B+C,Fructose-1_6-diphosphate_(1MEOX)(7TMS)_BP  ,FBP_BP,x,220,x,x,,
+,Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP_RI:2705_IDENT:B+C,Fructose-1_6-diphosphate_(1MEOX)(7TMS)_MP  ,FBP_MP,x,220,x,x,,
+,Fructose-1-phosphate_(1MEOX)(6TMS)_MP_RI:2291_IDENT:B+D,Fructose-1-phosphate_(1MEOX)(6TMS)_MP,Frc1P_MP,x,220,x,x,,
+,Fructose-6-phosphate_(1MEOX)(6TMS)_MP_RI:2302_IDENT:A+C,Fructose-6-phosphate_(1MEOX)(6TMS) _MP,Frc6P_MP,x,220,x,x,,
+,Fumaric acid 247_(2TMS)_MP_RI:1366_IDENT:A+C,Fumaric acid 247_(2TMS),Fum,,247,x,,,
+,Fumaric acid 249_(2TMS)_MP_RI:1366_IDENT:A+C,Fumaric acid 249_(2TMS) ,Fum,,249,,,,
+#Fumaric acid (2TMS)_M000067_A137001-101-0_NA_1347.77_TRUE_VAR5_ALK,Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C,Fumaric acid_(2TMS),Fum,x,245,,x,,
+,Galacturonic acid_(1MEOX)(5TMS)_BP_RI:1957_IDENT:B+D,Galacturonic acid_(1MEOX)(5TMS),GalAcid,,,,,x,
+,Gluconic acid_(6TMS)_MP_RI:1996_IDENT:B+C,Gluconic acid_(6TMS),GluAcid,,,,,x,
+#Gluconic acid-6-phosphate (7TMS),Gluconic acid-6-phosphate_(7TMS)_MP_RI:2426_IDENT:A+D,Gluconic acid-6-phosphate_(7TMS) ,PGA6,x,220,x,x,,
+,Glucopyranose [-H20]_(4TMS)_SP_RI:1763_GMDpred,Glucopyranose [-H20]_(4TMS),GlcPyr,,,,,x,
+,Glucosamine_(1MEOX)(5TMS)_MP_RI:1932_IDENT:A+B,Glucosamine_(1MEOX)(5TMS),Glc_NH3,,,,,x,
+#Glucose_(1MEOX)(5TMS)_BP_RI:1903_IDENT:B+D,Glucose_(1MEOX)(5TMS)_BP_RI:1904_IDENT:B+D,Glucose_(1MEOX)(5TMS_BP,Glc BP,x,220,x,x,,
+#Glucose_(1MEOX)(5TMS)_MP_RI:1885_IDENT:B+D,Glucose_(1MEOX)(5TMS)_MP_RI:1886_IDENT:B+D,Glucose_(1MEOX)(5TMS)_MP,Glc MP,x,220,x,x,,
+,Glucose-1/6-phosphate_(1MEOX)(6TMS)_MP_RI:2316_IDENT:C+D/A+B,Glucose-1/6-phosphate_(1MEOX)(6TMS)  ,Glc6P_MP,x,220,x,x,,
+,Glucose-6-phosphate_(1MEOX)(6TMS)_BP_RI:2317_IDENT:A+B,Glucose-6-phosphate_(1MEOX)(6TMS),Glc6P_BP,x,220,x,x,,
+#Glutamic acid_(2TMS)_BP_RI:1533_IDENT:A+B,Glutamic acid_(2TMS)_BP_RI:1533_IDENT:A+B,Glutamic acid_(2TMS),Glu_2TMS,x,281,x,x,,
+,Glutamic acid_(3TMS)_MP_RI:1620_IDENT:A+B,Glutamic acid_(3TMS) ,Glu_3TMS,x,353,x,x,,
+,Glutamine_(3TMS)_MP_RI:1770_IDENT:C+D,Glutamine_(3TMS),Gln_3TMS,x,352,x,x,,
+,Glutaric acid_ 2-hydroxy-_(3TMS)_MP_RI:1577_IDENT:A+D,Glutaric acid_ 2-hydroxy-_(3TMS),Glut_2hydroxy,x,,,x,x,
+,Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,Glutaric acid_ 2-oxo- 200_(1MEOX)(2TMS)  ,Glut_2oxo,,200,x,,,
+,Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,Glutaric acid_ 2-oxo- 203_(1MEOX)(2TMS)  ,Glut_2oxo,,203,,,,
+,Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,Glutaric acid_ 2-oxo- 290_(1MEOX)(2TMS)  ,Glut_2oxo,,290,,,,
+,Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,Glutaric acid_ 2-oxo- 293_(1MEOX)(2TMS) ,Glut_2oxo,,293,,,,
+"#Glutaric acid, 2-oxo-_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C",Glutaric acid_ 2-oxo-_(1MEOX)(2TMS)_MP_RI:1579_IDENT:B+C,Glutaric acid_ 2-oxo-_(1MEOX)(2TMS),Glut_2oxo,x,198,,x,,
+,Glutaric acid_(2TMS)_MP_RI:1418_IDENT:A+B,Glutaric acid_(2TMS)  ,Glut,x,,,x,,
+,Glyceraldehyde-3-phosphate_(1MEOX)(3TMS)_BP_RI:1712_BMD,Glyceraldehyde-3-phosphate_(1MEOX)(3TMS),GA3P,,359,x,x,,
+#Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B,Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B,Glyceric acid_(3TMS),GlycAcid,,,,,x,
+,Glyceric acid-2-phosphate_(4TMS)_SP_RI:1766_GMDpred,Glyceric acid-2-phosphate_(4TMS),2PGA,,,,x,x,
+#Glyceric acid-3-phosphate (4TMS),Glyceric acid-3-phosphate_(4TMS)_MP_RI:1802_IDENT:B+D,Glyceric acid-3-phosphate_(4TMS),3PGA,x,359,x,x,,
+#Glycerol_(3TMS)_MP_RI:1279_IDENT:C+D,Glycerol_(3TMS)_MP_RI:1280_IDENT:C+D,Glycerol_(3TMS)  ,Glyc,x,221,x,x,,
+,Glycerol-2-phosphate (4TMS)_noIdent,Glycerol-2-phosphate (4TMS),Glyc2P,,,,x,x,
+#Glycerol-3-phosphate_(4TMS)_MP_RI:1758_IDENT:B+C,Glycerol-3-phosphate_(4TMS)_MP_RI:1756_IDENT:B+C,Glycerol-3-phosphate_(4TMS),Glyc3P,x,359,x,x,,
+,Glycine_(2TMS)_BP_RI:1117_IDENT:A+C,Glycine_(2TMS),Gly_2TMS,x,,,x,x,
+#Glycine_(3TMS)_MP_RI:1313_IDENT:A+C,Glycine_(3TMS)_MP_RI:1314_IDENT:A+C,Glycine_(3TMS)  ,Gly_3TMS,x,278,x,x,,
+#Glycolic acid (2TMS)_M000000_A106002-101-0_NA_1060.28_PRED_VAR5_ALK,Glycolic acid_(2TMS)_SP_RI:1073_GMDpred,Glycolic acid_(2TMS),GlycolicAcid,,,,,x,
+#c17,Heptadecane_n-_1700_Alk,c17,c17,,240,,,,Alk
+#c36,Hexatriacontane_n-_3600_Alk,c36,c36,,155,,,,Alk
+#Hydroxylamine (3TMS)_M000416_A110002-101-0_NA_1105.63_PRED_VAR5_ALK,Hydroxylamine (3TMS)_noIdent,Hydroxylamine (3TMS),Hydroxylamine,,,,,x,
+,Hypotaurine_(3TMS)_MP_RI:1597_IDENT:A+C,Hypotaurine_(3TMS),Hypotaurine,x,,,,x,
+,Hypoxanthine_(2TMS)_MP_RI:1807_IDENT:B+D,Hypoxanthine_(2TMS),Hypoxanthine,,,,,x,
+,Inosine_(4TMS)_MP_RI:2586_IDENT:C+D,Inosine_(4TMS),Inosine,,,,,x,
+"#Inositol, myo-_(6TMS)_MP_RI:2082_IDENT:C+D",Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D,Inositol_ myo-_(6TMS),Inositol_myo,x,,,,x,
+#Isoleucine (1TMS)_M000017_A119002-101-0_NA_1174.98_TRUE_VAR5_ALK,Isoleucine_(1TMS)_BP_RI:1174_IDENT:A+D,Isoleucine_(1TMS),Iso_1TMS,x,,,,x,
+#Isoleucine_(2TMS)_MP_RI:1300_IDENT:A+D,Isoleucine_(2TMS)_MP_RI:1302_IDENT:A+D,Isoleucine_(2TMS),Iso_2TMS,x,,,,x,
+,Itaconic acid_(2TMS),Itaconic acid_(2TMS),Ita,,,,x,x,
+#Lactic acid_(2TMS)_MP_RI:1049_IDENT:B+C,Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C,Lactic acid_(2TMS) ,Lac,x,222,x,x,,
+#Lactose_(1MEOX)(8TMS)_BP_RI:2693_IDENT:B+D,Lactose_(1MEOX)(8TMS)_BP_RI:2693_IDENT:B+D,Lactose_(1MEOX)(8TMS),Lcs,,,,,x,
+#Leucine (1TMS)_M000025_A118001-101-0_NA_1151.06_TRUE_VAR5_ALK,Leucine (1TMS)_M000025_A118001-101-0_NA_1151.06_TRUE_VAR5_ALK,Leucine (1TMS),Leu_1TMS,,,,,x,
+#Leucine (1TMS) ,Leucine_(1TMS)_BP_RI:1153_IDENT:B+C,Leucine_(1TMS),Leu_1TMS,x,,,,x,
+#Leucine (2TMS)_M000025_A129002-101-0_NA_1264.43_TRUE_VAR5_ALK,Leucine_(2TMS)_MP_RI:1277_IDENT:B+C,Leucine_(2TMS),Leu_2TMS,x,,,,x,
+,Lumichrome (2MEOX)_noIdent,Lumichrome (2MEOX),Lumichrome,,,,,x,
+#Lysine (3TMS)_M000000_A186002-101-0_NA_1849.23_TRUE_VAR5_ALK,Lysine_(3TMS)_BP_RI:1849_IDENT:A+C,Lysine_(3TMS),Lys_3TMS,,,,,x,
+,Lysine_(4TMS)_MP_RI:1915_IDENT:A+C,Lysine_(4TMS),Lys_4TMS,,,,,x,
+,Malic acid 247_(3TMS)_MP_RI:1487_IDENT:B+D,Malic acid 247_(3TMS)  ,Mal,,247,x,,,
+,Malic acid 248_(3TMS)_MP_RI:1487_IDENT:B+D,Malic acid 248_(3TMS),Mal,,248,,,,
+,Malic acid 249_(3TMS)_MP_RI:1487_IDENT:B+D,Malic acid 249_(3TMS),Mal,,249,,,,
+#Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D,Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D,Malic acid_(3TMS),Mal,x,245,,x,,
+#Maltose_(1MEOX)(8TMS)_MP_RI:2723_IDENT:C+D,Maltose_(1MEOX)(8TMS)_MP_RI:2723_IDENT:C+D,Maltose_(1MEOX)(8TMS),Mls,,,,,x,
+,Mannitol_(6TMS)_SP_RI:1917_GMDpred,Mannitol_(6TMS),Man,,,,,x,
+,Methionine_(1TMS)_BP_RI:1422_IDENT:C+D,Methionine_(1TMS),Met_1TMS,x,,,,x,
+#NA_M000000_A114002-101-0_NA_1123.41_PRED_VAR5_ALK,NA_M000000_A114002-101-0_NA_1123.41_PRED_VAR5_ALK,NA_A114002,NA_A114002,,,,,x,
+#NA_M000000_A125004-101-0_NA_1230.64_PRED_VAR5_ALK,NA_M000000_A125004-101-0_NA_1230.64_PRED_VAR5_ALK,NA_A125004,NA_A125004,,,,,x,
+#NA_M000000_A203003-101-0_NA_2013.82_PRED_VAR5_ALK,NA_M000000_A203003-101-0_NA_2013.82_PRED_VAR5_ALK,NA_A203003,NA_A203003,,,,,x,
+#NA_M000805_A127003-101-0_NA_1235.69_PRED_VAR5_ALK,NA_M000805_A127003-101-0_NA_1235.69_PRED_VAR5_ALK,NA_A127003,NA_A127003,,,,,x,
+#c19,Nonadecane_n-_1900_Alk,c19,c19,,268,,,,Alk
+#c28,Octacosane_n-_2800_Alk,c28,c28,,155,,,,Alk
+#Ornithine (3TMS)_M000028_A176006-101-0_NA_1750.77_TRUE_VAR5_ALK,Ornithine (3TMS)_M000028_A176006-101-0_NA_1750.77_TRUE_VAR5_ALK,Ornithine (3TMS),Orn,,,,,x,
+,Oxalic acid (2TMS)_noIdent,Oxalic acid_(2TMS),OxAcid,,,,,x,
+"#Pantothenic acid, D- (3TMS)",Pantothenic acid_(3TMS)_MP_RI:1993_IDENT:A+D,Pantothenic acid_(3TMS),Pantothenic_acid,x,,,,x,
+#c15,Pentadecane_n-_1500_Alk,c15,c15,,212,,,,Alk
+#Phenylalanine (1TMS)_M000011_A157001-101-0_NA_1556.05_TRUE_VAR5_ALK,Phenylalanine (1TMS)_M000011_A157001-101-0_NA_1556.05_TRUE_VAR5_ALK,Phenylalanine (1TMS),Phe_1TMS,,,,,x,
+#Phenylalanine (1TMS)_M000011_A157001-101-0_NA_1556.05_TRUE_VAR5_ALK,Phenylalanine_(1TMS)_BP_RI:1547_IDENT:B+C,Phenylalanine_(1TMS),pAla,,,,,x,
+,Phenylalanine_(2TMS)_MP_RI:1625_IDENT:B+C,Phenylalanine_(2TMS),Phe_2TMS,,,,,x,
+#Phosphoenolpyruvic acid (3TMS) ,Phosphoenolpyruvic acid_(3TMS)_MP_RI:1598_IDENT:A+D,PEP_(3TMS),PEP_3TMS,x,372,x,x,,
+#Phosphoric acid (3TMS)_M000075_A129001-101-0_NA_1262.34_TRUE_VAR5_ALK,Phosphoric acid (3TMS)_noIdent,Phosphoric acid (3TMS),PhosAcid,,,,,x,
+,Phosphoric acid monomethyl ester_(2TMS)_SP_RI:1176_GMDpred,Phosphoric acid monomethyl ester_(2TMS),PhosAcid_mono,,,,,x,
+#Proline [+CO2]_(2TMS)_BP_RI:1585_IDENT:A+B,Proline [+CO2]_(2TMS)_BP_RI:1585_IDENT:A+B,Proline [+CO2]_(2TMS),Pro_co2,x,,,,x,
+#Proline_(1TMS)_BP_RI:1171_IDENT:A+B,Proline_(1TMS)_BP_RI:1172_IDENT:A+B,Proline_(1TMS),Pro_1TMS,x,,,,x,
+#Proline_(2TMS)_MP_RI:1304_IDENT:A+B,Proline_(2TMS)_MP_RI:1305_IDENT:A+B,Proline_(2TMS),Pro_2TMS,x,,,,x,
+,Putrescine_(4TMS)_MP_RI:1730_IDENT:A+D,Putrescine_(4TMS),Putrescine,x,,,,x,
+,Pyroglutamic acid_(1TMS)_SP_RI:1500_GMDpred,Pyroglutamic acid_(1TMS),Pyroglut_1TMS,x,,,x,x,
+#Pyroglutamic acid (2TMS)_M000037_A153002-101-0_NA_1522.86_TRUE_VAR5_ALK,Pyroglutamic acid_(2TMS)_MP_RI:1518_IDENT:A+D,Pyroglutamic acid_(2TMS),Pyroglut_2TMS,x,263,x,x,,
+,Pyruvic acid_ 3-hydroxy-_(1MEOX)(2TMS)_BP_RI:1294_IDENT:B+D,Puyruvic acid_3hydroxy_(1MEOX)(2TMS),Pyr_3hydroxy,,,,,x,
+#Pyruvic acid_(1MEOX)(1TMS)_MP_RI:1042_IDENT:A+D,Pyruvic acid_(1MEOX)(1TMS)_MP_RI:1045_IDENT:A+D,Pyruvic acid_(1MEOX)(1TMS)  ,Pyr,x,177,x,x,,
+,Ribose_ 2-deoxy-_(1MEOX)(3TMS)_BP_RI:1572_IDENT:A+D,Ribose_ 2-deoxy-_(1MEOX)(3TMS)_BP,Ribose_2deoxy_BP,,,,,x,
+,Ribose_ 2-deoxy-_(1MEOX)(3TMS)_MP_RI:1574_IDENT:A+D,Ribose_ 2-deoxy-_(1MEOX)(3TMS)_MP,Ribose_2deoxy_MP,,,,,x,
+,Ribose_(1MEOX)(4TMS)_BP_RI:1672_IDENT:B+D,Ribose_(1MEOX)(4TMS)_BP,Rib_BP,x,,,,x,
+,Ribose_(1MEOX)(4TMS)_MP_RI:1672_IDENT:B+D,Ribose_(1MEOX)(4TMS)_MP,Rib_MP,x,,,,x,
+,Ribose-5-phosphate_(1MEOX)(5TMS)_MP_RI:2103_IDENT:C+D,Ribose-5-phosphate,R5P_MP,x,220,x,x,,
+,Ribulose-5-phosphate_(1MEOX)(5TMS)_MP_RI:2112_IDENT:A+B,Ribulose-5-phosphate_(1MEOX)(5TMS),Ribu5P,,359,x,x,,
+#Serine (2TMS)_M000000_A128001-101-0_NA_1253.25_TRUE_VAR5_ALK,Serine_(2TMS)_BP_RI:1260_IDENT:C+D,Serine_(2TMS),Ser_2TMS,x,118,x,x,,
+#Serine (3TMS)_M000015_A138001-101-0_NA_1352.68_TRUE_VAR5_ALK,Serine_(3TMS)_MP_RI:1373_IDENT:C+D,Serine_(3TMS) ,Ser_3TMS,x,206,x,x,,
+#Serine_(4TMS)_BP_RI:1571_IDENT:C+D,Serine_(4TMS)_BP_RI:1571_IDENT:C+D,Serine_(4TMS),Ser_4TMS,x,293,x,x,,
+,Sorbitol (6TMS)_MP_RI:2352_IDENT:no,Sorbitol (6TMS),Sor_6TMS,,220,x,x,,
+,Succinic acid 249_(2TMS)_MP_RI:1327_IDENT:A+D,Succinic acid 249_(2TMS),Suc,,249,x,,,
+,Succinic acid 251_(2TMS)_MP_RI:1327_IDENT:A+D,Succinic acid 251_(2TMS) ,Suc,,251,,,,
+#Succinic acid_(2TMS)_MP_RI:1325_IDENT:A+D,Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D,Succinic acid_(2TMS),Suc,x,247,,x,,
+,Sucrose (8TMS)_MP_RI:2623_IDENT:no,Sucrose_(8TMS),Scr_8TMS,x,220,x,x,,
+#Sucrose_(8TMS)_MP_RI:2630_IDENT:A+C,Sucrose_(8TMS)_MP_RI:2630_IDENT:A+C,Sucrose_(8TMS),Scr_8TMS,x,220,x,x,,
+#Threonic acid (4TMS)_M000078_A156001-101-0_NA_1545.94_TRUE_VAR5_ALK,Threonic acid (4TMS)_M000078_A156001-101-0_NA_1545.94_TRUE_VAR5_ALK,Threonic acid (4TMS),ThrAcid,,,,,x,
+"#Threonine, allo- (2TMS)","Threonine, allo- (2TMS)_noIdent",Threonine_allo_(2TMS),Thr_allo_2TMS,,,,,x,
+"#Threonine, allo- (3TMS)","Threonine, allo- (3TMS)_noIdent",Threonine_allo_(2TMS),Thr_allo_3TMS,,,,,x,
+#Threonine_(2TMS)_BP_RI:1302_IDENT:C+D,Threonine_(2TMS)_BP_RI:1303_IDENT:C+D,Threonine_(2TMS),Thr_2TMS,x,,,,x,
+#Threonine_(3TMS)_MP_RI:1394_IDENT:C+D,Threonine_(3TMS)_MP_RI:1397_IDENT:C+D,Threonine_(3TMS),Thr_3TMS,x,,,,x,
+#Tyrosine_(2TMS)_BP_RI:1883_IDENT:B+D,Tyrosine_(2TMS)_BP_RI:1883_IDENT:B+D,Tyrosine_(2TMS),Tyr_2TMS,,,,,x,
+#Unknown 114,Unknown 114,unk_114,unk_114,,,,,x,
+#Unknown 171,Unknown 171,unk_171,unk_171,,,,,x,
+#Unknown 202,Unknown 202,unk_202,unk_202,,,,,x,
+#Unknown 218,Unknown 218,unk_218,unk_218,,,,,x,
+#Unknown 258,Unknown 258,unk_258,unk_258,,,,,x,
+#Unknown 33,Unknown 33,unk_33,unk_33,,,,,x,
+#Unknown 79,Unknown 79,unk_79,unk_79,,,,,x,
+#Unknown 82,Unknown 82,unk_82,unk_82,,,,,x,
+,Uracil_(2TMS)_MP_RI:1350_IDENT:A+C,Uracil_(2TMS),Uracil,x,,,,x,
+,Urea_(2TMS)_MP_RI:1249_IDENT:A+C,Urea_(2TMS),Urea,,,,,x,
+#Uridine_(3TMS)_MP_RI:2462_IDENT:A+D,Uridine_(3TMS)_MP_RI:2469_IDENT:A+D,Uridine_(3TMS),Uridine,,,,,x,
+#Valine_(1TMS)_BP_RI:1080_IDENT:B+D,Valine_(1TMS)_BP_RI:1084_IDENT:B+D,Valine_(1TMS),Val_1TMS,x,,,,x,
+#Valine_(2TMS)_MP_RI:1212_IDENT:B+D,Valine_(2TMS)_MP_RI:1212_IDENT:B+D,Valine_(2TMS),Val_2TMS,x,,,,x,

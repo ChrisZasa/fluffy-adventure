@@ -2,10 +2,10 @@
 #title: "MTXQCvX2 Part2: Post-Processing -
 #thanks: "Template MTXQCvX2 part 2 provided by Christin Zasada, Kempa Lab"
 author:
-- affiliation: Test Lab
-  name: Test Person
-- affiliation: Test Lab
-  name: Test Person
+- affiliation: Mueller Lab, MDC Berlin-Buch
+  name: Sabrina Geisberger
+- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
+  name: Christin Zasada
 biblio-style: apsr
 output:
   pdf_document:
