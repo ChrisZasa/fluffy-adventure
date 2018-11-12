@@ -1,10 +1,10 @@
 ---
-title: 'MTXQCvX2 - Part1: PROJECTNAME'
+title: 'MTXQCvX2 - Part1: pSIRM in Macrophage differentiation (13C-Gln)'
 author:
-- affiliation: Test Lab
-  name: Test Person
-- affiliation: Test Lab
-  name: Test Person
+- affiliation: Mueller Lab, MDC Berlin-Buch
+  name: Sabrina Geisberger
+- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
+  name: Christin Zasada
 params:
   spath:
     input: text
@@ -35,9 +35,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: This document provides an evaluation of GC-MS derived metabolomics data.
-  It asseses GC-MS performance, the absolute quantification and the
-  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+abstract: The herein presented report includes the manual validated peak areas of Itaconic acid. Absolute quantities have been determined by additional quantification standards.
 ---
 
 # MTXQCvX part1
