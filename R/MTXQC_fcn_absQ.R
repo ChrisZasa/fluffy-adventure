@@ -125,12 +125,9 @@ absconc = function(met, area){
 normalisation_calc = function(d_quant, ca = 1, soa = 1){
   #' This functions performs the calculation of normalised quantities 
   #' considering the sum of Area normalisation and the cinnamic acid factor
-  #' Following units are implemented: ul (blood), mg (tissue) and count (cell extracts)
-  #' Output states respectively: pmol / ml, pmol / mg or pmol/1e+6 cells
+  #' Following units are implemented: ul (blood), mg (tissue OR protein) and count (cell extracts)
+  #' Output states respectively: pmol/ml, pmol/mg or pmol/1e+6 cells
   #' 
-  #' #calculating  quantities: pmio =  (1) pmol / 1x106 cells, 
-  #                                 (2) pmol/ug  OR pmol/ul, 
-  #                                 (3) pmol/mg OR pmol/mg
   #' 
   #' in the absence of cinnamic acid define ca = 0, instead of ca = 1
   #' no sum of area normalisation possbile soa = 0, possible soa == 1
