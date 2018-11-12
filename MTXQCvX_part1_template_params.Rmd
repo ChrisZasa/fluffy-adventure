@@ -1,15 +1,15 @@
 ---
-title: 'MTXQCvX2 - Part1: PROJECTNAME'
+title: 'MTXQCvX2 - Part1: pSIRM in Macrophage differentiation (13C-Gln)'
 author:
-- affiliation: Test Lab
-  name: Test Person
-- affiliation: Test Lab
-  name: Test Person
+- affiliation: Mueller Lab, MDC Berlin-Buch
+  name: Sabrina Geisberger
+- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
+  name: Christin Zasada
 params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test"
+    value: "gln_lab2"
   data:
     input: select
     choices: [maui, metmax]
@@ -19,7 +19,7 @@ params:
     input: select
     choices: [none, PeakArea, Incorporation, both]
     label: "Incorporation manualy validated data:"
-    value: none
+    value: PeakArea
 output:
   pdf_document:
     citation_package: natbib
@@ -35,9 +35,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: This document provides an evaluation of GC-MS derived metabolomics data.
-  It asseses GC-MS performance, the absolute quantification and the
-  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+abstract: The herein presented report includes the manual validated peak areas of Itaconic acid. Absolute quantities have been determined by additional quantification standards.
 ---
 
 # MTXQCvX part1
@@ -724,13 +722,12 @@ if (addq_idx == 'yes') {
     message(paste0("Colon separator detected in: ", nick_addq))
   }
   
-  #select Q_sel == "x"
+  #select Q_sel == "x" -> requires to check all metabolites that should be checked for absolute quantification
   con_se_quant = subset(con_se, con_se$Q_sel == "x")
   
   #Extract quant1-values for additional substances defined input/add_quant/ nick_addq
   quant_1add <-  merge(quant_1add, con_se_quant[,c("Lettercode", "Metabolite")])
-  quant_1add <-  merge(quant_1add, pathway_profile[,c("Lettercode", "Letter_Derivate")])
-    
+  
   knitr::kable(quant_1add, format = 'pandoc', 
       caption = 'Quant1:1-values for additional calibration curves.')
 
