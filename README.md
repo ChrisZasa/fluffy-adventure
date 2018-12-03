@@ -4,6 +4,14 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2018-12-03 - minor update
+
+Verion: 1.0.5
+
+Updates:
+
+  - Export of lowQ and highQ MIDs in MTXQCvX_part3 - ManualValidation for incorporation data
+
 ### 2018-10-30 - major update
 
 Verion: 1.0.4
