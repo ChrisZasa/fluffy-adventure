@@ -26,12 +26,16 @@ transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   
   #SpectraExport Quality
   df_se_val$ManVal_check = rep("", length(df_se_val$Lettercode))
-  se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
+  
+  #### line modified:se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
+  #### Export all MIDs without preselection of lowQ only
+  se_val_low = subset(df_se_val, df_se_val$count_score != "")
+  
   se_low = se_val_low[,c("File","Lettercode","count_score", "ManVal_check")]
   
   #Export
   write.csv(se_low, paste0(path_setup, set_output, set_val, 
-                           "MID_validation_lowQ_forCheck.csv"), row.names = FALSE)
+                           "MID_validation_forCheck.csv"), row.names = FALSE)
   
   #SpectraExport
   colnames(df_mid)[3] = c('Mass_mz')
@@ -47,7 +51,7 @@ transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   
   #Export
   write.csv(data_inc_export, paste0(path_setup, set_output, set_val, 
-                                    "MID_validation_lowQ_values.csv"), row.names = F)
+                                    "MID_validation_values.csv"), row.names = F)
   
   message('Files for manual MID evaluation are generated!')
 }
