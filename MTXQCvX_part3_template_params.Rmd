@@ -190,11 +190,11 @@ if (params$prep == "Incorporation") {
     #data_mid = read.csv(paste0(path_setup, set_input, "inc/", nick_mid), T)
     
     data_mid = read.csv(paste0(path_setup, set_input, "inc/pSIRM_SpectraData.csv"), T)
-    message("Imported MIDs: ", nick_mid)
+    message("Imported MIDs: pSIRM_SpectraData.csv")
     
     nick_inc = as.character(id_settings[which(id_settings$Parameter == "inc_data"), "Value"])
     data_original = read.csv(paste0(path_setup, set_input, "inc/", nick_inc), T)
-    message("Imported Incorporation data: ", nick_mid)
+    message("Imported Incorporation data: ", nick_inc)
     
     
     se_val = read.csv(paste0(path_setup, set_output, 
