@@ -26,7 +26,11 @@ transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   
   #SpectraExport Quality
   df_se_val$ManVal_check = rep("", length(df_se_val$Lettercode))
-  se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
+  
+  #### line modified:se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
+  #### Export all MIDs without preselection of lowQ only
+  se_val_low = subset(df_se_val, df_se_val$count_score != "")
+  
   se_low = se_val_low[,c("File","Lettercode","count_score", "ManVal_check")]
   
   #Export
