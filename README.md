@@ -10,8 +10,23 @@ Version: 1.0.3.910
 I corrected the reading of the ManualQuantTable information in MTXQCvX2 part 1 
 subsequently running Metmax integration (part 4).
 
+### 2018-12-03 - minor update
 
+Verion: 1.0.5
 
+Updates:
+
+  - Export of lowQ and highQ MIDs in MTXQCvX_part3 - ManualValidation for incorporation data
+
+### 2018-10-30 - major update
+
+Verion: 1.0.4
+
+Updates:
+
+  - added a list of metabolite abbreviations at the end of MTXQCvX2 part1 and part2
+  - minor bug fixes in graphs
+  
 
 ### 2018-10-24 - major update
 
