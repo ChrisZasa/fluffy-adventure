@@ -128,8 +128,6 @@ check_mqt <- function(df_annotation, dirs = path_setup, mode = "maui") {
 }
 
 
-
-
 qcurve_top5_rsquare = function(df, path){
   #'Determination of calibration curves based on the
   #'ManualQuantTable. 

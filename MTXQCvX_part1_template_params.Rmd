@@ -1,15 +1,15 @@
 ---
-title: 'MTXQCvX2 - Part1: pSIRM in Macrophage differentiation (13C-Gln)'
+title: 'MTXQCvX2 - Part1: PROJECT NAME'
 author:
-- affiliation: Mueller Lab, MDC Berlin-Buch
-  name: Sabrina Geisberger
-- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
-  name: Christin Zasada
+- affiliation: Test Lab
+  name: Test Name
+- affiliation: Test Lab
+  name: Test Name
 params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "gln_lab2"
+    value: ""
   data:
     input: select
     choices: [maui, metmax]
@@ -19,7 +19,7 @@ params:
     input: select
     choices: [none, PeakArea, Incorporation, both]
     label: "Incorporation manualy validated data:"
-    value: PeakArea
+    value: 
 output:
   pdf_document:
     citation_package: natbib
@@ -63,7 +63,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       fig.path = set_fig,  
                       echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
-                      message = TRUE,
+                      message = FALSE,
                       eval = TRUE) #show messages
 ```
 
