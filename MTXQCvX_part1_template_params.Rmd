@@ -1,10 +1,10 @@
 ---
-title: 'MTXQCvX2 - Part1: PROJECTNAME'
+title: 'MTXQCvX2 - Part1: PROJECT NAME'
 author:
 - affiliation: Test Lab
-  name: Test Person
+  name: Test Name
 - affiliation: Test Lab
-  name: Test Person
+  name: Test Name
 params:
   spath:
     input: text
@@ -19,7 +19,7 @@ params:
     input: select
     choices: [none, PeakArea, Incorporation, both]
     label: "Incorporation manualy validated data:"
-    value: none
+    value: 
 output:
   pdf_document:
     citation_package: natbib
@@ -35,9 +35,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: This document provides an evaluation of GC-MS derived metabolomics data.
-  It asseses GC-MS performance, the absolute quantification and the
-  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+abstract: The herein presented report includes the manual validated peak areas of Itaconic acid. Absolute quantities have been determined by additional quantification standards.
 ---
 
 # MTXQCvX part1
@@ -65,7 +63,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       fig.path = set_fig,  
                       echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
-                      message = TRUE,
+                      message = FALSE,
                       eval = TRUE) #show messages
 ```
 
@@ -607,11 +605,13 @@ if (mm_peaks_idx == TRUE) {
 ```{r mass73_stats, tidy = TRUE}
   #m/z 73 and total peaks data
 if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
+  
   data_deriv = file_shaping(data_73, shape = 'long', ann, type = "sample", inc = FALSE)
   total_peaks = file_shaping(total_peaks, 'long', ann, type = "sample", inc = FALSE)
 
   deriv_comb = gc_metric_calc(dataframe = data_deriv, dataframe2 = total_peaks, title = 'mz73')
-} else {
+
+  } else {
   message("No input files detected. Either MassSum-73.csv or PeakDensities-Chroma.csv")
 }
   
@@ -675,30 +675,17 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```{r check_mqt}
 
 	if (params$data == "maui") {
-	
-	  #check ManualQuantTable.tsv and defined Batch-Ids in annotation file
-	  batch_id_def = check_mqt_batchids(ann, path_setup)
-	  nb_id = length(batch_id_def)
-	  
-	  #extract tsv-file names
-	  file_names <- dir(paste0(path_setup, set_input, "quant/"), pattern = ".tsv") 
-		
-	  #combine all tsv-files, add Batch-Id
-	  cual <- do.call(rbind, lapply(file_names, 
-								 function(x) cbind(read.csv(paste0(path_setup, set_input, 
-										  "quant/", x), sep = "\t"), 
-										  Batch_Id = strsplit(x,'\\.')[[1]][1])))
-	   
-		write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
-			
-		#generate ManualQuantTable
+	 
+	  cual = check_mqt(ann, path_setup, mode = "maui")
     mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
-    message("ManualQuantTable generated and exported!")
+    message("ManualQuantTable for MAUI input generated and exported!")
 	}
 
 	if (params$data == "metmax") {
-		cual = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_calc_", q_idx,".csv"))
-		message("ManualQuantTable imported!")
+	  
+	  cual = check_mqt(ann, path_setup, mode = "metmax")
+		mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
+		message("ManualQuantTable for Metmax input generated and exported!")
 	}
 ```
 
@@ -722,13 +709,12 @@ if (addq_idx == 'yes') {
     message(paste0("Colon separator detected in: ", nick_addq))
   }
   
-  #select Q_sel == "x"
+  #select Q_sel == "x" -> requires to check all metabolites that should be checked for absolute quantification
   con_se_quant = subset(con_se, con_se$Q_sel == "x")
   
   #Extract quant1-values for additional substances defined input/add_quant/ nick_addq
   quant_1add <-  merge(quant_1add, con_se_quant[,c("Lettercode", "Metabolite")])
-  quant_1add <-  merge(quant_1add, pathway_profile[,c("Lettercode", "Letter_Derivate")])
-    
+  
   knitr::kable(quant_1add, format = 'pandoc', 
       caption = 'Quant1:1-values for additional calibration curves.')
 
@@ -781,10 +767,7 @@ if (addq_idx == 'yes') {
   ###### Create ManualQuantTable with additional measurements
   mqt_addq <-  create_manualquanttable(addq_sel, quant_1add, met_translation = con_se,
                 plot = TRUE)
-  
- 
 }
-
 ```
 
 ```{r merge_mqts}
@@ -1600,6 +1583,22 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
   print(b, vp = vplayout(3:10, 1:6))
 
 ```
+
+\clearpage
+
+# List of abbreviations
+
+```{r abbrev, echo=FALSE}
+
+library(tidyverse)
+temp = select(con_se, "Lettercode", "Metabolite_short", "Q1_value" ,"nopsirm") %>%
+      arrange(Lettercode)
+
+kable(temp,"latex", longtable = T, booktabs = T) %>%
+  kable_styling(latex_options = c("scale_down"))
+```
+
+
 
 *End of the document*
 

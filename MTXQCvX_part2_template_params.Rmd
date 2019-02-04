@@ -2,10 +2,10 @@
 #title: "MTXQCvX2 Part2: Post-Processing -
 #thanks: "Template MTXQCvX2 part 2 provided by Christin Zasada, Kempa Lab"
 author:
-- affiliation: Test Lab
-  name: Test Person
-- affiliation: Test Lab
-  name: Test Person
+- affiliation: Mueller Lab, MDC Berlin-Buch
+  name: Sabrina Geisberger
+- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
+  name: Christin Zasada
 biblio-style: apsr
 output:
   pdf_document:
@@ -65,11 +65,11 @@ params:
   par2:
     input: text
     label: "Statistics: Define parameter 2 (plot: subgrouping, fill-value)."
-    value: "State"
+    value: "Cond"
   par3:
     input: text
     label: "Statistics: Define parameter 3 (plot: sub-figure panel)."
-    value: ""
+    value: "CL"
   par4:
     input: text
     label: "Statistics: Define parameter 4."
@@ -601,7 +601,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
                       position = position_dodge(0.9)) +
             geom_errorbar(aes(ymin = mean_li - sd_li, ymax = mean_li + sd_li),
                       width = 0.25, position = position_dodge(0.9)) +
-            facet_wrap(get(params$par2) ~ Mass_Pos, scales = "free_y") +
+            facet_wrap(get(params$par3) ~ Mass_Pos, scales = "free_y") +
             theme_bw() +
             ggtitle(var) +
                 scale_fill_mtxqc(mypal) +
@@ -659,7 +659,7 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
                   position = position_dodge(0.9)) +
      geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
                   width = 0.25, position = position_dodge(0.9)) +
-        facet_wrap(Lettercode ~ Mass_Pos, scales = "free_y") +
+        facet_wrap(get(params$par3) ~ Mass_Pos, scales = "free_y") +
         theme_bw() +
       	    scale_fill_mtxqc(mypal) +
         ggtitle(paste0(var)) +
@@ -675,3 +675,20 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
 }
 
 ```
+
+\clearpage
+
+# List of abbreviations
+
+```{r abbrev, echo=FALSE}
+
+library(tidyverse)
+temp = select(con_se, "Lettercode", "Metabolite_short", "Q1_value" ,"nopsirm") %>%
+      arrange(Lettercode)
+
+kable(temp,"latex", longtable = T, booktabs = T) %>%
+  add_header_above(c("")) %>%
+  kable_styling(latex_options = c("scale_down", "repeat_header"))
+```
+
+*End of the document!*
