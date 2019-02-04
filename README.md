@@ -10,6 +10,10 @@ Version: 1.0.3.910
 I corrected the reading of the ManualQuantTable information in MTXQCvX2 part 1 
 subsequently running Metmax integration (part 4).
 
+Checked with maui and metmax input.
+
+Please stay tuned for further refinements in the next couple of hours!
+
 ### 2018-12-03 - minor update
 
 Verion: 1.0.5
