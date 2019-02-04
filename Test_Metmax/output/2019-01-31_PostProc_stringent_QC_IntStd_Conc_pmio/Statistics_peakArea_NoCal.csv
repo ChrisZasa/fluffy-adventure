@@ -1,0 +1,24 @@
+"Lettercode","Time","Substrate","CL","n_area","mean_area","sd_area"
+"CinAcid",10,"Glc","SHEP_MeOH",1,2.96e+08,NA
+"CinAcid",10,"Glc","SHEP_Tet",1,7.93e+08,NA
+"CinAcid",10,"Glc","SHEPtet21N_MeOH",1,4.58e+08,NA
+"CinAcid",10,"Glc","SHEPtet21N_Tet",1,7.28e+08,NA
+"EtNH3",10,"Glc","SHEP_Tet",1,96714,NA
+"EtNH3",10,"Glc","SHEPtet21N_Tet",1,135476,NA
+"Glc MP",10,"Glc","SHEP_MeOH",1,21900000,NA
+"Glut",10,"Glc","SHEP_MeOH",1,19300000,NA
+"Glut",10,"Glc","SHEP_Tet",1,17900000,NA
+"Glut",10,"Glc","SHEPtet21N_MeOH",1,10500000,NA
+"Glut",10,"Glc","SHEPtet21N_Tet",1,11400000,NA
+"Glut_2hydroxy",10,"Glc","SHEP_MeOH",1,2499682,NA
+"Glut_2hydroxy",10,"Glc","SHEP_Tet",1,3526032,NA
+"Glut_2hydroxy",10,"Glc","SHEPtet21N_MeOH",1,2297310,NA
+"Glut_2hydroxy",10,"Glc","SHEPtet21N_Tet",1,4726103,NA
+"GlycolicAcid",10,"Glc","SHEP_MeOH",1,503651,NA
+"GlycolicAcid",10,"Glc","SHEP_Tet",1,551522,NA
+"GlycolicAcid",10,"Glc","SHEPtet21N_MeOH",1,613409,NA
+"GlycolicAcid",10,"Glc","SHEPtet21N_Tet",1,767005,NA
+"Hydroxylamine",10,"Glc","SHEP_MeOH",1,20800000,NA
+"Hydroxylamine",10,"Glc","SHEP_Tet",1,21500000,NA
+"Hydroxylamine",10,"Glc","SHEPtet21N_MeOH",1,1.6e+07,NA
+"Hydroxylamine",10,"Glc","SHEPtet21N_Tet",1,28200000,NA

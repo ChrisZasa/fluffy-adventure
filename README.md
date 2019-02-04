@@ -4,6 +4,15 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2019-02-04 - major update
+Version: 1.0.3.910
+
+I corrected the reading of the ManualQuantTable information in MTXQCvX2 part 1 
+subsequently running Metmax integration (part 4).
+
+
+
+
 ### 2018-10-24 - major update
 
 Version: 1.0.3.901
