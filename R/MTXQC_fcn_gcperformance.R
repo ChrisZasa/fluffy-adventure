@@ -109,36 +109,29 @@ extract_standards_export <- function(dataframe, met_names = con_se, ann_file = a
   #Extract internal standard
   is_subs = subset(met_names, met_names$Standards == "InternalStandard")
   internalstd = unique(is_subs$Lettercode)
+  message("Defined internal standard: ", internalstd)
   
   #Extract measures peak areas
   df_peak = merge(dataframe, met_names[,c("Metabolite_manual", "Metabolite","Lettercode")])
   df_standard = subset(df_peak, Lettercode %in% internalstd)
   
-  #if (!is.null(dim(df_standard))) {
-  if (is.data.frame(df_standard) && nrow(df_standard != 0)) {
-    
-    message("Defined internal standard: ", internalstd)
-    message("Peak areas detected for internal standard in peak area matrix.")
+  if (empty(df_standard) == TRUE) {
+    message("ERROR: Empty dataframe created after selecting internal standard from peak table.")
+    message("SUGGESTION: Check the metabolite annotation in: Metabolite_manual")
+  } else {
+    message("CHECKED: Internal standard correctly defined and detected.")
     
     #Selected columns for wide format
     df_sel = df_standard[,c("Metabolite", "QuantMasses" ,"File", "PeakArea")]
     df_wide = reshape2::dcast(df_sel, Metabolite + QuantMasses ~ File, 
-                              value.var = "PeakArea")
+      value.var = "PeakArea")
     
     #Export
     write.csv(df_wide, paste0(path_setup, set_input, "gc/InternalStandard.csv"), 
-              row.names = FALSE)
+      row.names = FALSE)
     
     message("Data file for internal standard generated and exported to: input/gc/InternalStandard.csv")
-    
-  } else {
-    
-    message("Defined internal standard: ", internalstd)
-    message("WARNING: No peak areas detected for internal standard in peak area matrix.")
-    
   }
-  
-  
 }
 
 extraction_alkanes_export <- function(dataframe, phrase = "Alk", met_names = con_se, annotation_file = ann) {

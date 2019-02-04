@@ -1,0 +1,7 @@
+"Lettercode","Batch_Id","count_score","N_count","sum_files","prop"
+"Ala_2TMS","e19025ba","goodQ",3,3,1
+"Ala_3TMS","e19025ba","goodQ",3,3,1
+"Lac","e19025ba","goodQ",3,4,0.75
+"Lac","e19025ba","lowQ",1,4,0.25
+"Ser_2TMS","e19025ba","goodQ",3,3,1
+"Ser_3TMS","e19025ba","goodQ",4,4,1

@@ -1,0 +1,49 @@
+"Lettercode","Batch_Id","Metabolite","Par","Val"
+"Adenosine_3TMS","e19025ba","Adenosine (3TMS)_noIdent","R2_cal",0.996156237685647
+"Ala_3TMS","e19025ba","Alanine_(3TMS)_MP_RI:1367_IDENT:B+C","R2_cal",0.953064451833165
+"Cit","e19025ba","Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D","R2_cal",0.994738986467659
+"Ery_4TMS","e19025ba","Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B","R2_cal",0.99460728674606
+"Fum","e19025ba","Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C","R2_cal",0.991596614369125
+"GlycAcid","e19025ba","Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B","R2_cal",0.997977142777381
+"Inositol_myo","e19025ba","Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D","R2_cal",0.999850953280697
+"Lac","e19025ba","Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C","R2_cal",0.998481565164645
+"Mal","e19025ba","Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D","R2_cal",0.986268484410699
+"Ser_2TMS","e19025ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","R2_cal",0.931995911566642
+"Ser_3TMS","e19025ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","R2_cal",0.936296393696711
+"Suc","e19025ba","Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D","R2_cal",0.998019690182659
+"Adenosine_3TMS","e19025ba","Adenosine (3TMS)_noIdent","N_cal",1
+"Ala_3TMS","e19025ba","Alanine_(3TMS)_MP_RI:1367_IDENT:B+C","N_cal",1
+"Cit","e19025ba","Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D","N_cal",8.75
+"Ery_4TMS","e19025ba","Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B","N_cal",0.75
+"Fum","e19025ba","Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C","N_cal",3
+"GlycAcid","e19025ba","Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B","N_cal",2
+"Inositol_myo","e19025ba","Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D","N_cal",0.75
+"Lac","e19025ba","Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C","N_cal",0.625
+"Mal","e19025ba","Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D","N_cal",4
+"Ser_2TMS","e19025ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","N_cal",0.5
+"Ser_3TMS","e19025ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","N_cal",0.75
+"Suc","e19025ba","Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D","N_cal",3
+"Adenosine_3TMS","e19025ba","Adenosine (3TMS)_noIdent","Data_lin",1
+"Ala_3TMS","e19025ba","Alanine_(3TMS)_MP_RI:1367_IDENT:B+C","Data_lin",1
+"Cit","e19025ba","Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D","Data_lin",1
+"Ery_4TMS","e19025ba","Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B","Data_lin",1
+"Fum","e19025ba","Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C","Data_lin",0.25
+"GlycAcid","e19025ba","Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B","Data_lin",1
+"Inositol_myo","e19025ba","Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D","Data_lin",NA
+"Lac","e19025ba","Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C","Data_lin",0.5
+"Mal","e19025ba","Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D","Data_lin",1
+"Ser_2TMS","e19025ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","Data_lin",1
+"Ser_3TMS","e19025ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","Data_lin",1
+"Suc","e19025ba","Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D","Data_lin",1
+"Adenosine_3TMS","e19025ba","Adenosine (3TMS)_noIdent","R2_norm",NA
+"Ala_3TMS","e19025ba","Alanine_(3TMS)_MP_RI:1367_IDENT:B+C","R2_norm",0.995340242061735
+"Cit","e19025ba","Citric acid_(4TMS)_MP_RI:1814_IDENT:B+D","R2_norm",0.900082134753106
+"Ery_4TMS","e19025ba","Erythritol_(4TMS)_MP_RI:1503_IDENT:A+B","R2_norm",0.665638065753489
+"Fum","e19025ba","Fumaric acid_(2TMS)_MP_RI:1366_IDENT:A+C","R2_norm",NA
+"GlycAcid","e19025ba","Glyceric acid_(3TMS)_MP_RI:1339_IDENT:A+B","R2_norm",NA
+"Inositol_myo","e19025ba","Inositol_ myo-_(6TMS)_MP_RI:2088_IDENT:C+D","R2_norm",0
+"Lac","e19025ba","Lactic acid_(2TMS)_MP_RI:1055_IDENT:B+C","R2_norm",0
+"Mal","e19025ba","Malic acid_(3TMS)_MP_RI:1487_IDENT:B+D","R2_norm",NA
+"Ser_2TMS","e19025ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","R2_norm",NA
+"Ser_3TMS","e19025ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","R2_norm",NA
+"Suc","e19025ba","Succinic acid_(2TMS)_MP_RI:1327_IDENT:A+D","R2_norm",0.314766967603536
