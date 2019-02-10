@@ -4,6 +4,11 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2019-02-10 - minor update
+
+Checked MTXQCvX2 throughfully and added further datasets to play with MTXQCvX2 in combination with the MTXQCvX2 documentation.
+
+
 ### 2019-02-04 - major update
 Version: 1.0.5.910
 
