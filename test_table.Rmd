@@ -1,0 +1,34 @@
+---
+title: "Untitled"
+author: "Christin Zasada"
+date: "30 October 2018"
+output: pdf_document
+---
+
+
+
+```{r test, include=FALSE}
+
+library(knitr)
+library(kableExtra)
+dt <- mtcars[1:5, 1:6]
+
+kable(dt, "latex", booktabs = T)
+
+
+```
+
+
+```{r setup, warning=FALSE, echo=FALSE}
+
+library(tidyverse)
+
+temp = read.csv("config_mtx/conversion_metabolite.csv", TRUE, sep = ";")
+
+temp = select(temp, "Lettercode", "Metabolite_short", "Q1_value" ,"nopsirm") %>%
+      arrange(Lettercode)
+
+kable(temp,"latex", longtable = T, booktabs = T) %>%
+     add_header_above(c("")) %>%
+  kable_styling(latex_options = c("striped", "scale_down", "repeat_header"))
+```

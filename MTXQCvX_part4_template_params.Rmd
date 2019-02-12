@@ -23,7 +23,7 @@ fontfamily: mathpazo
 params:
   spath:
     input: text
-    label: "Run on MTXQC-subfolder:"
+    label: "Run on MTXQC project folder:"
     value: "Test_Metmax"
   matrix:
     input: text

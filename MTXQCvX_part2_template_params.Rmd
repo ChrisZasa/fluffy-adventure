@@ -2,10 +2,10 @@
 #title: "MTXQCvX2 Part2: Post-Processing -
 #thanks: "Template MTXQCvX2 part 2 provided by Christin Zasada, Kempa Lab"
 author:
-- affiliation: Mueller Lab, MDC Berlin-Buch
-  name: Sabrina Geisberger
-- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
-  name: Christin Zasada
+- affiliation: LAB, LAB LOCATION 
+  name: NAME ONE 
+- affiliation: LAB, LAB LOCATION
+  name: NAME TWO
 biblio-style: apsr
 output:
   pdf_document:
@@ -24,7 +24,7 @@ fontfamily: mathpazo
 params:
   subs:
     input: text
-    label: "Run on MTXQC-subfolder:"
+    label: "Run on MTXQC project folder:"
     value: "test"
   analysis:
     input: select
@@ -61,15 +61,15 @@ params:
   par1:
     input: text
     label: "Statistics: Define parameter 1 (plot: x-axis)."
-    value: "Time"
+    value: ""
   par2:
     input: text
     label: "Statistics: Define parameter 2 (plot: subgrouping, fill-value)."
-    value: "Cond"
+    value: ""
   par3:
     input: text
     label: "Statistics: Define parameter 3 (plot: sub-figure panel)."
-    value: "CL"
+    value: ""
   par4:
     input: text
     label: "Statistics: Define parameter 4."
@@ -77,7 +77,7 @@ params:
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
-    label: "Incorporation manualy validated data:"
+    label: "Incorporation manually validated data:"
     value: none
   mypal:
     input: select
