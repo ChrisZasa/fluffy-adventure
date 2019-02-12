@@ -9,7 +9,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC project folder:"
-    value: ""
+    value: "test"
   data:
     input: select
     choices: [maui, metmax]
@@ -83,12 +83,6 @@ source('R/MTXQC_config.R')
 ## Data import
 
 ```{r import_datafiles, tidy  =  TRUE} 
-
-#just as a test
-
-
-#import_files_MTXQCpart1()
-
 #tracking import errors
 imp_error = 0
 
