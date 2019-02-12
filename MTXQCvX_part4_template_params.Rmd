@@ -24,39 +24,39 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: ""
+    value: "Test_Metmax"
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
-    value: ""
+    value: "PeakAreas.csv"
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: ""
+    value: "mz73.csv"
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: ""
+    value: "MIDs.csv"
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
-    value: FALSE
+    value: TRUE
   alkanes:
     input: checkbox
     label: "Generate input table for alkane intensities (definition: Alk)."
-    value: FALSE
+    value: TRUE
   peakchroma:
     input: checkbox
     label: "Generate input table for sum of area normalisation (use: peakarea matrix)"
-    value: FALSE
+    value: TRUE
   mqt:
     input: checkbox
     label: "Generate ManualQuantTable and samples peakarea table."
-    value: FALSE
+    value: TRUE
   inc:
     input: checkbox
     label: "Calculate stable isotope incorporation and generate corresponding files."
-    value: FALSE
+    value: TRUE
 thanks: Template MTXQCvX part 4 written by Christin Zasada, Kempa Lab
 abstract: MTXQC part 4 provides the transformation of Metmax-derived files for the usage as input files for MTXQC part 1. This report provides three modes - (1) basic - creates tables required for GC-MS performance, (2) Quant - Generation of ManualQuantTable (3) Inc - Calculation of 13C-isotope incorporation.
 ---
