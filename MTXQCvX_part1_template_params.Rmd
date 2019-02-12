@@ -1,10 +1,10 @@
 ---
-title: 'MTXQCvX2 - Part1: PROJECT NAME'
+title: 'MTXQCvX2 - Part1: PROJECT TITLE'
 author:
 - affiliation: Test Lab
-  name: Test Name
+  name: Test person
 - affiliation: Test Lab
-  name: Test Name
+  name: Test person
 params:
   spath:
     input: text
@@ -35,7 +35,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: The herein presented report includes the manual validated peak areas of Itaconic acid. Absolute quantities have been determined by additional quantification standards.
+abstract: Please use this space for a short summary of the current state of the project.
 ---
 
 # MTXQCvX part1
@@ -83,6 +83,10 @@ source('R/MTXQC_config.R')
 ## Data import
 
 ```{r import_datafiles, tidy  =  TRUE} 
+
+
+#import_files_MTXQCpart1()
+
 #tracking import errors
 imp_error = 0
 
