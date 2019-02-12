@@ -1,15 +1,15 @@
 ---
-title: 'MTXQCvX2 - Part1: pSIRM in Macrophage differentiation (13C-Gln)'
+title: 'MTXQCvX2 - Part1: PROJECT NAME'
 author:
-- affiliation: Mueller Lab, MDC Berlin-Buch
-  name: Sabrina Geisberger
-- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
-  name: Christin Zasada
+- affiliation: Test Lab
+  name: Test Name
+- affiliation: Test Lab
+  name: Test Name
 params:
   spath:
     input: text
-    label: "Run on MTXQC-subfolder:"
-    value: "gln_lab2"
+    label: "Run on MTXQC project folder:"
+    value: ""
   data:
     input: select
     choices: [maui, metmax]
@@ -18,8 +18,8 @@ params:
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
-    label: "Incorporation manualy validated data:"
-    value: PeakArea
+    label: "Incorporation manually validated data:"
+    value: none
 output:
   pdf_document:
     citation_package: natbib
@@ -63,7 +63,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       fig.path = set_fig,  
                       echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
-                      message = TRUE,
+                      message = FALSE,
                       eval = TRUE) #show messages
 ```
 
@@ -675,30 +675,17 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```{r check_mqt}
 
 	if (params$data == "maui") {
-	
-	  #check ManualQuantTable.tsv and defined Batch-Ids in annotation file
-	  batch_id_def = check_mqt_batchids(ann, path_setup)
-	  nb_id = length(batch_id_def)
-	  
-	  #extract tsv-file names
-	  file_names <- dir(paste0(path_setup, set_input, "quant/"), pattern = ".tsv") 
-		
-	  #combine all tsv-files, add Batch-Id
-	  cual <- do.call(rbind, lapply(file_names, 
-								 function(x) cbind(read.csv(paste0(path_setup, set_input, 
-										  "quant/", x), sep = "\t"), 
-										  Batch_Id = strsplit(x,'\\.')[[1]][1])))
-	   
-		write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
-			
-		#generate ManualQuantTable
+	 
+	  cual = check_mqt(ann, path_setup, mode = "maui")
     mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
-    message("ManualQuantTable generated and exported!")
+    message("ManualQuantTable for MAUI input generated and exported!")
 	}
 
 	if (params$data == "metmax") {
-		cual = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_calc_", q_idx,".csv"))
-		message("ManualQuantTable imported!")
+	  
+	  cual = check_mqt(ann, path_setup, mode = "metmax")
+		mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
+		message("ManualQuantTable for Metmax input generated and exported!")
 	}
 ```
 

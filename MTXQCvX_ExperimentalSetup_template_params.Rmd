@@ -8,7 +8,7 @@ author:
 params:
   subf:
     input: text
-    label: "Run MTXQC based on data in subfolder:"
+    label: "Run MTXQC in project folder:"
     value: ""
   inputformat:
     input: select
