@@ -64,6 +64,36 @@ export_MTXQCsetup = function(x, subfolder, filedef, setting) {
   return(params_df)
 }
 
+### Import of config_files
+
+## create a function
+import_content <- function(dir, mode = NULL, ...){
+  
+  files <- list.files(path = dir, pattern = "*.csv")
+  
+  ## check number of files imported (params = 2, input = 2)
+  n_files = length(files)
+  
+  if (mode == "params") {
+    if (n_files >= 1) {
+      message("Parameter files imported!", dir)
+    } else {
+      message("Missing parameter file detected - check project folder")
+    }
+  }
+  
+  
+  #import
+  f <- file.path(dir, files)
+  d <- lapply(f, read.csv)
+  
+  #add names
+  names(d) <- gsub(".*/(.*)\\..*", "\\1", f)
+  
+  return(d)
+}
+
+
 
 # Function checking for multiple data frames (all MTXQC input files)
 # if they are not empty
@@ -90,6 +120,8 @@ check_inputfiles = function(my_list){
     }
   )
 }
+
+
 
 
 create_batchid = function(df){
