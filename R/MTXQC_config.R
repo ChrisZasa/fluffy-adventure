@@ -4,7 +4,7 @@
 con_se = read.csv("config_mtx/conversion_metabolite.csv", TRUE)
 
 if (ncol(con_se) == 1) {
-  con_se = read.csv("config_mtx/conversion_metabolite.csv", T, sep = ";")
+  con_se = read.csv("config_mtx/conversion_metabolite.csv", TRUE, sep = ";")
   message("Colon separator detected in : conversion_metabolite.csv")
 }
 
