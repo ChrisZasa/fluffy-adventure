@@ -1,15 +1,13 @@
 ---
-title: 'MTXQCvX2 - Part1: PROJECT TITLE'
+title: 'MTXQCvX2 - Part1: Standards and Reprod.'
 author:
-- affiliation: Test Lab
-  name: Test person
-- affiliation: Test Lab
-  name: Test person
+- affiliation: Kempa Lab, BIMSB/MDC Berlin-Buch
+  name: Christin Zasada
 params:
   spath:
     input: text
-    label: "Run on MTXQC project folder:"
-    value: "test"
+    label: "Run on MTXQC-subfolder:"
+    value: "Standards01"
   data:
     input: select
     choices: [maui, metmax]
@@ -18,7 +16,7 @@ params:
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
-    label: "Incorporation manually validated data:"
+    label: "Incorporation manualy validated data:"
     value: none
 output:
   pdf_document:
@@ -35,7 +33,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - Template MTXQCvX part1 - processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: Please use this space for a short summary of the current state of the project.
+abstract: The herein presented report includes the manual validated peak areas of Itaconic acid. Absolute quantities have been determined by additional quantification standards.
 ---
 
 # MTXQCvX part1
@@ -63,7 +61,7 @@ knitr::opts_chunk$set(fig.width = 8, fig.align = 'center', fig.height = 7,
                       fig.path = set_fig,  
                       echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
-                      message = FALSE,
+                      message = TRUE,
                       eval = TRUE) #show messages
 ```
 
@@ -675,17 +673,30 @@ if (mm_73_idx != "none" && mm_peaks_idx == TRUE) {
 ```{r check_mqt}
 
 	if (params$data == "maui") {
-	 
-	  cual = check_mqt(ann, path_setup, mode = "maui")
+	
+	  #check ManualQuantTable.tsv and defined Batch-Ids in annotation file
+	  batch_id_def = check_mqt_batchids(ann, path_setup)
+	  nb_id = length(batch_id_def)
+	  
+	  #extract tsv-file names
+	  file_names <- dir(paste0(path_setup, set_input, "quant/"), pattern = ".tsv") 
+		
+	  #combine all tsv-files, add Batch-Id
+	  cual <- do.call(rbind, lapply(file_names, 
+								 function(x) cbind(read.csv(paste0(path_setup, set_input, 
+										  "quant/", x), sep = "\t"), 
+										  Batch_Id = strsplit(x,'\\.')[[1]][1])))
+	   
+		write.csv(cual, paste0(path_setup, set_input, "quant/MQT_combined.csv"), row.names = FALSE)
+			
+		#generate ManualQuantTable
     mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
-    message("ManualQuantTable for MAUI input generated and exported!")
+    message("ManualQuantTable generated and exported!")
 	}
 
 	if (params$data == "metmax") {
-	  
-	  cual = check_mqt(ann, path_setup, mode = "metmax")
-		mqt_std = create_manualquanttable(cual, q1_values = quant_table, con_se, FALSE)
-		message("ManualQuantTable for Metmax input generated and exported!")
+		cual = read.csv(paste0(path_setup, set_input, "quant/ManualQuantTable_calc_", q_idx,".csv"))
+		message("ManualQuantTable imported!")
 	}
 ```
 
@@ -806,11 +817,12 @@ if (addq_idx == 'yes') {
     }
 
     #add annotation: Metabolite_short
-    cal_data <-  merge(cal_data, con_se[,c("Lettercode", "Metabolite_short")])
+    cal_data <-  merge(cal_data, con_se[,c("Lettercode", "Metabolite_short", "Q_sel")])
 
     #clean-up
     cal_clean <-  subset(cal_data, !is.na(cal_data$Concentration))
     cal_clean <-  subset(cal_clean, cal_clean$ChromIntensities != -99) 
+    cal_clean <- subset(cal_clean, cal_clean$Q_sel == "x")
   
     #calculate adj. Rsquare, intercept and slope
     qcurve_top5_rsquare(cal_clean, path_setup) 
