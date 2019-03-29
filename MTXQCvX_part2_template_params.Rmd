@@ -183,6 +183,11 @@ knitr::opts_chunk$set(fig.width = 7, fig.align = 'center', fig.height = 8,
   #### Annotation file
     ann_idx = as.character(setup_params[which(setup_params$Parameter == "ann"), "Value"])
     ann  =  read.csv(paste0(path_setup, set_input, ann_idx), T)
+    
+    if (ncol(ann) == 1) {
+          ann = read.csv(paste0(path_setup, set_input, ann_idx), T, sep = ";")
+          message("colon separator detected: ", ann_idx)
+    }
    
   #### Parameter for stats
   parvec = check_parvector(params)
