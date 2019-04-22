@@ -1400,9 +1400,12 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 ## $^{13}C$-Isotope incorporation
 ```{r inc_imp, tidy = TRUE}
 
-  data_incorporation = file_shaping(data_inc, shape = "wide", ann, type = "sample", inc = TRUE)
+  data_incorporation = file_shaping(data_inc, shape = "wide", 
+                                    ann, 
+                                    type = "sample", 
+                                    inc = TRUE)
 
-  data_inc_m  =  merge(data_incorporation, con_se[,c("Lettercode", "Metabolite")])
+  data_inc_m  =  merge(data_incorporation, con_se[,c("Lettercode", "Metabolite", "Mass_Pos")])
   
   #cleaning: negative values
   data_inc_m$Inc_origval = data_inc_m$Inc
