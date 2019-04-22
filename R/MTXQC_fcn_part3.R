@@ -24,36 +24,41 @@ transform_quant <- function(dataframe) {
 
 transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   
-  #SpectraExport Quality
-  df_se_val$ManVal_check = rep("", length(df_se_val$Lettercode))
   
   #### line modified:se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
   #### Export all MIDs without preselection of lowQ only
-  se_val_low = subset(df_se_val, df_se_val$count_score != "")
+  df_se_val = subset(df_se_val, df_se_val$count_score != "")
   
-  se_low = se_val_low[,c("File","Lettercode","count_score", "ManVal_check")]
+  #SpectraExport Quality for manual validation
+  df_se_val$ManVal_check = rep("", length(df_se_val$Lettercode))
   
-  #Export
-  write.csv(se_low, paste0(path_setup, set_output, set_val, 
-                           "MID_validation_forCheck.csv"), row.names = FALSE)
+  df_se_val = df_se_val[,c("File","Lettercode","count_score", "ManVal_check")]
+  
+  #Export -> not required anymore
+  #write.csv(df_se_val, paste0(path_setup, set_output, set_val, 
+  #                         "MID_validation_done.csv"), row.names = FALSE)
+  
   
   #SpectraExport
-  colnames(df_mid)[3] = c('Mass_mz')
-  data_inc_table = merge(df_mid, conversion_table)
-  data_inc_table_merge = merge(data_inc_table, se_low)
+  colnames(df_mid)[grepl("Mass.m.z.", colnames(df_mid))] = c('Mass_mz')
+  
+  data_inc_table = merge(df_mid, conversion_table[,c("Metabolite", "Lettercode")])
+  
+  #reduction of entries derived from data_inc_table due to no evaluation of MIDs of addQ measurements
+  data_inc_table_merge = merge(data_inc_table,df_se_val[,c("File","Lettercode","count_score")])
   
   data_inc_table = data_inc_table_merge[, c("File","Lettercode" ,"Metabolite", 
-                                            "Mass_mz", "SamplePeakArea", "BackupPeakArea", "BackupMID")]
+                                            "Mass_mz", "count_score" ,"SamplePeakArea", "BackupPeakArea", "BackupMID")]
   
   data_inc_table$ManVal_Intensity = rep("", length(data_inc_table$Metabolite))
   
-  data_inc_export = arrange(data_inc_table, File, Lettercode, Mass_mz) 
+  data_inc_export = arrange(data_inc_table, File, Metabolite, Mass_mz) 
   
   #Export
   write.csv(data_inc_export, paste0(path_setup, set_output, set_val, 
                                     "MID_validation_values.csv"), row.names = F)
   
-  message('Files for manual MID evaluation are generated!')
+  message('File for manual MID evaluation generated! MID_validation_values.csv')
 }
 
 

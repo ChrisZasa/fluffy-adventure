@@ -29,7 +29,7 @@ params:
   folder:
     input: text
     label: "Define folder where to export and import files."
-    value: "ManualValidation"
+    value: "ManualValidation_easer"
   prep:
     choices:
     - none
@@ -37,12 +37,12 @@ params:
     - Incorporation
     input: select
     label: "Prepare data for manual validation:"
-    value: none
+    value: Incorporation
   eval:
     choices: [none, PeakArea, Incorporation]
     input: select
     label: "Integration of manually validated data:"
-    value: Incorporation
+    value: none
   inputformat:
     input: select
     label: "Choose the kind of input format of your data."
