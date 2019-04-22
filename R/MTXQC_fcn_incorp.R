@@ -91,6 +91,8 @@ mid_metric_calc2 <- function(dataframe1, dataframe2) {
 
 calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval = FALSE) {
   
+  #metmax: calculate_isotope_incorporation(table_sel, backup_mids, mass_li, manval = TRUE)
+  
   if (manval == TRUE) {
     #clean column names
     colnames(dataframe)[grepl("ManVal_Intensity", colnames(dataframe))] <- "MID_Intensity"
@@ -104,12 +106,21 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   #calculate cor.natural = ref_mi / ref_m0 x sam_m0
   colnames(backups)[grepl("Mass.m.z.", colnames(backups))] <- "Mass_mz"
   
-  #merge
+  #merge incorporation couples with MID
   data_li = merge(dataframe, mass_li)
   data_li_export = merge(data_li, backups)
   
+    if (plyr::empty(data_li_export) == TRUE) {
+      message("WARNING Empty data frame created!")
+      message("Check backup MIDs for consistency, values are missing!")
+      knitr::knit_exit()
+    } else {
+      message("Checked: Backup MIDs consistent")
+    }
+  
   #select specific columns
-  data_li_sel = data_li_export[,c( 'File', 'Metabolite','Mass_mz', 'BackupMID', 
+  data_li_sel = data_li_export[,c( 'File', 'Metabolite','Mass_mz', 
+                                   'BackupMID', 
                                    'SampleMID', 'LI_MID')]
   
   #ratio_ref = ratio ref_mi / ref_m0
@@ -133,7 +144,8 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   
   #calculate LI
   ref_m0 = ref_wide[,c('File', 'Metabolite', 'm0')]
-  colnames(ref_m0) = c('File', 'Metabolite', 'ref_m0')
+  colnames(ref_m0)[grepl("m0", colnames(ref_m0))] <- "ref_m0"
+ 
   comb_mid = merge(sample_wide_s, ref_m0)
   comb_mid$LI_raw = comb_mid$cor_sample / (comb_mid$cor_sample + comb_mid$ref_m0)
   
@@ -144,10 +156,13 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   data_li = comb_mid[,c('File', 'Metabolite', 'LI_raw' ,'LI')]
   
   #wide format using cleaned LI
-  data_inc_new = dcast(data_li, Metabolite ~ File, value.var = 'LI')	
+  data_inc_new = dcast(data_li, Metabolite ~ File, value.var = 'LI')
   
   if (manval == TRUE) {
-    #assumin maui-derived input after manual validation
+    write.csv(data_inc_new, paste0(path_setup, set_output, set_val, 
+                                   "inc/Incorporation_values_updated.csv"), row.names = F)
+    
+    #assuming maui-derived input after manual validation
     write.csv(data_li, paste0(path_setup, set_output, set_val,
                               'inc/LI_long_calculated.csv'), row.names = F)
     
@@ -158,29 +173,35 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
     #assuming metmax-derived input
     write.csv(data_li, paste0(path_setup, set_input,
                               'metmax/Metmax-LI_long_calculated.csv'), row.names = F)
+    message("Checked: Metmex-derived 13C-incorporation calculated!")
     
     write.csv(data_inc_new, paste0(path_setup, set_input, 'inc/DataMatrix.csv'), row.names = F)
-    
-    message("The Metmax-exported MIDS have been converted.")
-    message("Determined 13C-incorporation has been saved: ", paste0(set_input, 'inc/DataMatrix.csv'))
+    message("Checked: File created - inc/DataMatrix.csv")
   }
+  
   #return(data_inc_new)
   return(data_li_export)
 }
 
 MID_export <- function(dataframe, backups = backup_mids) {
   
-  #clean-up2 - restarting from the first part at line #
-  table_conv = dataframe[,c( "File","Metabolite", "Mass_mz", "MID_Intensity", "SampleMID")]
-  colnames(table_conv)[grepl("MID_Intensity", colnames(table_conv))] <- "SamplePeakArea"
+  #clean-up
+  #table_conv = dataframe[,c( "File","Metabolite", "Mass_mz", "MID_Intensity", "SampleMID")]
+  table_temp = dataframe[,c( "File","Metabolite", "Mass_mz", "MID_Intensity")]
+  colnames(table_temp)[grepl("MID_Intensity", colnames(table_temp))] <- "SamplePeakArea"
+  
+  table_temp = ddply(table_temp, c("File", "Metabolite"), transform, 
+                               SampleMID = SamplePeakArea/sum(SamplePeakArea) )
   
   #Add backupMIDs
   colnames(backups)[grepl("Mass.m.z.", colnames(backups))] <- "Mass_mz"
   
-  table_conv2 = merge(table_conv, backup_mids)
+  #Combine 
+  table_conv2 = merge(table_temp, backups)
   table_conv2$UsedMID = rep("backup", length(table_conv2$File))
   
   #export
+  table_conv2 = arrange(table_conv2, File, Metabolite, Mass_mz)
   write.csv(table_conv2, paste0(path_setup, set_input, "inc/pSIRM_SpectraData.csv"), row.names = F)
   
   message("Metmax-derived MIDs have been transformed into classical MTXQC input format.") 

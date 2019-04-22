@@ -24,19 +24,19 @@ params:
   spath:
     input: text
     label: "Run on MTXQC project folder:"
-    value: "Test_Metmax"
+    value: "test_metmax"
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
-    value: "PeakAreas.csv"
+    value: "metmax_area.csv"
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: "mz73.csv"
+    value: "mz73_ser.csv"
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: "MIDs.csv"
+    value: "mids_metmax.csv"
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
@@ -389,15 +389,18 @@ source("R/MTXQC_fcn_gcperformance.R")
 		} else {
 		  
   		#### INC CALCULATION and expoert
-  		inc_calc = calculate_isotope_incorporation(table_conv, backups = backup_mids, 
-  		  mass_li = mass_li)
+  		inc_calc = calculate_isotope_incorporation(table_conv, 
+  		                                           backups = backup_mids, 
+  		                                           mass_li = mass_li)
   		
   		### MID clean-up and export
-      MID_export(inc_calc, backup_mids)
-		}	
+      #MID_export(inc_calc, backup_mids)
+		  MID_export(table_conv, backup_mids)
+  	}	
+		
   } else {
   	  message("No application of stable isotopes defined in the ExperimentalSetup.")
-  	}
+  }
 
 ```
 \pagebreak

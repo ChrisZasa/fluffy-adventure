@@ -4,6 +4,16 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2019-04-22 - major update
+Version: 1.0.7
+
+Updates:
+  * MTXQCvX2_part3: Automated detection of updated / manually validated MIDs
+  * MTXQCvX2_part3: Integration of metmax-based projects for manual data validation
+  * Minor bug fixes and code cleaning across MTXQCvX2
+
+Please download the current version and rerun MTXQCvX_part3 in your MTXQC-projects if used. 
+
 ### 2019-03-29 - major update
 Version: 1.0.6
 
