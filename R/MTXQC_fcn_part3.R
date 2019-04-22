@@ -24,7 +24,6 @@ transform_quant <- function(dataframe) {
 
 transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   
-  
   #### line modified:se_val_low = subset(df_se_val, df_se_val$count_score == "lowQ")
   #### Export all MIDs without preselection of lowQ only
   df_se_val = subset(df_se_val, df_se_val$count_score != "")
@@ -33,11 +32,6 @@ transform_inc <- function(df_se_val, df_mid, conversion_table = con_se) {
   df_se_val$ManVal_check = rep("", length(df_se_val$Lettercode))
   
   df_se_val = df_se_val[,c("File","Lettercode","count_score", "ManVal_check")]
-  
-  #Export -> not required anymore
-  #write.csv(df_se_val, paste0(path_setup, set_output, set_val, 
-  #                         "MID_validation_done.csv"), row.names = FALSE)
-  
   
   #SpectraExport
   colnames(df_mid)[grepl("Mass.m.z.", colnames(df_mid))] = c('Mass_mz')
@@ -216,11 +210,17 @@ integrate_manVal_MIDs <- function(dataframe, corrected_mids, original_mids) {
 
 integrate_calc_inc <- function(data_orig, inc_new) {
   
+  #track if QuantMasses present (maui vs. metmax data generation)
+  check_QM = "QuantMasses" %in% colnames(data_orig)
+ 
   #(data_original, inc_calc_updated)
-  
-  data_original_l = reshape2::melt(data_orig, id.vars = c('Metabolite','QuantMasses'), 
-                                   variable.name = 'File', value.name = 'LI_original')
-  
+  if (check_QM == TRUE) {
+    data_original_l = reshape2::melt(data_orig, id.vars = c('Metabolite','QuantMasses'), 
+                                     variable.name = 'File', value.name = 'LI_original')
+  } else {
+    data_original_l = reshape2::melt(data_orig, id.vars = c('Metabolite'), 
+                                         variable.name = 'File', value.name = 'LI_original')
+  }
   
   import_inc_new = read.csv(paste0(path_setup, set_output, set_val, 
                                    "inc/Incorporation_values_updated.csv"))
@@ -231,10 +231,16 @@ integrate_calc_inc <- function(data_orig, inc_new) {
   data_comb = merge(data_original_l, data_new, all.x = TRUE)
   data_comb$LI = ifelse(!is.na(data_comb$LI_updated), data_comb$LI_updated, data_comb$LI_original)
   
-  data_updated = data_comb[,c('File', 'Metabolite','QuantMasses','LI')]
-  
-  data_updated_long = reshape2::dcast(data_updated, Metabolite + QuantMasses ~ File, 
-                                      value.var = 'LI')	
+  if (check_QM == TRUE) {
+    data_updated = data_comb[,c('File', 'Metabolite','QuantMasses','LI')]
+    
+    data_updated_long = reshape2::dcast(data_updated, Metabolite + QuantMasses ~ File, 
+                                        value.var = 'LI')	
+  } else {
+    data_updated = data_comb[,c('File', 'Metabolite','LI')]
+    data_updated_long = reshape2::dcast(data_updated, Metabolite ~ File, 
+                                        value.var = 'LI')	
+  }
   
   #Export
   write.csv(data_updated_long, paste0(path_setup, set_input, 

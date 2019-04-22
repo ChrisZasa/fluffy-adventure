@@ -7,12 +7,12 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "Standards01"
+    value: "test_metmax"
   data:
     input: select
     choices: [maui, metmax]
     label: 'Input file format:'
-    value: maui
+    value: metmax
   updated:
     input: select
     choices: [none, PeakArea, Incorporation, both]
@@ -1401,9 +1401,8 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 ```{r inc_imp, tidy = TRUE}
 
   data_incorporation = file_shaping(data_inc, shape = "wide", ann, type = "sample", inc = TRUE)
-  colnames(data_incorporation)[grepl('MID_Intensity', colnames(data_incorporation))] <- "Inc"
 
-  data_inc_m  =  merge(data_incorporation, con_se)
+  data_inc_m  =  merge(data_incorporation, con_se[,c("Lettercode", "Metabolite")])
   
   #cleaning: negative values
   data_inc_m$Inc_origval = data_inc_m$Inc
@@ -1415,6 +1414,7 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 ```{r li_t0_m, tidy = TRUE}
 
 	#ask for presence of column 'Time' and check for 'Time == 0' present
+  data_inc_m = merge(data_inc_m, ann)
 
 	#convert Time to time in column names
 	colnames(data_inc_m)[grepl("Time", colnames(data_inc_m))] <- "time" 
@@ -1423,6 +1423,8 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 	zero_present = 0 %in% unique(data_inc_m$time)
 
 	if ( zero_present == T) {
+	  message("Time point t = 0 in experimental setup detected.")
+	  
 	   #select for T = 0
 	   data_zero  =  subset(data_inc_m, data_inc_m$time  ==  0)
 	   data_zero[data_zero < 0] = 0
@@ -1444,10 +1446,8 @@ if (is.data.frame(data_SE) && nrow(data_SE) == 0) {
 	   #export
 	   write.csv(li_zero_stat_br, paste0(path_setup,'output/inc/13C_stats_zeros.csv'), 
 				  row.names = F)
-	}
-
-	if ( zero_present == F) {
-		message('No data for t=0 in the experimental setup defined!')
+	} else {
+		message('No time point t=0 in the experimental setup defined!')
 	}
 ```
 
