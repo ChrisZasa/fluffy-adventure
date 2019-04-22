@@ -139,23 +139,27 @@ file_shaping = function(dataframe, shape = "long", file_annotation, type, inc = 
 #' add Batch_Id based on File name
 #' WHATS WITH METABOLITE_MANUAL
   
-
   #check File
   colnames(dataframe)[grepl("file", colnames(dataframe))] <- "File" 
   
-  #metmax shaping if row.load and ri are still present in the input
+  #metmax shaping: test if row.load and ri are still present in the input
   test_row = "row.load" %in% names(dataframe)
+  test_metabolite_metmax = "Metabolite" %in% names(dataframe)
   
   if (shape == "wide") {
   
     #row.load and ri still present
     if (test_row == TRUE) {
+      
       idx_ri = grep("ri", colnames(dataframe))
       idx_row = grep("row.load", colnames(dataframe))
       df = dataframe[,c(-idx_row, -idx_ri)]
-      dataframe = reshape2::melt(df, id.vars = c("name", "mass"), value.name = "PeakArea",
-        variable.name = "File", na.rm = TRUE)
-      
+     
+      dataframe = reshape2::melt(df, id.vars = c("name", "mass"), 
+                                  value.name = "PeakArea",
+                                  variable.name = "File", 
+                                  na.rm = TRUE)
+  
       if (inc == TRUE) {
         colnames(dataframe)[grepl("name", colnames(dataframe))] <- "Metabolite_manual"
         colnames(dataframe)[grepl("PeakArea", colnames(dataframe))] <- "MID_Intensity"
@@ -166,16 +170,32 @@ file_shaping = function(dataframe, shape = "long", file_annotation, type, inc = 
       }
     }
     
-    #row.load and ri already deleted
+    #row.load and ri already deleted, but name and mass still present
     if (test_row == FALSE) {
+      
+      colnames(dataframe)[grepl("name", colnames(dataframe))] <- "Metabolite_manual"
+      colnames(dataframe)[grepl("mass", colnames(dataframe))] <- "Mass_mz"
+      
       if (inc == FALSE) {
+        
         data_proc = dataframe
         dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite", "QuantMasses"), 
                                    value.name = "PeakArea", variable.name = "File", na.rm = TRUE)
       } else {
-        data_proc = dataframe
-        dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite"), 
+        
+        if (test_metabolite_metmax == TRUE) {
+          data_proc = dataframe
+          dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite"), 
                                    value.name = "MID_Intensity", variable.name = "File", na.rm = TRUE)
+          
+          colnames(dataframe)[grepl('MID_Intensity', colnames(dataframe))] <- "Inc"
+          
+        } else {
+          data_proc = dataframe
+          dataframe = reshape2::melt(data_proc, id.vars = c("Metabolite_manual", "Mass_mz"), 
+                                     value.name = "MID_Intensity", variable.name = "File", na.rm = TRUE)
+        }
+        
       }
     }
   }
