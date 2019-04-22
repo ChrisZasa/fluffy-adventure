@@ -225,12 +225,6 @@ if (params$eval == 'PeakArea') {
     ifelse(!dir.exists(file.path(paste0(path_setup, set_output, set_val, 'inc'))), 
 	  dir.create(paste0(path_setup, set_output, set_val, 'inc')), 
 		FALSE)
-	    
-            #Evaluated MIDS import -> freq table
-            #table_check <-  read.csv(paste0(path_setup, set_output, set_val, 
-            #		            'MID_validation_lowQ_forCheck.csv'),  T, na.strings = "")
-            		
-            #cor_mids = evaluate_modified_mids(table_check)
     		
     #MID import of manual validated values
     table_mid = read.csv(paste0(path_setup, set_output, set_val, 
@@ -256,6 +250,8 @@ if (params$eval == 'PeakArea') {
     #integration new values into original file
     nick_inc = as.character(id_settings[which(id_settings$Parameter == "inc_data"), "Value"])
     data_original = read.csv(paste0(path_setup, set_input, "inc/", nick_inc), T)
+    
+
     	 
     integrate_calc_inc(data_original, inc_calc_updated)
         

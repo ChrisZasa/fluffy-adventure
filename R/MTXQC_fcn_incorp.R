@@ -143,7 +143,8 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   
   #calculate LI
   ref_m0 = ref_wide[,c('File', 'Metabolite', 'm0')]
-  colnames(ref_m0) = c('File', 'Metabolite', 'ref_m0')
+  colnames(ref_m0)[grepl("m0", colnames(ref_m0))] <- "ref_m0"
+ 
   comb_mid = merge(sample_wide_s, ref_m0)
   comb_mid$LI_raw = comb_mid$cor_sample / (comb_mid$cor_sample + comb_mid$ref_m0)
   
@@ -154,7 +155,9 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   data_li = comb_mid[,c('File', 'Metabolite', 'LI_raw' ,'LI')]
   
   #wide format using cleaned LI
-  data_inc_new = dcast(data_li, Metabolite ~ File, value.var = 'LI')	
+  data_inc_new = dcast(data_li, Metabolite ~ File, value.var = 'LI')
+  write.csv(data_inc_new, paste0(path_setup, set_output, set_val, 
+                                 "inc/Incorporation_values_updated.csv"), row.names = F)
   
   if (manval == TRUE) {
     #assumin maui-derived input after manual validation
@@ -174,6 +177,7 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
     message("The Metmax-exported MIDS have been converted.")
     message("Determined 13C-incorporation has been saved: ", paste0(set_input, 'inc/DataMatrix.csv'))
   }
+  
   #return(data_inc_new)
   return(data_li_export)
 }

@@ -216,10 +216,16 @@ integrate_manVal_MIDs <- function(dataframe, corrected_mids, original_mids) {
 
 integrate_calc_inc <- function(data_orig, inc_new) {
   
+  #(data_original, inc_calc_updated)
+  
   data_original_l = reshape2::melt(data_orig, id.vars = c('Metabolite','QuantMasses'), 
                                    variable.name = 'File', value.name = 'LI_original')
   
-  data_new = reshape2::melt(inc_new, id.vars = c("Metabolite"), 
+  
+  import_inc_new = read.csv(paste0(path_setup, set_output, set_val, 
+                                   "inc/Incorporation_values_updated.csv"))
+  
+  data_new = reshape2::melt(import_inc_new, id.vars = c("Metabolite"), 
                             variable.name = "File", value.name = "LI_updated")
   
   data_comb = merge(data_original_l, data_new, all.x = TRUE)
@@ -227,7 +233,8 @@ integrate_calc_inc <- function(data_orig, inc_new) {
   
   data_updated = data_comb[,c('File', 'Metabolite','QuantMasses','LI')]
   
-  data_updated_long = reshape2::dcast(data_updated, Metabolite + QuantMasses ~ File, value.var = 'LI')	
+  data_updated_long = reshape2::dcast(data_updated, Metabolite + QuantMasses ~ File, 
+                                      value.var = 'LI')	
   
   #Export
   write.csv(data_updated_long, paste0(path_setup, set_input, 
