@@ -91,6 +91,8 @@ mid_metric_calc2 <- function(dataframe1, dataframe2) {
 
 calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval = FALSE) {
   
+  #(table_sel, backup_mids, mass_li, manval = TRUE)
+  
   if (manval == TRUE) {
     #clean column names
     colnames(dataframe)[grepl("ManVal_Intensity", colnames(dataframe))] <- "MID_Intensity"
@@ -104,9 +106,17 @@ calculate_isotope_incorporation = function(dataframe, backups, mass_li, manval =
   #calculate cor.natural = ref_mi / ref_m0 x sam_m0
   colnames(backups)[grepl("Mass.m.z.", colnames(backups))] <- "Mass_mz"
   
-  #merge
+  #merge incorporation couples with MID
   data_li = merge(dataframe, mass_li)
   data_li_export = merge(data_li, backups)
+  
+    if (plyr::empty(data_li_export) == TRUE) {
+      message("WARNING Empty data frame created!")
+      message("Check backup MIDs for consistency, values are missing!")
+      knitr::knit_exit()
+    } else {
+      message("Checked: Backup MIDs consistent")
+    }
   
   #select specific columns
   data_li_sel = data_li_export[,c( 'File', 'Metabolite','Mass_mz', 'BackupMID', 

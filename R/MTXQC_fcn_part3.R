@@ -157,18 +157,23 @@ evaluate_peakareas <-  function(dataframe) {
 
 evaluate_modified_mids <-  function(df_check) {
   
+  #EXTRACT: only updated values
+  df_check = subset(df_check, df_check$ManVal_Intensity != "")
+  
   #how many MIDs were corrected
-  df_stat = count(subset(df_check, df_check$ManVal_check == 'x'), 
-                  vars = 'Lettercode')
+  df_check_uni = unique(df_check[,c("Lettercode", "File")])
+  df_stat = count(df_check_uni, vars = "Lettercode")
   
   print(knitr::kable(df_stat, format = "markdown", 
                      caption = "Frequency of validated isotope incorporation values."))
   
   #extract corrected MIDs/Files
-  cor = subset(df_check, df_check$ManVal_check == 'x')
-  cor_lettercode_file = unique(cor[,c('File','Lettercode' ,'ManVal_check')])
+  #cor = subset(df_check, df_check$ManVal_check == 'x')
+  cor_lettercode_file = df_check_uni
+  cor_lettercode_file$ManVal_check = rep("x", length(cor_lettercode_file$File))
   
   return(cor_lettercode_file)
+  
   write.csv(cor_lettercode_file, paste0(path_setup, set_output, set_val, 
                                         'inc/Corrected_MIDs_summary.csv'), row.names = F)
 }
@@ -197,10 +202,37 @@ integrate_manVal_MIDs <- function(dataframe, corrected_mids, original_mids) {
   
   write.csv(mid_merge, paste0(path_setup, set_output, set_val, "inc/Fused_MIDs.csv"), row.names = FALSE)
   
+  #remove origical MID values
   idx_ori1 = which(grepl("_orig", colnames(mid_merge)))
   fused_mids = mid_merge[,c(-idx_ori1)]
   
   write.csv(fused_mids, paste0(path_setup, set_input, "inc/pSIRM_SpectraData_manVal.csv"), row.names = FALSE)
+  
   message("Manually validated MIDs have been incorporated and saved in: ", paste0(set_input, "inc/pSIRM_SpectraData_manVal.csv"))
   return(fused_mids)   
+}
+
+
+
+integrate_calc_inc <- function(data_orig, inc_new) {
+  
+  data_original_l = reshape2::melt(data_orig, id.vars = c('Metabolite','QuantMasses'), 
+                                   variable.name = 'File', value.name = 'LI_original')
+  
+  data_new = reshape2::melt(inc_new, id.vars = c("Metabolite"), 
+                            variable.name = "File", value.name = "LI_updated")
+  
+  data_comb = merge(data_original_l, data_new, all.x = TRUE)
+  data_comb$LI = ifelse(!is.na(data_comb$LI_updated), data_comb$LI_updated, data_comb$LI_original)
+  
+  data_updated = data_comb[,c('File', 'Metabolite','QuantMasses','LI')]
+  
+  data_updated_long = reshape2::dcast(data_updated, Metabolite + QuantMasses ~ File, value.var = 'LI')	
+  
+  #Export
+  write.csv(data_updated_long, paste0(path_setup, set_input, 
+                                      'inc/DataMatrix_manVal.csv'), row.names = F)
+  
+  message("The manual validated data has been updated")
+  message("Saved in: ", paste0(set_input,"inc/DataMatrix_manVal.csv")) 
 }
