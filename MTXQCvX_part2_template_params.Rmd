@@ -25,7 +25,7 @@ params:
   subs:
     input: text
     label: "Run on MTXQC project folder:"
-    value: "test"
+    value: ""
   analysis:
     input: select
     choices:
@@ -38,7 +38,6 @@ params:
     choices: 
       - QC
       - all
-      - none
     value: QC
   quant:
     input: select
@@ -597,7 +596,34 @@ write.csv(data_nocalc_stat, paste0(path_setup, set_output, set_pp,
 
 li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
 
-    
+
+if (length(parvec) == 2) {   
+    for (var in unique(li_stat$Lettercode)) {
+      print(
+        ggplot(subset(li_stat, li_stat$Lettercode == var), 
+                      aes(factor(get(params$par1)), mean_li, fill = get(params$par2))) +
+            geom_bar(stat = "identity", size = 0.3, color = "black", 
+                      position = position_dodge(0.9)) +
+            geom_errorbar(aes(ymin = mean_li - sd_li, ymax = mean_li + sd_li),
+                      width = 0.25, position = position_dodge(0.9)) +
+            facet_wrap( ~ Mass_Pos, scales = "free_y") +
+            theme_bw() +
+            ggtitle(var) +
+                scale_fill_mtxqc(mypal) +
+            ylab("13C-Inc. in (-)") +
+            xlab(" ") +
+            theme(axis.text.y = element_text(size = 8),
+                  axis.text.x = element_text(size = 8),
+                  strip.background = element_rect(fill = "white"),
+                  strip.text.x = element_text(size = 8),
+                  strip.text.y = element_text(size = 8)) + 
+            theme(legend.position = "bottom", legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm")) +
+          guides(fill = guide_legend(nrow = 1))
+      )
+    }
+} 
+
+if (length(parvec) == 3) {   
     for (var in unique(li_stat$Lettercode)) {
       print(
         ggplot(subset(li_stat, li_stat$Lettercode == var), 
@@ -621,6 +647,10 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
           guides(fill = guide_legend(nrow = 1))
       )
     }
+} 
+
+
+
 
 ```
 
@@ -655,29 +685,56 @@ li_stat = subset(li_stat, li_stat$Mass_Pos <= 270)
 
 ```{r LabQ, echo=FALSE, fig.width=6, fig.height=3}
 
-
- for (var in unique(data_combined$Lettercode)) {
-   print(
-     ggplot(subset(data_combined, data_combined$Lettercode == var),
-                    aes(factor(get(params$par1)), mean_labQ, fill = get(params$par2))) +
-     geom_bar(stat = "identity", size = 0.3, color = "black",
-                  position = position_dodge(0.9)) +
-     geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
-                  width = 0.25, position = position_dodge(0.9)) +
-        facet_wrap(get(params$par3) ~ Mass_Pos, scales = "free_y") +
-        theme_bw() +
-      	    scale_fill_mtxqc(mypal) +
-        ggtitle(paste0(var)) +
-        ylab("13C-Quantities in (pmol/mg tissue)") +
-       	theme(axis.text.y = element_text(size = 8),
-              axis.text.x = element_text(size = 8),
-              #axis.text.x = element_blank(),
-              strip.background = element_rect(fill = "white"),
-              strip.text.x = element_text(size = 8),
-              strip.text.y = element_text(size = 8),
-              legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm"))
-  )
+if (length(parvec) == 2) {
+   for (var in unique(data_combined$Lettercode)) {
+     print(
+       ggplot(subset(data_combined, data_combined$Lettercode == var),
+                      aes(factor(get(params$par1)), mean_labQ, fill = get(params$par2))) +
+       geom_bar(stat = "identity", size = 0.3, color = "black",
+                    position = position_dodge(0.9)) +
+       geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
+                    width = 0.25, position = position_dodge(0.9)) +
+          facet_wrap(~ Mass_Pos, scales = "free_y") +
+          theme_bw() +
+        	    scale_fill_mtxqc(mypal) +
+          ggtitle(paste0(var)) +
+          ylab("13C-Quantities in (pmol/mg tissue)") +
+         	theme(axis.text.y = element_text(size = 8),
+                axis.text.x = element_text(size = 8),
+                #axis.text.x = element_blank(),
+                strip.background = element_rect(fill = "white"),
+                strip.text.x = element_text(size = 8),
+                strip.text.y = element_text(size = 8),
+                legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm"))
+    )
+   }
 }
+
+
+if (length(parvec) == 3) {
+   for (var in unique(data_combined$Lettercode)) {
+     print(
+       ggplot(subset(data_combined, data_combined$Lettercode == var),
+                      aes(factor(get(params$par1)), mean_labQ, fill = get(params$par2))) +
+       geom_bar(stat = "identity", size = 0.3, color = "black",
+                    position = position_dodge(0.9)) +
+       geom_errorbar(aes(ymin = mean_labQ - sd_labQ, ymax = mean_labQ + sd_labQ),
+                    width = 0.25, position = position_dodge(0.9)) +
+          facet_wrap(get(params$par3) ~ Mass_Pos, scales = "free_y") +
+          theme_bw() +
+        	    scale_fill_mtxqc(mypal) +
+          ggtitle(paste0(var)) +
+          ylab("13C-Quantities in (pmol/mg tissue)") +
+         	theme(axis.text.y = element_text(size = 8),
+                axis.text.x = element_text(size = 8),
+                #axis.text.x = element_blank(),
+                strip.background = element_rect(fill = "white"),
+                strip.text.x = element_text(size = 8),
+                strip.text.y = element_text(size = 8),
+                legend.title = element_blank(), legend.spacing.x = unit(0.25, "cm"))
+    )
+   }
+} 
 
 ```
 

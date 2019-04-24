@@ -7,7 +7,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC-subfolder:"
-    value: "test_metmax"
+    value: ""
   data:
     input: select
     choices: [maui, metmax]

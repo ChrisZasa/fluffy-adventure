@@ -24,7 +24,7 @@ params:
   spath:
     input: text
     label: "Run on MTXQC project folder:"
-    value: "test_metmax"
+    value: ""
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
@@ -32,7 +32,7 @@ params:
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
-    value: "mz73_ser.csv"
+    value: "mz73.csv"
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
