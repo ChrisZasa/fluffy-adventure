@@ -4,6 +4,14 @@ Automated version of MTXQCvX2 - fluffy adventure
 
 ## Version and updates
 
+### 2019-04-25 - minor update
+Version: 1.0.8
+
+Updated:
+  * MTXQCvX_part4: Check if metabolite names have been updated in config_mtx/conversion_metabolite.csv
+  * Experimental_setup: Red subtitles to highlight content that should be updated ;)
+
+
 ### 2019-04-22 - major update
 Version: 1.0.7
 
