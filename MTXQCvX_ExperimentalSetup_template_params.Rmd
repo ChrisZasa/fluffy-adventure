@@ -56,7 +56,7 @@ params:
     value: "no"
   quant:
     input: select
-    choices: [Quant1_v3, Quant1_v4, Quant1_ind]
+    choices: [Quant1_v3, Quant1_v4, Quant1_v5]
     label: "Quantification standards: "
     value: Quant1_v3
   quant_vol:
@@ -82,9 +82,7 @@ geometry: margin = 1in
 keywords: MTXQCvX, GC-MS, metabolomics, data analysis and processing
 biblio-style: apsr
 thanks: Kempa Lab - MTXQCvX ExperimentalSetup, provided by Ch. Zasada, processed '`r format(Sys.Date(), "%B %d, %Y")`'
-abstract: This document provides an evaluation of GC-MS derived metabolomics data.
-  It asseses GC-MS performance, the absolute quantification and the
-  stable isotope incorporation. ADD HERE FURTHER PROJECT RELEVANT FACTS.
+abstract: Update here the experimental documentation of your project!
 ---
 
 ```{r setup_output, echo=FALSE}
@@ -105,10 +103,22 @@ knitr::opts_chunk$set(echo = FALSE,  #TRUE - show R code
                       warning = FALSE, #show warnings
                       message = TRUE,
                       eval = TRUE) #show messages
+
+
+#Color Format
+colFmt = function(x,color){
+  outputFormat = knitr::opts_knit$get("rmarkdown.pandoc.to")
+  if(outputFormat == 'latex')
+    paste("\\textcolor{",color,"}{",x,"}", sep = "")
+  else if(outputFormat == 'html')
+    paste("<font color='",color,"'>",x,"</font>", sep = "")
+  else
+    x
+}
 ```
  
 
-# Project-related experimental setup
+# `r colFmt("Project-related experimental setup","red")`
 <!-- 
 Add here the the extraction protocol of your samples. Use this provided space 
 to have a complete report starting from sample extraction, derivatisation and 
@@ -120,7 +130,8 @@ Sample extraction and derivatisation have been performed by Jenny.
 According to her notes documented in OneNote section:
 Collaborations/Landthaler/ODC1 experiment
 
-# Sample extraction
+
+# `r colFmt("Sample extraction", 'red')`
 
 Extraction protocol:
       
@@ -131,7 +142,7 @@ Extraction protocol:
 
 Polar phases have been split into two equal fractions of *280* ul (added 600 ul 20% MeOH).
 
-# Quant-Mix extraction protocol
+# `r colFmt("Quant-Mix extraction protocol", "red")`
 
 Quant-Mixes batch: *Quant_v4*
 
@@ -140,7 +151,7 @@ Quant-Mixes batch: *Quant_v4*
        3. dried 0.5 ml of polar phase (twice)
   
 
-# Derivatisation protocol
+# `r colFmt("Derivatisation protocol", "red")`
 
 Applied the following protocol for derivatisation protocol
 
@@ -155,7 +166,7 @@ Applied the following protocol for derivatisation protocol
         
 Prepared aliquots: three-times 28 ul, big glas vials, crimped.
 
-# GC-MS measurement
+# `r colFmt("GC-MS measurement","red")`
 
 Samples have been measured using the following methods
 
