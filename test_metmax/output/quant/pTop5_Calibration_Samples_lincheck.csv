@@ -1,0 +1,6 @@
+"Lettercode","islinear","Batch_Id","Origin","count","sum_lin","prop"
+"CinAcid","NaCal","f16328ba",NA,24,24,1
+"Ser_2TMS","below","f16328ba","Qstd",1,24,0.0416666666666667
+"Ser_2TMS","linear","f16328ba","Qstd",23,24,0.958333333333333
+"Ser_3TMS","below","f16328ba","Qstd",1,24,0.0416666666666667
+"Ser_3TMS","linear","f16328ba","Qstd",23,24,0.958333333333333

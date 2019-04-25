@@ -1,0 +1,9 @@
+"Lettercode","Batch_Id","Metabolite","Par","Val"
+"Ser_2TMS","f16328ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","R2_cal",0.997666598683488
+"Ser_3TMS","f16328ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","R2_cal",0.990419649896908
+"Ser_2TMS","f16328ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","N_cal",0.75
+"Ser_3TMS","f16328ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","N_cal",0.625
+"Ser_2TMS","f16328ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","Data_lin",0.958333333333333
+"Ser_3TMS","f16328ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","Data_lin",0.958333333333333
+"Ser_2TMS","f16328ba","Serine_(2TMS)_BP_RI:1260_IDENT:C+D","R2_norm",0.902268490367152
+"Ser_3TMS","f16328ba","Serine_(3TMS)_MP_RI:1373_IDENT:C+D","R2_norm",0.901264095980966
