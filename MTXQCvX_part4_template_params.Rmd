@@ -24,11 +24,11 @@ params:
   spath:
     input: text
     label: "Run on MTXQC project folder:"
-    value: ""
+    value: "test"
   matrix:
     input: text
     label: "Specify file name for: PeakAreaMatrix."
-    value: "metmax_area.csv"
+    value: "PeakArea.csv"
   mz:
     input: text
     label: "Specify file name for: Metmax-derived m/z 73 intensities."
@@ -36,7 +36,7 @@ params:
   mid:
     input: text
     label: "Specify file name for: Metmax-extracted MIDs."
-    value: "mids_metmax.csv"
+    value: "MIDs.csv"
   intstd:
     input: checkbox
     label: "Generate input table for an internal standard (definition: InternalStandard)."
@@ -246,6 +246,7 @@ source("R/MTXQC_fcn_gcperformance.R")
     }
   }
     
+
     
 ```
 
